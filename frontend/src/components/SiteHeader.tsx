@@ -11,6 +11,7 @@ export function SiteHeader({ onInventoryClick }: SiteHeaderProps) {
       <LogoPlaceholder />
       <nav aria-label="Primary navigation">
         <Space size={28} className="nav-links">
+          <Button type="text">HOME</Button>
           <Button type="text" onClick={onInventoryClick}>
             INVENTORY
           </Button>
