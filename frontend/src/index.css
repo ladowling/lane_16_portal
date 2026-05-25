@@ -10,13 +10,14 @@ body,
 }
 
 body {
-  background: #0a1428;
-  color: #e2e8f0;
+  background: #161616;
+  color: #ffffff;
   font-family: Inter, system-ui, sans-serif;
 }
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }

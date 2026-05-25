@@ -4,10 +4,10 @@ This repository is structured as a monorepo with separate frontend and backend a
 
 ## Structure
 
-- `frontend/` — React + Vite single-page application
-- `backend/` — Node.js Express API server
+- `frontend/` - React + Vite + TypeScript single-page application
+- `backend/` - Node.js Express API server
 
-## Getting started
+## Getting Started
 
 1. Install dependencies:
    ```bash
@@ -33,3 +33,4 @@ This repository is structured as a monorepo with separate frontend and backend a
 
 - The frontend is configured to call backend APIs at `http://localhost:4000`.
 - The backend exposes a sample API route at `/api/ping`.
+- The frontend starts with a typed inventory dashboard scaffold in `frontend/src/App.tsx`.
