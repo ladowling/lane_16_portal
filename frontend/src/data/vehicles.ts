@@ -1,4 +1,12 @@
 import type { Vehicle } from '../types';
+import camaroGarage from '../assets/cars/camaro-garage.png';
+import engineDetail from '../assets/cars/engine-detail.png';
+import mercedesAmg from '../assets/cars/mercedes-amg.png';
+import porscheRoad from '../assets/cars/porsche-road.png';
+import steeringDetail from '../assets/cars/steering-detail.png';
+
+const carImages = [porscheRoad, mercedesAmg, camaroGarage];
+const partImages = [engineDetail, steeringDetail, engineDetail, steeringDetail];
 
 export const vehicles: Vehicle[] = [
   {
@@ -12,6 +20,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[0],
+    galleryImageSrcs: partImages,
     heroVariant: 'road',
     galleryVariants: ['detail', 'engine', 'interior', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -30,6 +40,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[1],
+    galleryImageSrcs: partImages,
     heroVariant: 'garage',
     galleryVariants: ['engine', 'interior', 'detail', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -48,6 +60,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[2],
+    galleryImageSrcs: partImages,
     heroVariant: 'silver',
     galleryVariants: ['detail', 'interior', 'engine', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -66,6 +80,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[0],
+    galleryImageSrcs: partImages,
     heroVariant: 'garage',
     galleryVariants: ['engine', 'detail', 'spring', 'interior'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -84,6 +100,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[1],
+    galleryImageSrcs: partImages,
     heroVariant: 'silver',
     galleryVariants: ['interior', 'engine', 'detail', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -102,6 +120,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[2],
+    galleryImageSrcs: partImages,
     heroVariant: 'road',
     galleryVariants: ['detail', 'engine', 'interior', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -120,6 +140,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[0],
+    galleryImageSrcs: partImages,
     heroVariant: 'silver',
     galleryVariants: ['engine', 'detail', 'interior', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -138,6 +160,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[1],
+    galleryImageSrcs: partImages,
     heroVariant: 'road',
     galleryVariants: ['detail', 'interior', 'engine', 'spring'],
     detailsTitle: '2021 Ford F-150 XLT',
@@ -156,6 +180,8 @@ export const vehicles: Vehicle[] = [
     nextMinimumBid: '$18,300',
     endsIn: 'Ending in 2 days',
     bidCount: 20,
+    imageSrc: carImages[2],
+    galleryImageSrcs: partImages,
     heroVariant: 'garage',
     galleryVariants: ['engine', 'detail', 'spring', 'interior'],
     detailsTitle: '2021 Ford F-150 XLT',

@@ -1,7 +1,6 @@
 import { Button, Card, Space, Typography } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
-import { VehiclePhoto } from './VehiclePhoto';
 
 const { Text, Title } = Typography;
 
@@ -13,36 +12,37 @@ type VehicleCardProps = {
 export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
   return (
     <Card
-      className="vehicle-card"
-      cover={<VehiclePhoto variant={vehicle.heroVariant} />}
+      className="overflow-hidden !rounded-xl !border-[#555555] !bg-[#0c0c0c] [&_.ant-card-body]:!px-[18px] [&_.ant-card-body]:!pb-5 [&_.ant-card-body]:!pt-[18px] [&_.ant-card-cover]:h-[214px] [&_.ant-card-cover]:overflow-hidden max-[620px]:[&_.ant-card-cover]:h-[190px]"
+      cover={<img className="h-full w-full object-cover" src={vehicle.imageSrc} alt={vehicle.title} />}
       bordered
       hoverable
       onClick={() => onSelect(vehicle.id)}
     >
-      <div className="vehicle-card-title-row">
-        <Title level={3}>{vehicle.title}</Title>
-        <Text className="title-status">{vehicle.status}</Text>
+      <div className="flex items-start justify-between gap-3.5 max-[620px]:flex-col">
+        <Title className="!m-0 !text-xl !font-bold !leading-tight !text-white" level={3}>{vehicle.title}</Title>
+        <Text className="shrink-0 !text-xs !font-extrabold !text-[#b1f000]">{vehicle.status}</Text>
       </div>
 
-      <Text className="vehicle-subtitle">
-        {vehicle.subtitle} <span className="meta-divider" /> {vehicle.mileage}
+      <Text className="mt-2 block !text-[15px] !text-[#c8c8c8]">
+        {vehicle.subtitle} <span className="mb-[-4px] ml-2 mr-2 inline-block h-[18px] w-px bg-[#9b9b9b]" /> {vehicle.mileage}
       </Text>
 
-      <div className="bid-row">
+      <div className="mt-[15px] flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Space size={8}>
-          <ClockCircleOutlined />
-          <Text>Highest Bid Price:</Text>
+          <ClockCircleOutlined className="!text-[#cfcfcf]" />
+          <Text className="!text-[15px] !text-[#c8c8c8]">Highest Bid Price:</Text>
         </Space>
-        <Text className="price-text">{vehicle.highestBid}</Text>
+        <Text className="!font-extrabold !text-[#24d725]">{vehicle.highestBid}</Text>
       </div>
 
-      <div className="card-footer-row">
+      <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Space size={8}>
-          <CalendarOutlined />
-          <Text>{vehicle.endsIn}</Text>
+          <CalendarOutlined className="!text-[#cfcfcf]" />
+          <Text className="!text-[15px] !text-[#c8c8c8]">{vehicle.endsIn}</Text>
         </Space>
-        <Text strong>{vehicle.bidCount} Bids</Text>
+        <Text className="!text-[15px] !text-[#c8c8c8]" strong>{vehicle.bidCount} Bids</Text>
         <Button
+          className="!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold"
           type="primary"
           size="small"
           onClick={(event) => {

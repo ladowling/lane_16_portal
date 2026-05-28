@@ -13,6 +13,8 @@ export type Vehicle = {
   nextMinimumBid: string;
   endsIn: string;
   bidCount: number;
+  imageSrc: string;
+  galleryImageSrcs: string[];
   heroVariant: VehiclePhotoVariant;
   galleryVariants: VehiclePhotoVariant[];
   detailsTitle: string;
