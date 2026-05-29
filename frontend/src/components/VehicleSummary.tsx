@@ -16,7 +16,7 @@ export function VehicleSummary({ vehicle, onViewReport }: VehicleSummaryProps) {
       <Paragraph className="!mb-5 !mt-4 !text-xl !font-bold !text-white">{vehicle.description}</Paragraph>
       <div className="mt-[18px] grid min-h-[46px] w-[min(100%,320px)] place-items-center rounded-lg bg-[#ecffe8] text-[22px] font-medium text-[#102d0b]">Overall Condition: {vehicle.condition}</div>
       <Button type="primary" className="!mt-[50px] !h-16 !w-[min(100%,320px)] !rounded-lg !text-[23px] !font-bold" onClick={onViewReport}>
-        View Condition Report
+        View Condition Reports
       </Button>
     </section>
   );
