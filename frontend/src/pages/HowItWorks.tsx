@@ -20,7 +20,7 @@ export default function HowItWorks() {
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0 p-4  flex items-center justify-center min-h-[250px]">
              {/* Placeholder for Car Graphic */}
-             <div ><img className="h-[200px] w-auto object-contain" src={mercedes} alt="Car Graphic" />
+             <div ><img className="h-[300px] w-auto object-contain" src={mercedes} alt="Car Graphic" />
 
              </div>
           </div>

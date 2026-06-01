@@ -13,19 +13,22 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHowItWorksClick, onHowItWorksSellerClick, showDealerLogin = false, showLogo = true, activePage }: SiteHeaderProps) {
-  const navButtonClass = '!h-auto !px-0 !py-1 !text-[18px] !font-bold !text-white hover:!bg-transparent hover:!text-lane-green max-[980px]:!text-lg';
+  const baseNavClass = '!h-auto !px-0 !py-1 !text-[18px] !font-bold hover:!bg-transparent max-[980px]:!text-lg';
 
-  const navClass = (pageName: string) => `${navButtonClass} ${activePage === pageName ? '!text-lane-green' : ''}`;
+  const getNavClass = (pageName: string) => {
+    const isActive = activePage === pageName;
+    return `${baseNavClass} ${isActive ? '!text-lane-green' : '!text-white hover:!text-lane-green'}`;
+  };
 
   return (
     <header className={`sticky top-0 z-[1000] flex min-h-[92px] items-center ${showLogo ? 'justify-between' : 'justify-end'} bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5`}>
       {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
       <nav aria-label="Primary navigation">
         <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
-          <Button className={navClass('Home')} type="text" onClick={onHomeClick}>
+          <Button className={getNavClass('Home')} type="text" onClick={onHomeClick}>
            HOME
           </Button>
-          <Button className={navClass('inventory')} type="text" onClick={onInventoryClick}>
+          <Button className={getNavClass('inventory')} type="text" onClick={onInventoryClick}>
             INVENTORY
           </Button>
           <Dropdown
@@ -36,11 +39,11 @@ export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHo
               ],
             }}
           >
-            <Button className={navClass('howItWorks')} type="text">
+            <Button className={getNavClass('howItWorks')} type="text">
              HOW IT WORKS
             </Button>
           </Dropdown>
-          <Button className={navClass('contact')} type="text" onClick={onContactClick}>
+          <Button className={getNavClass('contact')} type="text" onClick={onContactClick}>
             CONTACT
           </Button>
           {showDealerLogin && (
