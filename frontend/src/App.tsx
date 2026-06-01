@@ -9,11 +9,12 @@ import { ContactPage } from './pages/ContactPage';
 import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import HowItWorksSeller from './pages/HowItWorksSeller';
+import SubmitVehicle from './pages/SubmitsVehicle';
 
 type Page = 'Home'|'inventory' | 'details' | 'report' | 'contact'| 'howItWorks' | 'howItWorksSeller' | 'submitVehicle';
 
 function App() {
-  const [page, setPage] = useState<Page>('inventory');
+  const [page, setPage] = useState<Page>('Home');
   const [selectedVehicleId, setSelectedVehicleId] = useState(vehicles[0].id);
 
   const selectedVehicle = useMemo(
@@ -52,14 +53,14 @@ function App() {
           showDealerLogin={page === 'Home'}
           showLogo={page !== 'Home'}
         />
-        {page === 'Home' && <Home />}
+        {page === 'Home' && <Home onSellVehicleClick={() => openPage('submitVehicle')} />}
         {page === 'inventory' && <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />}
         {page === 'details' && <CarDetailsPage vehicle={selectedVehicle} onViewReport={() => openPage('report')} />}
         {page === 'report' && <ConditionReportPage vehicle={selectedVehicle} />}
         {page === 'contact' && <ContactPage />}
         {page === 'howItWorks' && <HowItWorks />}
         {page === 'howItWorksSeller' && <HowItWorksSeller />}
-        {/* {page === 'submitVehicle' && <SubmitVehicle />} */}
+        {page === 'submitVehicle' && <SubmitVehicle />}
 
       </div>
     </ConfigProvider>

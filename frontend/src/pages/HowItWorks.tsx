@@ -8,7 +8,7 @@ export default function HowItWorks() {
         <p className="text-gray-400 text-lg">Private Seller Inventory. Before the Auction.</p>
       </div>
 
-      <div className="max-w-5xl mx-auto py-16 px-6">
+      <div className="max-w-[1450px] mx-auto py-16 px-6">
         {/* Introduction Card */}
         <div className="bg-white text-black p-12 rounded-lg flex flex-col md:flex-row items-center mb-12">
           <div className="md:w-1/2 pr-8">

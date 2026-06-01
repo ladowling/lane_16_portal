@@ -4,7 +4,11 @@ import dollar from '../assets/cars/dollarSign.png';
 import homeBgImage from '../assets/cars/HomeBgImage.png';
 import logo from '../assets/cars/logo2.png'
 
-export default function Home() {
+interface HomeProps {
+  onSellVehicleClick?: () => void;
+}
+
+export default function Home({ onSellVehicleClick }: HomeProps) {
   const features = [
     {
       icon: <CheckCircle size={26} className="shrink-0 text-green-500" />,
@@ -30,15 +34,15 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen bg-[#111] bg-cover bg-center bg-no-repeat text-white"
+      className="min-h-screen bg-[#111] bg-contain bg-center bg-no-repeat text-white"
       style={{ backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.88), rgba(0,0,0,0.68), rgba(0,0,0,0.38)), url(${homeBgImage})` }}
     >
       {/* Hero Section */}
       <div className="relative flex w-full items-center border-b border-gray-800 px-6 py-16 md:px-20 md:py-20">
-        <div className="relative z-10 max-w-xl">
+        <div className="relative z-10 max-w-2xl">
           <img className="h-[150px] w-auto mb-4" src={logo} alt="Logo" />
-          <h1 className="mb-2 text-4xl font-bold leading-tight md:text-6xl">
-            PRIVATE SELLER <br/> INVENTORY.
+          <h1 className="mb-2 text-4xl font-bold md:text-6xl">
+            PRIVATE SELLER INVENTORY.
           </h1>
           <h2 className="mb-5 text-4xl font-bold text-green-500 md:text-6xl">
             BEFORE THE AUCTION.
@@ -48,7 +52,7 @@ export default function Home() {
             <button className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
               Dealer Access <ArrowRight className="ml-2" size={18} />
             </button>
-            <button className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
+            <button onClick={onSellVehicleClick} className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
               Sell Your Vehicle <ArrowRight className="ml-2" size={18} />
             </button>
           </div>
@@ -85,7 +89,7 @@ export default function Home() {
         </div>
         
         <p className="text-gray-600 text-xs tracking-widest font-semibold">
-          ©2024 LANE16. ALL RIGHTS RESERVED
+          ©2026 LANE16. ALL RIGHTS RESERVED
         </p>
       </div>
     </div>
