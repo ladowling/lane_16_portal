@@ -44,10 +44,10 @@ export function BidPanel({ vehicle }: BidPanelProps) {
         <Input className="!h-[52px] !rounded-lg !border-white !bg-[#242424] !text-lg !text-white placeholder:!text-white" placeholder="Click to enter bid" value={bidAmount} onChange={(event) => setBidAmount(event.target.value)} />
 
         <Button type="primary" size="large" block className="!mt-11 !h-16 !rounded-lg !text-2xl !font-bold" onClick={() => setIsConfirmOpen(true)}>
-          Place Binding Bid
+          Place Bid
         </Button>
 
-        <Text className="mt-[26px] block !text-lg !text-white">Binding bid w/24hr verification</Text>
+        <Text className="mt-[26px] block !text-lg !text-white">Dealer bids are subject to final vehicle verification.</Text>
       </aside>
 
       <Modal centered open={isConfirmOpen} footer={null} closable={false} width={760} className="[&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-10 [&_.ant-modal-content]:text-center" onCancel={() => setIsConfirmOpen(false)} maskClosable>

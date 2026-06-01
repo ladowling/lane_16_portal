@@ -13,10 +13,14 @@ export default function Home() {
             BEFORE THE AUCTION.
           </h2>
           <div className="h-1 w-24 bg-green-600 mb-12"></div>
-          
+          <div className="flex flex-row space-x-4">
           <button className="bg-green-600 hover:bg-green-500 text-white px-8 py-4 font-bold rounded flex items-center mb-6 transition-colors">
-            VIEW INVENTORY <ArrowRight className="ml-2" size={20} />
+           Dealer Access <ArrowRight className="ml-2" size={20} />
           </button>
+          <button className="bg-green-600 hover:bg-green-500 text-white px-8 py-4 font-bold rounded flex items-center mb-6 transition-colors">
+           Sell Your Vehicle ? <ArrowRight className="ml-2" size={20} />
+          </button>
+          </div>
           <div className="flex items-center text-sm font-semibold tracking-wide">
             <Lock size={16} className="text-green-500 mr-2" />
             <span className="text-gray-300">DEALERS ONLY <span className="mx-3 text-gray-600">|</span> LOGIN TO ACCESS INVENTORY</span>

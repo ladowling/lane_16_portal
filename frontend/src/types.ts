@@ -1,4 +1,4 @@
-export type TitleStatus = 'CLEAN' | 'LIEN' | 'SALVAGE' | 'REBUILT' | 'MISSING';
+export type TitleStatus = '4S' | 'Turbo' | 'xDrive' | '4MATIC' | 'F Sport' | 'XSE'  | 'Premium Plus' | '3.5T Sport Prsetige' | 'Touring' | 'Salvage' | 'Rebuilt' | 'Lien' | 'Missing' | 'Unknown';
 
 export type VehiclePhotoVariant = 'road' | 'garage' | 'silver' | 'detail' | 'engine' | 'interior' | 'spring';
 

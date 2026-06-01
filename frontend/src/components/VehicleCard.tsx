@@ -30,7 +30,7 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
       <div className="mt-[15px] flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Space size={8}>
           <ClockCircleOutlined className="!text-[#cfcfcf]" />
-          <Text className="!text-[15px] !text-[#c8c8c8]">Highest Bid Price:</Text>
+          <Text className="!text-[15px] !text-[#c8c8c8]">Current Bid:</Text>
         </Space>
         <Text className="!font-extrabold !text-[#24d725]">{vehicle.highestBid}</Text>
       </div>
