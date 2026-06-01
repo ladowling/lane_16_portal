@@ -31,7 +31,7 @@ export function ContactPage() {
         <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>Contact Information</Title>
         <div className="flex items-center gap-3 text-lg text-[#cfcfcf]">
           <MailOutlined className="!text-2xl !text-[#24d725]" />
-          <Text className="!text-white">info@lane16.com</Text>
+          <Text className="!text-white">Support@Lane16.com.</Text>
         </div>
       </section>
 

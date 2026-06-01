@@ -1,11 +1,15 @@
 import React from 'react';
-import { Form, Input, Select, Upload, ConfigProvider, theme } from 'antd';
+import { Form, Input, Select, Upload, ConfigProvider, theme, Button } from 'antd';
 import { Upload as UploadIcon } from 'lucide-react';
 
 const { Option } = Select;
 const { Dragger } = Upload;
 
 export default function SubmitVehicle() {
+  const handleSubmit = (values: Record<string, any>) => {
+    console.log('Submit Vehicle form values:', values);
+  };
+
   return (
     <div className="bg-[#1a1a1a] min-h-screen pb-24">
       <div className="bg-[#111] py-16 text-center border-b border-gray-800 mb-12">
@@ -14,7 +18,7 @@ export default function SubmitVehicle() {
 
       <div className="max-w-4xl mx-auto px-6">
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#22c55e', colorBgContainer: '#111' } }}>
-          <Form layout="vertical" size="large" requiredMark={false} className="space-y-12">
+          <Form layout="vertical" size="large" requiredMark={false} className="space-y-12" onFinish={handleSubmit}>
             
             {/* Section 1: Vehicle Information */}
             <section>
@@ -34,6 +38,59 @@ export default function SubmitVehicle() {
                   <Form.Item label="Year" name="year"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
                   <Form.Item label="Make" name="make"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
                   <Form.Item label="Model" name="model"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="Trim" name="trim">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                  <Form.Item label="Engine" name="engine">
+                    <Input placeholder="ex. 2.5L 4 cyl" className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="Exterior Color" name="exteriorColor">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                  <Form.Item label="Interior Color" name="interiorColor">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="Leather / Cloth" name="leatherCloth">
+                    <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                      <Option value="leather">Leather</Option>
+                      <Option value="cloth">Cloth</Option>
+                      <Option value="mixed">Mixed</Option>
+                      <Option value="other">Other</Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item label="Roof" name="roof">
+                    <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                      <Option value="sunroof">Sunroof</Option>
+                      <Option value="hardtop">Hardtop</Option>
+                      <Option value="softtop">Softtop</Option>
+                      <Option value="none">None</Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="Drivetrain" name="drivetrain">
+                    <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                      <Option value="awd">AWD</Option>
+                      <Option value="rwd">RWD</Option>
+                      <Option value="fwd">FWD</Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item label="Transmission" name="transmission">
+                    <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                      <Option value="automatic">Automatic</Option>
+                      <Option value="manual">Manual</Option>
+                    </Select>
+                  </Form.Item>
                 </div>
 
                 <Form.Item label="Mileage" name="mileage">
@@ -84,8 +141,32 @@ export default function SubmitVehicle() {
                 </Dragger>
               </Form.Item>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Form.Item label="Accident History" name="accidentHistory">
+                  <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                    <Option value="none">None</Option>
+                    <Option value="minor">Minor damage</Option>
+                    <Option value="major">Major damage</Option>
+                    <Option value="salvage">Salvage</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Interior Odor" name="interiorOdor">
+                  <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                    <Option value="none">None</Option>
+                    <Option value="smoker">Smoker</Option>
+                    <Option value="other">Other</Option>
+                  </Select>
+                </Form.Item>
+              </div>
+
               <Form.Item label="Additional disclosures / notes" name="notes">
                 <Input.TextArea rows={6} className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500" />
+              </Form.Item>
+
+              <Form.Item className="text-right">
+                <Button htmlType="submit" type="primary" size="large" className="bg-green-600 border-green-600 hover:bg-green-500">
+                  Submit
+                </Button>
               </Form.Item>
             </section>
 

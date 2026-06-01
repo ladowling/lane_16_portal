@@ -36,10 +36,12 @@ const getVehicleSearchText = (vehicle: Vehicle) => {
   ].join(' ').toLowerCase();
 };
 
-const toSelectOptions = (values: string[]) =>
-  [...new Set(values.filter(Boolean))]
+const toSelectOptions = (values: string[]) => [
+  { label: 'All', value: '' },
+  ...[...new Set(values.filter(Boolean))]
     .sort((first, second) => first.localeCompare(second))
-    .map((value) => ({ label: value, value }));
+    .map((value) => ({ label: value, value })),
+];
 
 type InventoryPageProps = {
   vehicles: Vehicle[];
@@ -106,6 +108,7 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
           size="large"
           value={selectedModel}
         />
+
         <Input
           allowClear
           className="w-full"

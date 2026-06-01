@@ -85,7 +85,7 @@ export default function Home({ onSellVehicleClick }: HomeProps) {
         
         <div className="flex items-center justify-center space-x-2 text-sm text-white font-medium mb-12">
           <Mail size={18} className="text-green-500" />
-          <span>info@lane16.com</span>
+          <span>Support@Lane16.com.</span>
         </div>
         
         <p className="text-gray-600 text-xs tracking-widest font-semibold">
