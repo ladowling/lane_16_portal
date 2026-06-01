@@ -12,7 +12,7 @@ export default function HowItWorksSeller() {
         {/* Intro Section */}
         <div className="bg-white text-black p-12 rounded-lg mb-12">
           <h2 className="text-3xl font-bold text-green-500 mb-6 leading-tight">
-            A no-cost, no-pressure way to receive competitive dealer bids without public marketPlace hussle
+            A no-cost, no-pressure way to receive competitive dealer bids without public marketplace hassle
           </h2>
           <p className="text-lg mb-6 leading-relaxed">
             Lane16 connects private sellers with a network of approved licensed dealers who are looking for inventory. Instead of contacting multiple dealerships one by one, you submit your vehicle once and Lane16 presents it to approved dealers who may compete for the vehicle through the Lane16 bidding platform.

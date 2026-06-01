@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle, Clock, Lock, Mail } from 'lucide-react';
 import handshake from '../assets/cars/HandshakeOutline.png';
 import dollar from '../assets/cars/dollarSign.png';
 import homeBgImage from '../assets/cars/HomeBgImage.png';
-import logo from '../assets/cars/logo2.png'
+import logo from '../assets/cars/lane16Logo.png'
 
 interface HomeProps {
   onSellVehicleClick?: () => void;

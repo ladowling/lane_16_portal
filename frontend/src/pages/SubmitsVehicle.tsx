@@ -137,7 +137,7 @@ export default function SubmitVehicle() {
                     </span>
                   </p>
                   <p className="text-white text-lg font-semibold">Click to select</p>
-                  <p className="text-gray-500 text-sm mt-2">Maximum of 3 photos</p>
+                  <p className="text-gray-500 text-sm mt-2"></p>
                 </Dragger>
               </Form.Item>
 

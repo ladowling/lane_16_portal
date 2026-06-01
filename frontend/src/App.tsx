@@ -52,6 +52,7 @@ function App() {
           onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
           showDealerLogin={page === 'Home'}
           showLogo={page !== 'Home'}
+          activePage={page}
         />
         {page === 'Home' && <Home onSellVehicleClick={() => openPage('submitVehicle')} onContactClick={() => openPage('contact')} />}
         {page === 'inventory' && <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />}

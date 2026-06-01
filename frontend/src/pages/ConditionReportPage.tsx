@@ -10,7 +10,8 @@ type ConditionReportPageProps = {
 const reportRows = [
   { area: 'EXTERIOR', note: 'Minor scratch on bumper', condition: 'Good' },
   { area: 'INTERIOR', note: 'Minor scratch on bumper', condition: 'Good' },
-  { area: 'MECHANICAL', note: 'Check engine light', condition: 'Fair' },
+  { area: 'MECHANICAL/WARNING LIGHT', note: 'Check engine light', condition: 'Fair' },
+  { area: 'INTERIOR ODOR', note: 'None', condition: 'Good' },
   { area: 'TIRES', note: '40% Thread', condition: 'Fair' },
 ];
 

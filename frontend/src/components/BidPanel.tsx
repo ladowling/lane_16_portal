@@ -56,7 +56,8 @@ export function BidPanel({ vehicle }: BidPanelProps) {
           <Title className="!text-white" level={3}>2021 Mercedes-Benz GLE 350</Title>
           <Text className="!text-sm !font-bold !uppercase !tracking-[0.2em] !text-[#c8c8c8]">Your Bid</Text>
           <Title className="!text-white" level={3}>{displayBid}</Title>
-          <Text className="mt-2 !text-lg !font-bold !text-[#ffc5c7]">This action cannot be undone</Text>
+          <Text className="mt-2 !text-lg !font-bold !text-[#ffc5c7]">By confirming, you
+are submitting a firm dealer bid subject to Lane16’s verification terms.</Text>
           <Space size={28} className="mt-8 flex-wrap justify-center">
             <Button size="large" onClick={() => setIsConfirmOpen(false)}>
               Back

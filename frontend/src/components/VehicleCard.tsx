@@ -1,5 +1,6 @@
-import { Button, Card, Space, Typography } from 'antd';
+import { Button, Card, Space, Typography, message } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined, CopyOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 import type { Vehicle } from '../types';
 
 const { Text, Title } = Typography;
@@ -10,6 +11,19 @@ type VehicleCardProps = {
 };
 
 export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (event: any) => {
+    event.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(vehicle.subtitle);
+      setCopied(true);
+      message.success('VIN copied');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      message.error('Copy failed');
+    }
+  };
   return (
     <Card
       className="overflow-hidden !rounded-xl !border-[#555555] !bg-[#0c0c0c] [&_.ant-card-body]:!px-[18px] [&_.ant-card-body]:!pb-5 [&_.ant-card-body]:!pt-[18px] [&_.ant-card-cover]:h-[214px] [&_.ant-card-cover]:overflow-hidden max-[620px]:[&_.ant-card-cover]:h-[190px]"
@@ -29,18 +43,13 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
             <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.subtitle}</Text>
         <Button
-          className="!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold !text-[#c8c8c8]"
-          type="default"
+          className={`!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold ${copied ? '!bg-green-600 !text-white' : '!text-[#c8c8c8]'}`}
+          type={copied ? 'primary' : 'default'}
           size="small"
           icon={<CopyOutlined />}
-          onClick={(event) => {
-            event.stopPropagation();
-            navigator.clipboard.writeText(vehicle.subtitle).catch(() => {
-              /* ignore clipboard failures */
-            });
-          }}
+          onClick={handleCopy}
         >
-          Copy VIN
+          {copied ? 'Copied' : 'Copy VIN'}
         </Button>
       </div>
 
