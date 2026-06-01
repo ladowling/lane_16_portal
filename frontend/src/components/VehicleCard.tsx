@@ -24,8 +24,25 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
       </div>
 
       <Text className="mt-2 block !text-[15px] !text-[#c8c8c8]">
-        {vehicle.subtitle} <span className="mb-[-4px] ml-2 mr-2 inline-block h-[18px] w-px bg-[#9b9b9b]" /> {vehicle.mileage}
+       <span className="mb-[-4px] ml-2 mr-2 inline-block h-[18px] w-px bg-[#9b9b9b]" /> {vehicle.mileage}
       </Text>
+            <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
+        <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.subtitle}</Text>
+        <Button
+          className="!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold !text-[#c8c8c8]"
+          type="default"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={(event) => {
+            event.stopPropagation();
+            navigator.clipboard.writeText(vehicle.subtitle).catch(() => {
+              /* ignore clipboard failures */
+            });
+          }}
+        >
+          Copy VIN
+        </Button>
+      </div>
 
       <div className="mt-[15px] flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Space size={8}>
@@ -54,23 +71,7 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
         </Button>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
-        <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.vin}</Text>
-        <Button
-          className="!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold !text-[#c8c8c8]"
-          type="default"
-          size="small"
-          icon={<CopyOutlined />}
-          onClick={(event) => {
-            event.stopPropagation();
-            navigator.clipboard.writeText(vehicle.vin).catch(() => {
-              /* ignore clipboard failures */
-            });
-          }}
-        >
-          Copy VIN
-        </Button>
-      </div>
+
     </Card>
   );
 }
