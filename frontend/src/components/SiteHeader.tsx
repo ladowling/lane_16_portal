@@ -1,5 +1,5 @@
 import { Button, Dropdown, Space } from 'antd';
-import logo from '../assets/cars/lane16.png'
+import logo from '../assets/cars/logo2.png'
 
 type SiteHeaderProps = {
   onHomeClick: () => void;
@@ -7,15 +7,16 @@ type SiteHeaderProps = {
   onContactClick: () => void;
   onHowItWorksClick: () => void;
   onHowItWorksSellerClick: () => void;
-  showDealerLogin?: boolean;
+  showDealerLogin?: boolean;    
+  showLogo?: boolean;
 };
 
-export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHowItWorksClick, onHowItWorksSellerClick, showDealerLogin = false }: SiteHeaderProps) {
+export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHowItWorksClick, onHowItWorksSellerClick, showDealerLogin = false, showLogo = true }: SiteHeaderProps) {
   const navButtonClass = '!h-auto !px-0 !py-1 !text-[23px] !font-bold !text-white hover:!bg-transparent hover:!text-lane-green max-[980px]:!text-lg';
 
   return (
-    <header className="sticky top-0 z-[1000] flex min-h-[92px] items-center justify-between bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5">
-      <img className="h-[74px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />
+    <header className={`sticky top-0 z-[1000] flex min-h-[92px] items-center ${showLogo ? 'justify-between' : 'justify-end'} bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5`}>
+      {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
       <nav aria-label="Primary navigation">
         <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
           <Button className={navButtonClass} type="text" onClick={onHomeClick}>

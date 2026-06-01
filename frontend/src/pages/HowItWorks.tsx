@@ -1,4 +1,4 @@
-import React from 'react';
+import mercedes from '../assets/cars/mercedes4.png'
 
 export default function HowItWorks() {
   return (
@@ -18,9 +18,11 @@ export default function HowItWorks() {
             </p>
             <p className="text-lg leading-relaxed">Access is limited to approved dealers only.</p>
           </div>
-          <div className="md:w-1/2 mt-8 md:mt-0 border p-4 rounded bg-gray-50 flex items-center justify-center min-h-[250px]">
+          <div className="md:w-1/2 mt-8 md:mt-0 p-4  flex items-center justify-center min-h-[250px]">
              {/* Placeholder for Car Graphic */}
-             <div className="text-gray-400 font-bold tracking-widest">[ VEHICLE RENDERING ]</div>
+             <div ><img className="h-[200px] w-auto object-contain" src={mercedes} alt="Car Graphic" />
+
+             </div>
           </div>
         </div>
 
