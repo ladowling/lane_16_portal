@@ -8,6 +8,7 @@ import { ConditionReportPage } from './pages/ConditionReportPage';
 import { ContactPage } from './pages/ContactPage';
 import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
+import HowItWorksSeller from './pages/HowItWorksSeller';
 
 type Page = 'Home'|'inventory' | 'details' | 'report' | 'contact'| 'howItWorks' | 'howItWorksSeller' | 'submitVehicle';
 
@@ -42,14 +43,21 @@ function App() {
       }}
     >
       <div className="min-h-screen bg-lane-ink font-sans text-white">
-        <SiteHeader onHomeClick={() => openPage('Home')} onInventoryClick={() => openPage('inventory')} onContactClick={() => openPage('contact')} onHowItWorksClick={() => openPage('howItWorks')} />
+        <SiteHeader
+          onHomeClick={() => openPage('Home')}
+          onInventoryClick={() => openPage('inventory')}
+          onContactClick={() => openPage('contact')}
+          onHowItWorksClick={() => openPage('howItWorks')}
+          onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
+          showDealerLogin={page === 'Home'}
+        />
         {page === 'Home' && <Home />}
         {page === 'inventory' && <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />}
         {page === 'details' && <CarDetailsPage vehicle={selectedVehicle} onViewReport={() => openPage('report')} />}
         {page === 'report' && <ConditionReportPage vehicle={selectedVehicle} />}
         {page === 'contact' && <ContactPage />}
         {page === 'howItWorks' && <HowItWorks />}
-        {/* {page === 'howItWorksSeller' && <HowItWorksSeller />} */}
+        {page === 'howItWorksSeller' && <HowItWorksSeller />}
         {/* {page === 'submitVehicle' && <SubmitVehicle />} */}
 
       </div>
