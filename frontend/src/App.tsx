@@ -53,7 +53,7 @@ function App() {
           showDealerLogin={page === 'Home'}
           showLogo={page !== 'Home'}
         />
-        {page === 'Home' && <Home onSellVehicleClick={() => openPage('submitVehicle')} />}
+        {page === 'Home' && <Home onSellVehicleClick={() => openPage('submitVehicle')} onContactClick={() => openPage('contact')} />}
         {page === 'inventory' && <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />}
         {page === 'details' && <CarDetailsPage vehicle={selectedVehicle} onViewReport={() => openPage('report')} />}
         {page === 'report' && <ConditionReportPage vehicle={selectedVehicle} />}

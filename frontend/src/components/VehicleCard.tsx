@@ -1,5 +1,5 @@
 import { Button, Card, Space, Typography } from 'antd';
-import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, CopyOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
 
 const { Text, Title } = Typography;
@@ -51,6 +51,24 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
           }}
         >
           Place Bid
+        </Button>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
+        <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.vin}</Text>
+        <Button
+          className="!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold !text-[#c8c8c8]"
+          type="default"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={(event) => {
+            event.stopPropagation();
+            navigator.clipboard.writeText(vehicle.vin).catch(() => {
+              /* ignore clipboard failures */
+            });
+          }}
+        >
+          Copy VIN
         </Button>
       </div>
     </Card>

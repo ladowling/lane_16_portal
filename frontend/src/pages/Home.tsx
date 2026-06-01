@@ -6,9 +6,10 @@ import logo from '../assets/cars/logo2.png'
 
 interface HomeProps {
   onSellVehicleClick?: () => void;
+  onContactClick?: () => void;
 }
 
-export default function Home({ onSellVehicleClick }: HomeProps) {
+export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) {
   const features = [
     {
       icon: <CheckCircle size={26} className="shrink-0 text-green-500" />,
@@ -76,19 +77,19 @@ export default function Home({ onSellVehicleClick }: HomeProps) {
         ))}
       </div>
       <div className="bg-black py-16 text-center border-t border-gray-900/50">
-        <h3 className="text-green-500 text-xl font-bold tracking-wide mb-2">HAVE QUESTIONS?</h3>
-        <p className="text-gray-300 text-base mb-8">We're here to help you</p>
+        <h3 className="text-green-500 text-2xl font-bold tracking-wide mb-2">HAVE QUESTIONS?</h3>
+        <p className="text-gray-300 text-lg mb-8">We're here to help you</p>
         
-        <button className="border border-green-600/80 text-green-500 font-semibold px-14 py-3 bg-transparent hover:bg-green-950/30 transition-all tracking-wide mb-6">
+        <button onClick={onContactClick} className="border border-green-600/80 text-green-500 font-semibold px-14 py-3 bg-transparent hover:bg-green-950/30 transition-all tracking-wide mb-6">
           CONTACT US
         </button>
         
-        <div className="flex items-center justify-center space-x-2 text-sm text-white font-medium mb-12">
-          <Mail size={18} className="text-green-500" />
+        <div className="flex items-center justify-center space-x-2 text-base text-white font-medium mb-12">
+          <Mail size={20} className="text-green-500" />
           <span>Support@Lane16.com.</span>
         </div>
         
-        <p className="text-gray-600 text-xs tracking-widest font-semibold">
+        <p className="text-gray-600 text-base tracking-widest font-semibold">
           ©2026 LANE16. ALL RIGHTS RESERVED
         </p>
       </div>
