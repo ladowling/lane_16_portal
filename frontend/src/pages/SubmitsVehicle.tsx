@@ -27,9 +27,25 @@ export default function SubmitVehicle() {
                 <Form.Item label="Name" name="name">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
-                <Form.Item label="Contact information" name="contact">
-                  <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
-                </Form.Item>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="Email" name="email" rules={[{ type: 'email', message: 'Enter a valid email' }]}>
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                  <Form.Item label="Phone Number" name="phoneNumber">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item label="City" name="city">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                  <Form.Item label="State" name="state">
+                    <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                  </Form.Item>
+                </div>
+
                 <Form.Item label="VIN" name="vin">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>

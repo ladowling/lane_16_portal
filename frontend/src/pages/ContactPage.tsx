@@ -31,7 +31,7 @@ export function ContactPage() {
         <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>Contact Information</Title>
         <div className="flex items-center gap-3 text-lg text-[#cfcfcf]">
           <MailOutlined className="!text-2xl !text-[#24d725]" />
-          <Text className="!text-white">Support@Lane16.com.</Text>
+          <a className="text-white transition-colors hover:text-[#24d725]" href="mailto:support@lane16.com">Support@Lane16.com.</a>
         </div>
       </section>
 
@@ -49,7 +49,7 @@ export function ContactPage() {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item label="Phone Number" name="phone">
+              <Form.Item label="Phone Number" name="phone" rules={[{ required: true, message: 'Enter your phone number' }]}>
                 <Input />
               </Form.Item>
             </Col>

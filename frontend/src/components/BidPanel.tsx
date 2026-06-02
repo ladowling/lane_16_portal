@@ -35,10 +35,12 @@ export function BidPanel({ vehicle }: BidPanelProps) {
           <Text className="!text-[28px] !text-[#acff9e]">Next Minimum</Text>
           <strong className="text-[30px] text-[#27d82e]">{vehicle.nextMinimumBid}</strong>
         </div>
-
+        <div className='flex gap-3'>
         <div className="mb-[38px] mt-2 inline-flex min-h-11 items-center gap-2.5 rounded-lg bg-[#ffc5c7] px-[38px] text-[22px] font-extrabold text-[#5d1111] max-[620px]:w-full max-[620px]:justify-center max-[620px]:px-3 max-[620px]:text-lg">
           <ClockCircleOutlined />
           <span>2:14:33 remaining</span>
+          </div>
+         <div className="mt-3 animate-reserve-pulse items-center text-[22px] font-bold text-amber-500">RESERVE MET</div>
         </div>
 
         <Input className="!h-[52px] !rounded-lg !border-white !bg-[#242424] !text-lg !text-white placeholder:!text-white" placeholder="Click to enter bid" value={bidAmount} onChange={(event) => setBidAmount(event.target.value)} />

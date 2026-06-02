@@ -38,18 +38,18 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
       </div>
 
       <Text className="mt-2 block !text-[15px] !text-[#c8c8c8]">
-       <span className="mb-[-4px] ml-2 mr-2 inline-block h-[18px] w-px bg-[#9b9b9b]" /> {vehicle.mileage}
+       <span className="mb-[-4px] ml-2 mr-2 h-[18px] w-px bg-[#9b9b9b]" />Mileage:{vehicle.mileage}
       </Text>
-            <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
+            <div className="mt-3 flex items-center max-[620px]:items-start max-[620px]:flex-col">
         <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.subtitle}</Text>
         <Button
-          className={`!h-6 !min-w-[78px] !rounded-none !text-xs !font-bold ${copied ? '!bg-green-600 !text-white' : '!text-[#c8c8c8]'}`}
+          className={`!h-6 !min-w-[10px] !rounded-none !border-none !text-xs !font-bold !mr-15 ${copied ? '!bg-green-600 !text-white' : '!text-[#c8c8c8] bg-transparent'}`}
           type={copied ? 'primary' : 'default'}
           size="small"
           icon={<CopyOutlined />}
           onClick={handleCopy}
         >
-          {copied ? 'Copied' : 'Copy VIN'}
+          {copied ? 'Copied' : ''}
         </Button>
       </div>
 

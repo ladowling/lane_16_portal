@@ -86,7 +86,7 @@ export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) 
         
         <div className="flex items-center justify-center space-x-2 text-base text-white font-medium mb-12">
           <Mail size={20} className="text-green-500" />
-          <span>Support@Lane16.com.</span>
+          <a className="text-white transition-colors hover:text-green-500" href="mailto:support@lane16.com">Support@Lane16.com.</a>
         </div>
         
         <p className="text-gray-600 text-base tracking-widest font-semibold">
