@@ -4,9 +4,20 @@ import engineDetail from '../assets/cars/engine-detail.png';
 import mercedesAmg from '../assets/cars/mercedes-amg.png';
 import porscheRoad from '../assets/cars/porsche-road.png';
 import steeringDetail from '../assets/cars/steering-detail.png';
+import mercedes4 from '../assets/cars/mercedes4.png';
 
 const carImages = [porscheRoad, mercedesAmg, camaroGarage];
-const partImages = [engineDetail, steeringDetail, engineDetail, steeringDetail];
+const partImages = [
+  engineDetail,
+  steeringDetail,
+  engineDetail,
+  engineDetail,
+  steeringDetail,
+  mercedes4,
+  porscheRoad,
+  camaroGarage,
+  mercedesAmg,
+];
 
 export const vehicles: Vehicle[] = [
   {

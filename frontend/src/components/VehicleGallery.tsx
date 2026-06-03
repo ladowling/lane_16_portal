@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Slider } from 'antd';
+import { Slider, Button } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
 
 type VehicleGalleryProps = {
@@ -22,21 +23,50 @@ export function VehicleGallery({ vehicle }: VehicleGalleryProps) {
         alt={vehicle.title}
       />
 
-      <div className="grid grid-cols-4 gap-2 px-4 pb-2.5 pt-3 max-[620px]:grid-cols-2">
-        {gallery.slice(startIndex, startIndex + thumbsToShow).map((imageSrc, index) => {
-          const globalIndex = startIndex + index;
-          const isSelected = globalIndex === selectedIndex;
+      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3">
+        {gallery.length > thumbsToShow && (
+          <Button
+            icon={<LeftOutlined />}
+            size="small"
+            onClick={() => {
+              const next = Math.max(0, startIndex - 1);
+              setStartIndex(next);
+              if (selectedIndex < next) setSelectedIndex(next);
+            }}
+            className="!bg-transparent !border-none !text-[#c8c8c8]"
+          />
+        )}
 
-          return (
-            <img
-              key={`${imageSrc}-${globalIndex}`}
-              className={`h-32 w-full rounded-md object-cover cursor-pointer ${isSelected ? 'ring-2 ring-[#24d725]' : ''}`}
-              src={imageSrc}
-              alt={`${vehicle.title} detail ${globalIndex + 1}`}
-              onClick={() => setSelectedIndex(globalIndex)}
-            />
-          );
-        })}
+        <div className="grid flex-1 grid-cols-4 gap-2 max-[620px]:grid-cols-2">
+          {gallery.slice(startIndex, startIndex + thumbsToShow).map((imageSrc, index) => {
+            const globalIndex = startIndex + index;
+            const isSelected = globalIndex === selectedIndex;
+
+            return (
+              <img
+                key={`${imageSrc}-${globalIndex}`}
+                className={`h-32 w-full rounded-md object-cover cursor-pointer ${isSelected ? 'ring-2 ring-[#24d725]' : ''}`}
+                src={imageSrc}
+                alt={`${vehicle.title} detail ${globalIndex + 1}`}
+                onClick={() => setSelectedIndex(globalIndex)}
+              />
+            );
+          })}
+        </div>
+
+        {gallery.length > thumbsToShow && (
+          <Button
+            icon={<RightOutlined />}
+            size="small"
+            onClick={() => {
+              const maxStart = Math.max(0, gallery.length - thumbsToShow);
+              const next = Math.min(maxStart, startIndex + 1);
+              setStartIndex(next);
+              if (selectedIndex > next + thumbsToShow - 1) setSelectedIndex(next + thumbsToShow - 1);
+            }}
+            className="!bg-transparent !border-none !text-[#c8c8c8]"
+          />
+        )}
       </div>
 
       {gallery.length > thumbsToShow && (
