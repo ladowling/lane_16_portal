@@ -10,8 +10,8 @@ export default function HowItWorksSeller() {
       <div className="max-w-[1450px] mx-auto px-6">
         
         {/* Intro Section */}
-        <div className="bg-white text-black p-12 rounded-lg mb-12">
-          <h2 className="text-3xl font-bold text-green-500 mb-6 leading-tight">
+        <div className="bg-white text-black p-12 rounded-lg mb-12 max-w-[1000px] mx-auto">
+          <h2 className="text-2xl font-bold text-green-500 mb-6 leading-tight">
             A no-cost, no-pressure way to receive competitive dealer bids without public marketplace hassle
           </h2>
           <p className="text-lg mb-6 leading-relaxed">
@@ -25,8 +25,8 @@ export default function HowItWorksSeller() {
 
         {/* Protection Card */}
         <div className="bg-[#2a2a2a] border border-gray-700 rounded-xl p-8 mb-8">
-          <h3 className="text-xl font-bold text-white mb-2">Your price protection</h3>
-          <p className="text-sm leading-relaxed text-gray-400">
+          <h3 className="text-2xl font-bold text-white mb-2">Your price protection</h3>
+          <p className="text-base leading-relaxed text-gray-400">
             You set your Minimum Acceptable Sale Price, which is kept internal and is not shown to dealers. If bidding does not reach that amount, you are not required to sell.
           </p>
         </div>
@@ -44,18 +44,18 @@ export default function HowItWorksSeller() {
             { title: "8. Complete the Sale Directly", desc: "After inspection and verification, the buyer and seller complete the purchase directly with each other. Lane16 does not take possession of the vehicle and does not handle the vehicle purchase funds." },
           ].map((step, idx) => (
             <div key={idx}>
-              <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-gray-400">{step.desc}</p>
+              <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
+              <p className="text-base leading-relaxed text-gray-400">{step.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="px-4">
-          <h3 className="text-xl font-bold text-green-500 mb-3">Good Faith and Material Discrepancies</h3>
-          <p className="text-sm text-gray-400 leading-relaxed mb-4">
+          <h3 className="text-2xl font-bold text-green-500 mb-3">Good Faith and Material Discrepancies</h3>
+          <p className="text-base text-gray-400 leading-relaxed mb-4">
             Lane16 depends on accurate information and good-faith participation from both sellers and dealers. A dealer may decline to proceed only if there is a material discrepancy, such as undisclosed major damage, title issues, significant mechanical concerns, warning lights or codes not disclosed, payoff or lien information that is materially different from what was represented, or condition materially different from the listing.
           </p>
-          <p className="text-sm text-gray-400 leading-relaxed">
+          <p className="text-base text-gray-400 leading-relaxed">
             Sellers are expected to disclose known material issues accurately. Sellers who submit inaccurate information or fail to proceed in good faith after their Minimum Acceptable Sale Price is met may be declined for future listings.
           </p>
         </div>

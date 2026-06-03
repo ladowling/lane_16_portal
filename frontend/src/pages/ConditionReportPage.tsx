@@ -11,8 +11,9 @@ const reportRows = [
   { area: 'EXTERIOR', note: 'Minor scratch on bumper', condition: 'Good' },
   { area: 'INTERIOR', note: 'Minor scratch on bumper', condition: 'Good' },
   { area: 'MECHANICAL/WARNING LIGHT', note: 'Check engine light', condition: 'Fair' },
+ // { area: 'TIRES', note: '40% Thread', condition: 'Fair' },
   { area: 'INTERIOR ODOR', note: 'None', condition: 'Good' },
-  // { area: 'TIRES', note: '40% Thread', condition: 'Fair' },
+  { area: 'TIRES', note: '40% Thread', condition: 'Fair' },
 ];
 
 const parseTitle = (title: string) => {
@@ -57,7 +58,7 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
 
       
 
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4" aria-label="Condition report sections">
+      <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5" aria-label="Condition report sections">
         {reportRows.map((row) => (
           <article className="flex min-h-[170px] flex-col justify-between gap-6 rounded-lg border border-[#575757] bg-[#0b0b0b] p-6" key={row.area}>
             <div>

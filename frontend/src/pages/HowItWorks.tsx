@@ -10,7 +10,7 @@ export default function HowItWorks() {
 
       <div className="max-w-[1450px] mx-auto py-16 px-6">
         {/* Introduction Card */}
-        <div className="bg-white text-black p-12 rounded-lg flex flex-col md:flex-row items-center mb-12">
+        <div className="bg-white text-black p-12 rounded-lg flex flex-col md:flex-row items-center mb-12 max-w-[1000px] mx-auto">
           <div className="md:w-1/2 pr-8">
             <h2 className="text-3xl font-bold text-green-500 mb-6">Dealer Access Only</h2>
             <p className="text-lg mb-6 leading-relaxed">
@@ -38,15 +38,15 @@ export default function HowItWorks() {
             { title: "7. Lane16 Buyer Fee", desc: "A $500 buyer fee is due to Lane16 after the successful purchase of a vehicle." },
           ].map((step, idx) => (
             <div key={idx}>
-              <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-gray-400">{step.desc}</p>
+              <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
+              <p className="text-base leading-relaxed text-gray-400">{step.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-12 px-4">
-          <h3 className="text-xl font-bold text-green-500 mb-3">Material Discrepancies</h3>
-          <p className="text-sm text-gray-400 leading-relaxed">
+          <h3 className="text-2xl font-bold text-green-500 mb-3">Material Discrepancies</h3>
+          <p className="text-base text-gray-400 leading-relaxed">
             A buyer may decline to proceed only if there is a material discrepancy, such as undisclosed major damage, title issues, significant mechanical concerns, warning lights or codes not disclosed, or condition materially different from what was represented.
           </p>
         </div>

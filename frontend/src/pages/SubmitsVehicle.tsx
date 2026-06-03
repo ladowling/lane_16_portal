@@ -118,9 +118,9 @@ export default function SubmitVehicle() {
                 <Form.Item label="Minimum Acceptable Price" name="minimumAcceptablePrice">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
-                <Form.Item label="Payoff/lien information" name="payoff">
+                {/* <Form.Item label="Payoff/lien information" name="payoff">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
-                </Form.Item>
+                </Form.Item> */}
               </div>
             </section>
 
@@ -128,16 +128,38 @@ export default function SubmitVehicle() {
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Condition information</h2>
               <div className="space-y-4">
-                {['Exterior', 'Interior', 'Mechanical', 'Tires', 'Smoker vehicle', 'Warning light'].map((field) => (
-                  <Form.Item key={field} label={field} name={field.toLowerCase().replace(' ', '_')}>
-                    <Select placeholder="Click to select" className="w-full" popupClassName="bg-[#111]">
+                {['Exterior', 'Mechanical / Warning', 'Tires', 'Warning light'].map((field) => (
+                  <Form.Item key={field} label={field} name={field.toLowerCase().replace(/\s+/g, '_').replace(/[\/]/g, '_')}>
+                    {/* <Select placeholder="Click to select" className="w-full" popupClassName="bg-[#111]">
                       <Option value="excellent">Excellent</Option>
                       <Option value="good">Good</Option>
                       <Option value="fair">Fair</Option>
                       <Option value="poor">Poor</Option>
-                    </Select>
+                    </Select> */}
+                    <Input.TextArea
+                      rows={1}
+                      placeholder={
+                        {
+                          Exterior: 'Minor scratch on bumper',
+                          'Mechanical / Warning': 'Minor cut on the seat',
+                          Tires: '40% thread remaining',
+                          'Smoker vehicle': 'Smoker odor present',
+                          'Warning light': 'Check engine light ',
+                        }[field]
+                      }
+                      className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500"
+                    />
                   </Form.Item>
                 ))}
+              </div>
+              <div>
+                 <Form.Item label="Interior Odor" name="Interior Odor">
+                    <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                      <Option value="smoker">Smoker</Option>
+                      <Option value="none">None</Option>
+                      <Option value="option">Other options</Option>
+                    </Select>
+                  </Form.Item>
               </div>
             </section>
 
@@ -161,14 +183,13 @@ export default function SubmitVehicle() {
               </Form.Item>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item label="Accident History" name="accidentHistory">
-                  <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
-                    <Option value="none">None</Option>
-                    <Option value="minor">Minor damage</Option>
-                    <Option value="major">Major damage</Option>
-                    <Option value="salvage">Salvage</Option>
-                  </Select>
-                </Form.Item>
+               <Form.Item label="Accident History" name="accidentHistory">
+  <Input.TextArea
+    rows={3}
+    placeholder="Describe any accident history or damage here"
+    className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500"
+  />
+</Form.Item>
                 <Form.Item label="Interior Odor" name="interiorOdor">
                   <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                     <Option value="none">None</Option>

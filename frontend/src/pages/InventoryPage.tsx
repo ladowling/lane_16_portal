@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Button, Col, Empty, Input, Row, Select, Segmented, Table, Typography } from 'antd';
+import { Button, Col, Empty, Input, Row, Select, Segmented, Table, Typography, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import type { Vehicle } from '../types';
 import { VehicleCard } from '../components/VehicleCard';
+import { CopyOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
 
@@ -54,6 +55,9 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
   const [selectedModel, setSelectedModel] = useState<string>();
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'gallery' | 'table'>('gallery');
+  const [copied, setCopied] = useState(false);
+
+ 
 
   const vehicleFilters = useMemo(
     () => vehicles.map((vehicle) => ({ vehicle, ...getTitleParts(vehicle.title) })),
@@ -84,6 +88,18 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
       .map(({ vehicle }) => vehicle);
   }, [searchTerm, selectedMake, selectedModel, vehicleFilters]);
 
+  const handleCopy = async (subtitle: string, event?: any) => {
+    if (event && event.stopPropagation) event.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(subtitle);
+      setCopied(true);
+      message.success('VIN copied');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      message.error('Copy failed');
+    }
+  };
+
   const vehicleColumns = useMemo<TableColumnsType<Vehicle>>(
     () => [
       {
@@ -95,7 +111,18 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
             <img className="h-16 w-24 rounded-md object-cover" src={vehicle.imageSrc} alt={vehicle.title} />
             <div>
               <Text className="block !font-bold !text-white">{vehicle.title}</Text>
-              <Text className="block !text-sm !text-[#c8c8c8]">VIN: {vehicle.subtitle}</Text>
+              <div className="mt-3 flex items-center max-[620px]:items-start max-[620px]:flex-col">
+                     <Text className="!text-[15px] !text-[#c8c8c8]">VIN: {vehicle.subtitle}</Text>
+                     <Button
+                       className={`!h-6 !min-w-[10px] !rounded-none !border-none !text-xs !font-bold !mr-15 ${copied ? '!bg-green-600 !text-transparen' : '!text-[#c8c8c8] bg-transparent'}`}
+                       type={copied ? 'primary' : 'default'}
+                       size="small"
+                       icon={<CopyOutlined />}
+                       onClick={(e) => handleCopy(vehicle.subtitle, e)}
+                     >
+                       {copied ? 'Copied' : ''}
+                     </Button>
+                   </div>
             </div>
           </div>
         ),
