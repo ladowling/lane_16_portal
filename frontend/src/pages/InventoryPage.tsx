@@ -133,12 +133,12 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
         key: 'mileage',
         render: (mileage: string) => <Text className="!text-[#c8c8c8]">{mileage}</Text>,
       },
-      {
-        title: 'Title Status',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status: string) => <Text className="!font-bold !text-[#b1f000]">{status}</Text>,
-      },
+      // {
+      //   title: 'Title Status',
+      //   dataIndex: 'status',
+      //   key: 'status',
+      //   render: (status: string) => <Text className="!font-bold !text-[#b1f000]">{status}</Text>,
+      // },
       {
         title: 'Current Bid',
         dataIndex: 'highestBid',

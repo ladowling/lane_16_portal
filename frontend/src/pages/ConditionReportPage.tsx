@@ -125,10 +125,10 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
             <div className="text-sm text-gray-400">Engine</div>
             <div className="text-lg font-semibold text-white">{engine}</div>
           </div>
-          <div>
+          {/* <div>
             <div className="text-sm text-gray-400">Title Status</div>
             <div className="text-lg font-semibold text-white">{vehicle.status || '-'}</div>
-          </div>
+          </div> */}
           <div>
             <div className="text-sm text-gray-400">Accident History</div>
             <div className="text-lg font-semibold text-white">{accidentHistory}</div>
