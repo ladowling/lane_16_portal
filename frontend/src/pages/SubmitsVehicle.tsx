@@ -18,64 +18,64 @@ export default function SubmitVehicle() {
 
       <div className="max-w-4xl mx-auto px-6">
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#22c55e', colorBgContainer: '#111' } }}>
-          <Form layout="vertical" size="large" requiredMark={false} className="space-y-12" onFinish={handleSubmit}>
+          <Form layout="vertical" size="large" className="space-y-12" onFinish={handleSubmit}>
             
             {/* Section 1: Vehicle Information */}
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Vehicle Information</h2>
               <div className="space-y-4">
-                <Form.Item label="Name" name="name">
+                <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="Email" name="email" rules={[{ type: 'email', message: 'Enter a valid email' }]}>
+                  <Form.Item label="Email" name="email" rules={[{ type: 'email', message: 'Enter a valid email' }, { required: true, message: 'Email is required' }]}>
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
-                  <Form.Item label="Phone Number" name="phoneNumber">
+                  <Form.Item label="Phone Number" name="phoneNumber" rules={[{ required: true, message: 'Phone number is required' }]}>
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="City" name="city">
+                  <Form.Item label="City" name="city" rules={[{ required: true, message: 'City is required' }]}>
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
-                  <Form.Item label="State" name="state">
+                  <Form.Item label="State" name="state" rules={[{ required: true, message: 'State is required' }]}>
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
                 </div>
 
-                <Form.Item label="VIN" name="vin">
+                <Form.Item label="VIN" name="vin" rules={[{ required: true, message: 'VIN is required' }]}>
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Form.Item label="Year" name="year"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
-                  <Form.Item label="Make" name="make"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
-                  <Form.Item label="Model" name="model"><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
+                  <Form.Item label="Year" name="year" rules={[{ required: true, message: 'Year is required' }]}><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
+                  <Form.Item label="Make" name="make" rules={[{ required: true, message: 'Make is required' }]}><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
+                  <Form.Item label="Model" name="model" rules={[{ required: true, message: 'Model is required' }]}><Input className="border-gray-700 hover:border-green-500 focus:border-green-500" /></Form.Item>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="Trim" name="trim">
+                  <Form.Item label="Trim" name="trim" rules={[{ required: true, message: 'Trim is required' }]}> 
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
-                  <Form.Item label="Engine" name="engine">
+                  <Form.Item label="Engine" name="engine" rules={[{ required: true, message: 'Engine is required' }]}> 
                     <Input placeholder="ex. 2.5L 4 cyl" className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="Exterior Color" name="exteriorColor">
+                  <Form.Item label="Exterior Color" name="exteriorColor" rules={[{ required: true, message: 'Exterior color is required' }]}> 
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
-                  <Form.Item label="Interior Color" name="interiorColor">
+                  <Form.Item label="Interior Color" name="interiorColor" rules={[{ required: true, message: 'Interior color is required' }]}> 
                     <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                   </Form.Item>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="Leather / Cloth" name="leatherCloth">
+                  <Form.Item label="Leather / Cloth" name="leatherCloth" rules={[{ required: true, message: 'Leather / Cloth selection is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="leather">Leather</Option>
                       <Option value="cloth">Cloth</Option>
@@ -83,7 +83,7 @@ export default function SubmitVehicle() {
                       <Option value="other">Other</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Roof" name="roof">
+                  <Form.Item label="Roof" name="roof" rules={[{ required: true, message: 'Roof selection is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="sunroof">Sunroof</Option>
                       <Option value="hardtop">Hardtop</Option>
@@ -94,14 +94,14 @@ export default function SubmitVehicle() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item label="Drivetrain" name="drivetrain">
+                  <Form.Item label="Drivetrain" name="drivetrain" rules={[{ required: true, message: 'Drivetrain selection is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="awd">AWD</Option>
                       <Option value="rwd">RWD</Option>
                       <Option value="fwd">FWD</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Transmission" name="transmission">
+                  <Form.Item label="Transmission" name="transmission" rules={[{ required: true, message: 'Transmission selection is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="automatic">Automatic</Option>
                       <Option value="manual">Manual</Option>
@@ -109,13 +109,13 @@ export default function SubmitVehicle() {
                   </Form.Item>
                 </div>
 
-                <Form.Item label="Mileage" name="mileage">
+                <Form.Item label="Mileage" name="mileage" rules={[{ required: true, message: 'Mileage is required' }]}> 
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
                 {/* <Form.Item label="Title status" name="titleStatus">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item> */}
-                <Form.Item label="Minimum Acceptable Price" name="minimumAcceptablePrice">
+                <Form.Item label="Minimum Acceptable Price" name="minimumAcceptablePrice" rules={[{ required: true, message: 'Minimum acceptable price is required' }]}> 
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
                 {/* <Form.Item label="Payoff/lien information" name="payoff">
@@ -129,7 +129,7 @@ export default function SubmitVehicle() {
               <h2 className="text-2xl font-bold text-green-500 mb-6">Condition information</h2>
               <div className="space-y-4">
                 {['Exterior', 'Mechanical / Warning', 'Tires', 'Warning light'].map((field) => (
-                  <Form.Item key={field} label={field} name={field.toLowerCase().replace(/\s+/g, '_').replace(/[\/]/g, '_')}>
+                  <Form.Item key={field} label={field} name={field.toLowerCase().replace(/\s+/g, '_').replace(/[\/]/g, '_')} rules={[{ required: true, message: `${field} is required` }]}> 
                     {/* <Select placeholder="Click to select" className="w-full" popupClassName="bg-[#111]">
                       <Option value="excellent">Excellent</Option>
                       <Option value="good">Good</Option>
@@ -153,7 +153,7 @@ export default function SubmitVehicle() {
                 ))}
               </div>
               <div>
-                 <Form.Item label="Interior Odor" name="Interior Odor">
+                 <Form.Item label="Interior Odor" name="Interior Odor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="smoker">Smoker</Option>
                       <Option value="none">None</Option>
@@ -166,7 +166,7 @@ export default function SubmitVehicle() {
             {/* Section 3: Additional Information */}
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Additional information</h2>
-              <Form.Item label="Upload photos" name="photos">
+              <Form.Item label="Upload photos" name="photos" rules={[{ required: true, message: 'Please upload photos' }]}> 
                 <Dragger 
                   multiple 
                   maxCount={3} 
@@ -183,14 +183,14 @@ export default function SubmitVehicle() {
               </Form.Item>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <Form.Item label="Accident History" name="accidentHistory">
+               <Form.Item label="Accident History" name="accidentHistory" rules={[{ required: true, message: 'Accident history is required' }]}> 
   <Input.TextArea
     rows={3}
     placeholder="Describe any accident history or damage here"
     className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500"
   />
 </Form.Item>
-                <Form.Item label="Interior Odor" name="interiorOdor">
+                <Form.Item label="Interior Odor" name="interiorOdor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
                   <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                     <Option value="none">None</Option>
                     <Option value="smoker">Smoker</Option>
@@ -199,7 +199,7 @@ export default function SubmitVehicle() {
                 </Form.Item>
               </div>
 
-              <Form.Item label="Additional disclosures / notes" name="notes">
+              <Form.Item label="Additional disclosures / notes" name="notes" rules={[{ required: true, message: 'Additional notes are required' }]}> 
                 <Input.TextArea rows={6} className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500" />
               </Form.Item>
 
