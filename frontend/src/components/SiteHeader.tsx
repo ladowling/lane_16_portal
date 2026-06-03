@@ -25,7 +25,7 @@ export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHo
       {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
       <nav aria-label="Primary navigation">
         <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
-          <Button className={getNavClass('Home')} type="text" onClick={onHomeClick}>
+          <Button className={getNavClass('home')} type="text" onClick={onHomeClick}>
            HOME
           </Button>
           <Button className={getNavClass('inventory')} type="text" onClick={onInventoryClick}>
