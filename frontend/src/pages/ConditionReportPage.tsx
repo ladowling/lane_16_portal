@@ -55,7 +55,21 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
       </header>
       <Divider className="!border-[#575757]" />
 
-      <section className="mb-8 rounded-lg border border-[#575757] bg-[#0b0b0b] p-6" aria-label="Vehicle details">
+      
+
+      <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4" aria-label="Condition report sections">
+        {reportRows.map((row) => (
+          <article className="flex min-h-[170px] flex-col justify-between gap-6 rounded-lg border border-[#575757] bg-[#0b0b0b] p-6" key={row.area}>
+            <div>
+              <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>{row.area}</Title>
+              <Paragraph className="!text-white">{row.note}</Paragraph>
+            </div>
+            {/* <div className={`grid min-h-[46px] w-[min(100%,260px)] shrink-0 place-items-center rounded-lg px-5 text-lg font-bold ${row.condition === 'Good' ? 'bg-[#ecffe8] text-[#102d0b]' : 'bg-[#fff1c2] text-[#593f00]'}`}>Condition: {row.condition}</div> */}
+          </article>
+        ))}
+      </section>
+
+      <section className="mb-8 mt-5 rounded-lg border border-[#575757] bg-[#0b0b0b] p-6" aria-label="Vehicle details">
         <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>VEHICLE DETAILS</Title>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
@@ -119,18 +133,6 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
             <div className="text-lg font-semibold text-white">{accidentHistory}</div>
           </div>
         </div>
-      </section>
-
-      <section className="space-y-5" aria-label="Condition report sections">
-        {reportRows.map((row) => (
-          <article className="flex items-center justify-between gap-6 rounded-lg border border-[#575757] bg-[#0b0b0b] p-6 max-[620px]:items-start max-[620px]:flex-col" key={row.area}>
-            <div>
-              <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>{row.area}</Title>
-              <Paragraph className="!text-white">{row.note}</Paragraph>
-            </div>
-            {/* <div className={`grid min-h-[46px] w-[min(100%,260px)] shrink-0 place-items-center rounded-lg px-5 text-lg font-bold ${row.condition === 'Good' ? 'bg-[#ecffe8] text-[#102d0b]' : 'bg-[#fff1c2] text-[#593f00]'}`}>Condition: {row.condition}</div> */}
-          </article>
-        ))}
       </section>
 
       <Divider className="!border-[#575757]" />

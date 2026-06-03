@@ -115,6 +115,9 @@ export default function SubmitVehicle() {
                 <Form.Item label="Title status" name="titleStatus">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
+                <Form.Item label="Minimum Acceptable Price" name="minimumAcceptablePrice">
+                  <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
+                </Form.Item>
                 <Form.Item label="Payoff/lien information" name="payoff">
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
