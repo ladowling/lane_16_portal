@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle, Clock, Lock, Mail } from 'lucide-react';
 import handshake from '../assets/cars/HandshakeOutline.png';
 import dollar from '../assets/cars/dollarSign.png';
 import homeBgImage from '../assets/cars/HomeBgImage.png';
-import logo from '../assets/cars/lane16Logo.png'
+import logo from '../assets/cars/lane-pic.png'
 
 interface HomeProps {
   onSellVehicleClick?: () => void;
@@ -39,9 +39,9 @@ export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) 
       style={{ backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.88), rgba(0,0,0,0.68), rgba(0,0,0,0.38)), url(${homeBgImage})` }}
     >
       {/* Hero Section */}
-      <div className="relative flex w-full items-center border-b border-gray-800 px-6 py-16 md:px-20 md:py-20">
+      <div className="relative flex w-full items-center border-b border-gray-800 md:pb-6 px-6 py-16 md:px-20 md:py-0">
         <div className="relative z-10 max-w-2xl">
-          <img className="h-[150px] w-auto mb-4" src={logo} alt="Logo" />
+          <img className="h-[150px] w-auto mb-4 !mr-14" src={logo} alt="Logo" />
           <h1 className="mb-2 text-4xl font-bold md:text-6xl">
             PRIVATE SELLER INVENTORY.
           </h1>
@@ -70,8 +70,8 @@ export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) 
           <div key={idx} className="flex items-start gap-3 border-r border-gray-800 p-5 last:border-0">
             {feature.icon}
             <div>
-              <h4 className="mb-1.5 text-sm font-bold">{feature.title}</h4>
-              <p className="text-xs leading-relaxed text-gray-400">{feature.desc}</p>
+              <h4 className="mb-1.5 text-xl font-bold">{feature.title}</h4>
+              <p className="text-lg leading-relaxed text-gray-400">{feature.desc}</p>
             </div>
           </div>
         ))}
