@@ -7,12 +7,13 @@ type SiteHeaderProps = {
   onContactClick: () => void;
   onHowItWorksClick: () => void;
   onHowItWorksSellerClick: () => void;
+  onDealerLoginClick?: () => void;
   showDealerLogin?: boolean;    
   showLogo?: boolean;
   activePage?: string;
 };
 
-export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHowItWorksClick, onHowItWorksSellerClick, showDealerLogin = false, showLogo = true, activePage }: SiteHeaderProps) {
+export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHowItWorksClick, onHowItWorksSellerClick, onDealerLoginClick, showDealerLogin = false, showLogo = true, activePage }: SiteHeaderProps) {
   const baseNavClass = '!h-auto !px-0 !py-1 !text-[18px] !font-bold hover:!bg-transparent max-[980px]:!text-lg';
   const headerWidthClass = activePage === 'home' ? 'min-h-[70px]' : 'min-h-[92px] w-full';
 
@@ -50,7 +51,7 @@ export function SiteHeader({ onHomeClick, onInventoryClick, onContactClick, onHo
           {showDealerLogin && (
             <Button
               className="!h-auto !border-lane-green !bg-transparent !px-4 !py-1.5 !text-[20px] !font-bold !text-lane-green hover:!border-lane-green hover:!bg-transparent hover:!text-white max-[980px]:!text-base"
-              onClick={onInventoryClick}
+              onClick={onDealerLoginClick}
             >
               Dealer Login
             </Button>

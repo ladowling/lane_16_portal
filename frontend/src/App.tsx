@@ -10,8 +10,11 @@ import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import HowItWorksSeller from './pages/HowItWorksSeller';
 import SubmitVehicle from './pages/SubmitsVehicle';
+import { LoginPage } from './pages/LoginPage';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { ProtectedRoute } from './Protectedroute';
 
-type Page = 'home' | 'inventory' | 'details' | 'report' | 'contact' | 'howItWorks' | 'howItWorksSeller' | 'submitVehicle';
+type Page = 'home' | 'inventory' | 'details' | 'report' | 'contact' | 'howItWorks' | 'howItWorksSeller' | 'submitVehicle' | 'login' | 'adminDashboard';
 
 const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   home: '/home',
@@ -20,6 +23,8 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   howItWorks: '/how-it-works',
   howItWorksSeller: '/how-it-works-seller',
   submitVehicle: '/submit-vehicle',
+  login: '/login',
+  adminDashboard: '/dashboard',
 };
 
 const getRouteState = (pathname: string) => {
@@ -114,6 +119,7 @@ function App() {
           onContactClick={() => openPage('contact')}
           onHowItWorksClick={() => openPage('howItWorks')}
           onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
+          onDealerLoginClick={() => openPage('login')}
           showDealerLogin={page === 'home'}
           showLogo={page !== 'home'}
           activePage={page}
@@ -126,6 +132,12 @@ function App() {
         {page === 'howItWorks' && <HowItWorks />}
         {page === 'howItWorksSeller' && <HowItWorksSeller />}
         {page === 'submitVehicle' && <SubmitVehicle />}
+        {page === 'login' && <LoginPage onDealerLogin={() => openPage('inventory')} onAdminLogin={() => openPage('adminDashboard')} />}
+        {page === 'adminDashboard' && (
+          <ProtectedRoute allowedRole="admin" onRedirectToLogin={() => openPage('login')}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        )}
 
       </div>
     </ConfigProvider>
