@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Button, Form, Input, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography } from 'antd';
+import { Button, DatePicker, Dropdown, Form, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
+import logo from '../assets/cars/lane16Logo.png';
+import { useAuth } from '../Authontext';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -14,6 +17,7 @@ type StaffRecord = {
 
 type VehicleRecord = {
   vehicleName: string;
+  dateCreated: string;
   sellerName: string;
   sellerPhoneNo: string;
   sellerEmail: string;
@@ -49,6 +53,7 @@ type VehicleRecord = {
 
 type BidRecord = {
   bidId: string;
+  dateCreated: string;
   vehicleName: string;
   dealerName: string;
   dealerEmail: string;
@@ -65,6 +70,7 @@ type DealerRecord = {
   dealerName: string;
   dealerEmail: string;
   dealerPhone: string;
+  dateCreated: string;
   dateRegistered: string;
   vehiclesBidUpon: string;
   bidAmount: string;
@@ -79,6 +85,8 @@ type ContactRecord = {
   message: string;
 };
 
+type DashboardTabKey = 'staff' | 'vehicles' | 'bids' | 'dealers' | 'contacts';
+
 const staffSeed: StaffRecord[] = [
   { name: 'Maya Brooks', email: 'maya@lane16.com', role: 'admin' },
   { name: 'Daniel Cho', email: 'daniel@lane16.com', role: 'staff' },
@@ -88,6 +96,7 @@ const staffSeed: StaffRecord[] = [
 const vehicleSeed: VehicleRecord[] = [
   {
     vehicleName: '2021 Mercedes-Benz GLE 350',
+    dateCreated: '2026-06-08',
     sellerName: 'Angela Morris',
     sellerPhoneNo: '(214) 555-0148',
     sellerEmail: 'angela.morris@example.com',
@@ -122,6 +131,7 @@ const vehicleSeed: VehicleRecord[] = [
   },
   {
     vehicleName: '2020 Toyota Tacoma TRD Off-Road',
+    dateCreated: '2026-06-09',
     sellerName: 'Brandon Lee',
     sellerPhoneNo: '(602) 555-0192',
     sellerEmail: 'brandon.lee@example.com',
@@ -156,6 +166,7 @@ const vehicleSeed: VehicleRecord[] = [
   },
   {
     vehicleName: '2019 BMW X5 xDrive40i',
+    dateCreated: '2026-06-04',
     sellerName: 'Chris Benton',
     sellerPhoneNo: '(312) 555-0163',
     sellerEmail: 'chris.benton@example.com',
@@ -190,6 +201,7 @@ const vehicleSeed: VehicleRecord[] = [
   },
   {
     vehicleName: '2022 Ford F-150 Lariat',
+    dateCreated: '2026-06-07',
     sellerName: 'Natalie Reyes',
     sellerPhoneNo: '(404) 555-0121',
     sellerEmail: 'natalie.reyes@example.com',
@@ -227,6 +239,7 @@ const vehicleSeed: VehicleRecord[] = [
 const bidSeed: BidRecord[] = [
   {
     bidId: 'BID-1048',
+    dateCreated: '2026-06-12',
     vehicleName: '2021 Mercedes-Benz GLE 350',
     dealerName: 'Crestline Motors',
     dealerEmail: 'buydesk@crestline.example',
@@ -240,6 +253,7 @@ const bidSeed: BidRecord[] = [
   },
   {
     bidId: 'BID-1053',
+    dateCreated: '2026-06-12',
     vehicleName: '2020 Toyota Tacoma TRD Off-Road',
     dealerName: 'Desert Valley Auto',
     dealerEmail: 'inventory@desertvalley.example',
@@ -253,6 +267,7 @@ const bidSeed: BidRecord[] = [
   },
   {
     bidId: 'BID-1021',
+    dateCreated: '2026-06-10',
     vehicleName: '2019 BMW X5 xDrive40i',
     dealerName: 'Metro Auto Group',
     dealerEmail: 'wholesale@metroauto.example',
@@ -266,6 +281,7 @@ const bidSeed: BidRecord[] = [
   },
   {
     bidId: 'BID-1060',
+    dateCreated: '2026-06-11',
     vehicleName: '2022 Ford F-150 Lariat',
     dealerName: 'Summit Ford Wholesale',
     dealerEmail: 'lane16@summitford.example',
@@ -284,6 +300,7 @@ const dealerSeed: DealerRecord[] = [
     dealerName: 'Crestline Motors',
     dealerEmail: 'buydesk@crestline.example',
     dealerPhone: '(972) 555-0110',
+    dateCreated: '2026-05-18',
     dateRegistered: 'May 18, 2026',
     vehiclesBidUpon: 'Mercedes-Benz GLE 350, Ford F-150',
     bidAmount: '$41,800',
@@ -294,6 +311,7 @@ const dealerSeed: DealerRecord[] = [
     dealerName: 'Desert Valley Auto',
     dealerEmail: 'inventory@desertvalley.example',
     dealerPhone: '(480) 555-0135',
+    dateCreated: '2026-05-21',
     dateRegistered: 'May 21, 2026',
     vehiclesBidUpon: 'Toyota Tacoma',
     bidAmount: '$30,500',
@@ -304,6 +322,7 @@ const dealerSeed: DealerRecord[] = [
     dealerName: 'Metro Auto Group',
     dealerEmail: 'wholesale@metroauto.example',
     dealerPhone: '(708) 555-0174',
+    dateCreated: '2026-05-24',
     dateRegistered: 'May 24, 2026',
     vehiclesBidUpon: 'BMW X5, Mercedes-Benz GLE 350',
     bidAmount: '$32,900',
@@ -314,6 +333,7 @@ const dealerSeed: DealerRecord[] = [
     dealerName: 'Summit Ford Wholesale',
     dealerEmail: 'lane16@summitford.example',
     dealerPhone: '(470) 555-0188',
+    dateCreated: '2026-06-02',
     dateRegistered: 'Jun 2, 2026',
     vehiclesBidUpon: 'Ford F-150',
     bidAmount: '$45,250',
@@ -359,14 +379,71 @@ const bidStatusLabel = (status: string) =>
     ? 'Current High Bid'
     : status.replace(/([A-Z])/g, ' $1').replace(/^./, (character) => character.toUpperCase());
 
+const getTodayDate = () => new Date().toISOString().slice(0, 10);
+
+const formatDateLabel = (dateValue: string) =>
+  new Date(`${dateValue}T00:00:00`).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+const normalizeDateString = (dateString: string | string[] | null) =>
+  Array.isArray(dateString) ? dateString[0] ?? '' : dateString ?? '';
+
+const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) => {
+  if (!rows.length) {
+    message.warning('There is no data to export.');
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+  const escapeCell = (value: unknown) =>
+    String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  const tableRows = rows
+    .map((row) => `<tr>${headers.map((header) => `<td>${escapeCell(row[header])}</td>`).join('')}</tr>`)
+    .join('');
+  const worksheet = `
+    <html>
+      <head><meta charset="utf-8" /></head>
+      <body>
+        <table>
+          <thead><tr>${headers.map((header) => `<th>${escapeCell(header)}</th>`).join('')}</tr></thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </body>
+    </html>
+  `;
+  const blob = new Blob([worksheet], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${filename}.xls`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
 export function AdminDashboard() {
+  const { logout, user } = useAuth();
   const [staff, setStaff] = useState<StaffRecord[]>(staffSeed);
+  const [dealers, setDealers] = useState<DealerRecord[]>(dealerSeed);
+  const [activeSection, setActiveSection] = useState<DashboardTabKey>('staff');
+  const [vehicleMakeFilter, setVehicleMakeFilter] = useState<string>();
+  const [vehicleModelFilter, setVehicleModelFilter] = useState<string>();
+  const [vehicleDateFilter, setVehicleDateFilter] = useState('');
+  const [dealerDateFilter, setDealerDateFilter] = useState('');
+  const [bidDateFilter, setBidDateFilter] = useState('');
   const [editingStaffEmail, setEditingStaffEmail] = useState<string | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleRecord | null>(null);
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
   const [form] = Form.useForm<StaffRecord>();
+  const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
 
   const saveStaff = (values: StaffRecord) => {
     setStaff((currentStaff) => {
@@ -384,6 +461,83 @@ export function AdminDashboard() {
     setEditingStaffEmail(record.email);
     form.setFieldsValue(record);
   };
+
+  const saveDealer = (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
+    setDealers((currentDealers) => [
+      ...currentDealers,
+      {
+        ...values,
+        dateCreated: getTodayDate(),
+        dateRegistered: new Date().toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }),
+        vehiclesBidUpon: 'None yet',
+        bidAmount: '$0',
+        bidStatus: 'New',
+        dealerNote: 'Newly onboarded dealer.',
+      },
+    ]);
+    dealerForm.resetFields();
+  };
+
+  const vehicleMakeOptions = useMemo(
+    () => Array.from(new Set(vehicleSeed.map((vehicle) => vehicle.make))).map((make) => ({ label: make, value: make })),
+    []
+  );
+
+  const vehicleModelOptions = useMemo(
+    () => Array.from(new Set(vehicleSeed.map((vehicle) => vehicle.model))).map((model) => ({ label: model, value: model })),
+    []
+  );
+
+  const filteredVehicles = useMemo(
+    () =>
+      vehicleSeed.filter(
+        (vehicle) =>
+          (!vehicleMakeFilter || vehicle.make === vehicleMakeFilter) &&
+          (!vehicleModelFilter || vehicle.model === vehicleModelFilter) &&
+          (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter)
+      ),
+    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter]
+  );
+
+  const filteredBids = useMemo(
+    () => bidSeed.filter((bid) => !bidDateFilter || bid.dateCreated === bidDateFilter),
+    [bidDateFilter]
+  );
+
+  const filteredDealers = useMemo(
+    () => dealers.filter((dealer) => !dealerDateFilter || dealer.dateCreated === dealerDateFilter),
+    [dealerDateFilter, dealers]
+  );
+
+  const dealerBidHistory = useMemo(
+    () => bidSeed.filter((bid) => bid.dealerEmail === selectedDealer?.dealerEmail),
+    [selectedDealer]
+  );
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const handleResetPassword = () => {
+    message.info('Change password flow is not connected yet.');
+  };
+
+  const accountName =
+    user?.name ||
+    staff.find((member) => member.email === user?.email)?.name ||
+    user?.email?.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (character) => character.toUpperCase()) ||
+    'User Account';
+  const accountRole = user?.role === 'admin' ? 'Admin' : 'Staff';
+  const accountInitials = accountName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
 
   const staffColumns: TableColumnsType<StaffRecord> = [
     { title: 'Name', dataIndex: 'name' },
@@ -417,6 +571,7 @@ export function AdminDashboard() {
 
   const vehicleColumns: TableColumnsType<VehicleRecord> = [
     { title: 'Vehicle Name', dataIndex: 'vehicleName' },
+    { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Seller Name', dataIndex: 'sellerName' },
     { title: 'Seller Phone', dataIndex: 'sellerPhoneNo' },
     { title: 'Seller Email', dataIndex: 'sellerEmail' },
@@ -444,6 +599,7 @@ export function AdminDashboard() {
 
   const bidColumns: TableColumnsType<BidRecord> = [
     { title: 'Bid ID', dataIndex: 'bidId' },
+    { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Vehicle Name', dataIndex: 'vehicleName' },
     { title: 'Dealer Name', dataIndex: 'dealerName' },
     { title: 'Dealer Email', dataIndex: 'dealerEmail' },
@@ -467,6 +623,7 @@ export function AdminDashboard() {
     { title: 'Dealer Name', dataIndex: 'dealerName' },
     { title: 'Dealer Email', dataIndex: 'dealerEmail' },
     { title: 'Dealer Phone', dataIndex: 'dealerPhone' },
+    { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Date Registered', dataIndex: 'dateRegistered' },
     {
       title: 'Actions',
@@ -595,40 +752,211 @@ export function AdminDashboard() {
               </div>
             </Form>
           </section>
+          <div className="flex justify-end">
+            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('staff', staff)}>
+              Export
+            </Button>
+          </div>
           <DataTable columns={staffColumns} dataSource={staff} rowKey="email" searchable searchPlaceholder="Search staff" />
         </div>
       ),
     },
     {
       key: 'vehicles',
-      label: 'Vehicles',
-      children: <DataTable columns={vehicleColumns} dataSource={vehicleSeed} rowKey="vin" searchable searchPlaceholder="Search vehicles" />,
+      label: 'Vehicle',
+      children: (
+        <div className="space-y-4">
+          <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
+            <Space size={16} wrap>
+              <Select
+                allowClear
+                className="min-w-[180px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
+                onChange={setVehicleMakeFilter}
+                options={vehicleMakeOptions}
+                placeholder="Filter by make"
+                value={vehicleMakeFilter}
+              />
+              <Select
+                allowClear
+                className="min-w-[180px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
+                onChange={setVehicleModelFilter}
+                options={vehicleModelOptions}
+                placeholder="Filter by model"
+                value={vehicleModelFilter}
+              />
+              <DatePicker
+                allowClear
+                className="!border-[#575757] !bg-[#242424] [&_.ant-picker-input_input]:!text-white [&_.ant-picker-input_input::placeholder]:!text-[#a8a8a8] [&_.ant-picker-suffix]:!text-[#c8c8c8]"
+                onChange={(_, dateString) => setVehicleDateFilter(normalizeDateString(dateString))}
+                placeholder="Filter by date created"
+              />
+              <Button
+                onClick={() => {
+                  setVehicleMakeFilter(undefined);
+                  setVehicleModelFilter(undefined);
+                  setVehicleDateFilter('');
+                }}
+              >
+                Clear Filters
+              </Button>
+              <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('vehicles', filteredVehicles)}>
+                Export
+              </Button>
+            </Space>
+          </section>
+          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} rowKey="vin" searchable searchPlaceholder="Search vehicles" />
+        </div>
+      ),
     },
     {
       key: 'bids',
       label: 'Bids',
-      children: <DataTable columns={bidColumns} dataSource={bidSeed} rowKey="bidId" searchable searchPlaceholder="Search bids" />,
+      children: (
+        <div className="space-y-4">
+          <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
+            <Space size={16} wrap>
+              <DatePicker
+                allowClear
+                className="!border-[#575757] !bg-[#242424] [&_.ant-picker-input_input]:!text-white [&_.ant-picker-input_input::placeholder]:!text-[#a8a8a8] [&_.ant-picker-suffix]:!text-[#c8c8c8]"
+                onChange={(_, dateString) => setBidDateFilter(normalizeDateString(dateString))}
+                placeholder="Filter by date created"
+              />
+              <Button onClick={() => setBidDateFilter('')}>Clear Filter</Button>
+              <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('bids', filteredBids)}>
+                Export
+              </Button>
+            </Space>
+          </section>
+          <DataTable columns={bidColumns} dataSource={filteredBids} rowKey="bidId" searchable searchPlaceholder="Search bids" />
+        </div>
+      ),
     },
     {
       key: 'dealers',
-      label: 'Dealers',
-      children: <DataTable columns={dealerColumns} dataSource={dealerSeed} rowKey="dealerEmail" searchable searchPlaceholder="Search dealers" />,
+      label: 'Dealer',
+      children: (
+        <div className="space-y-6">
+          <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
+            <Title className="!mb-5 !mt-0 !text-2xl !text-white" level={2}>
+              Onboard Dealer
+            </Title>
+            <Form form={dealerForm} layout="vertical" onFinish={saveDealer} className="[&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white">
+              <div className="grid grid-cols-[1fr_1fr_220px_auto] gap-4 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
+                <Form.Item label="Dealer Name" name="dealerName" rules={[{ required: true, message: 'Enter dealer name' }]}>
+                  <Input placeholder="Dealer name" />
+                </Form.Item>
+                <Form.Item label="Dealer Email" name="dealerEmail" rules={[{ required: true, message: 'Enter dealer email' }, { type: 'email', message: 'Enter a valid email' }]}>
+                  <Input placeholder="dealer@company.com" />
+                </Form.Item>
+                <Form.Item label="Phone No" name="dealerPhone" rules={[{ required: true, message: 'Enter phone number' }]}>
+                  <Input placeholder="(555) 555-0123" />
+                </Form.Item>
+                <Form.Item label=" " className="max-[620px]:!mb-0">
+                  <Button htmlType="submit" type="primary">
+                    Add Dealer
+                  </Button>
+                </Form.Item>
+              </div>
+            </Form>
+          </section>
+          <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
+            <Space size={16} wrap>
+              <DatePicker
+                allowClear
+                className="!border-[#575757] !bg-[#242424] [&_.ant-picker-input_input]:!text-white [&_.ant-picker-input_input::placeholder]:!text-[#a8a8a8] [&_.ant-picker-suffix]:!text-[#c8c8c8]"
+                onChange={(_, dateString) => setDealerDateFilter(normalizeDateString(dateString))}
+                placeholder="Filter by date created"
+              />
+              <Button onClick={() => setDealerDateFilter('')}>Clear Filter</Button>
+              <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('dealers', filteredDealers)}>
+                Export
+              </Button>
+            </Space>
+          </section>
+          <DataTable columns={dealerColumns} dataSource={filteredDealers} rowKey="dealerEmail" searchable searchPlaceholder="Search dealers" />
+        </div>
+      ),
     },
     {
       key: 'contacts',
-      label: 'Contacts',
-      children: <DataTable columns={contactColumns} dataSource={contactSeed} rowKey={(record) => `${record.email}-${record.phoneNo}`} />,
+      label: 'Contact',
+      children: (
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('contacts', contactSeed)}>
+              Export
+            </Button>
+          </div>
+          <DataTable columns={contactColumns} dataSource={contactSeed} rowKey={(record) => `${record.email}-${record.phoneNo}`} />
+        </div>
+      ),
     },
   ];
 
+  const dashboardMenuItems: { key: DashboardTabKey; label: string }[] = [
+    { key: 'staff', label: 'Staff' },
+    { key: 'vehicles', label: 'Vehicle' },
+    { key: 'bids', label: 'Bids' },
+    { key: 'dealers', label: 'Dealer' },
+    { key: 'contacts', label: 'Contact' },
+  ];
+
   return (
-    <main className="min-h-screen bg-lane-ink px-10 pb-16 pt-8 text-white max-[720px]:px-4">
-      <div className="mx-auto max-w-[1440px]">
+    <main className="min-h-screen bg-lane-ink text-white">
+      <header className="sticky top-0 z-[1000] flex min-h-[92px] items-center justify-between gap-8 bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5">
+        <img className="h-[120px] w-auto max-[980px]:h-16" src={logo} alt="Lane16 logo" />
+        <div className="flex items-center gap-8 max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-4">
+          <nav aria-label="Admin dashboard navigation">
+            <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
+              {dashboardMenuItems.map((item) => {
+                const isActive = activeSection === item.key;
+
+                return (
+                  <Button
+                    className={`!h-auto !px-0 !py-1 !text-[18px] !font-bold hover:!bg-transparent max-[980px]:!text-lg ${
+                      isActive ? '!text-[#24d725]' : '!text-white hover:!text-[#24d725]'
+                    }`}
+                    key={item.key}
+                    onClick={() => setActiveSection(item.key)}
+                    type="text"
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })}
+            </Space>
+          </nav>
+          <Dropdown
+            menu={{
+              items: [
+                { key: 'change-password', label: 'Change Password', onClick: handleResetPassword },
+                { key: 'logout', label: 'Log Out', danger: true, onClick: handleLogout },
+              ],
+            }}
+            trigger={['click']}
+          >
+            <Button className="!h-auto !border !border-[#575757] !bg-black !px-3 !py-2 !text-left !shadow-none hover:!border-[#24d725] hover:!bg-black">
+              <span className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#123414] text-xs font-bold text-[#24d725]">
+                  {accountInitials}
+                </span>
+                <span className="min-w-[130px]">
+                  <span className="block text-sm font-bold leading-5 text-white">{accountName}</span>
+                  <span className="block text-xs leading-4 text-[#c8c8c8]">{accountRole}</span>
+                </span>
+                <DownOutlined className="text-sm !text-[#24d725]" />
+              </span>
+            </Button>
+          </Dropdown>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-[1440px] px-10 pb-16 pt-8 max-[720px]:px-4">
         <div className="mb-8 flex items-end justify-between gap-4 max-[720px]:items-start max-[720px]:flex-col">
           <div>
             <Text className="!font-bold !uppercase !text-[#24d725]">Lane16 Admin</Text>
             <Title className="!mb-0 !mt-2 !text-4xl !text-white" level={1}>
-              Dashboard
+              Admin Panel
             </Title>
           </div>
           <Paragraph className="!mb-0 max-w-xl !text-right !text-[#c8c8c8] max-[720px]:!text-left">
@@ -637,10 +965,10 @@ export function AdminDashboard() {
         </div>
 
         <Tabs
-          defaultActiveKey="staff"
+          activeKey={activeSection}
           items={tabs}
-          tabPosition="left"
-          className="[&_.ant-tabs-content-holder]:!border-[#575757] [&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#c8c8c8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725] [&_.ant-tabs-tab-btn]:!text-base [&_.ant-tabs-tab-btn]:!font-bold [&_.ant-tabs-tabpane]:!pl-8 max-[900px]:[&_.ant-tabs-tabpane]:!pl-0"
+          onChange={(key) => setActiveSection(key as DashboardTabKey)}
+          renderTabBar={() => <></>}
         />
       </div>
 
@@ -672,30 +1000,60 @@ export function AdminDashboard() {
             : []
         }
       />
-      <DetailModal
+      <Modal
+        centered
+        footer={null}
+        onCancel={() => setSelectedDealer(null)}
         open={Boolean(selectedDealer)}
-        onClose={() => setSelectedDealer(null)}
-        title={selectedDealer?.dealerName ?? 'Dealer Details'}
-        sections={
-          selectedDealer
-            ? [
-                {
-                  heading: 'Dealer Details',
-                  fields: [
-                    { label: 'Dealer Name', value: selectedDealer.dealerName },
-                    { label: 'Dealer Email', value: selectedDealer.dealerEmail },
-                    { label: 'Dealer Phone', value: selectedDealer.dealerPhone },
-                    { label: 'Date Registered', value: selectedDealer.dateRegistered },
-                    { label: 'Vehicles Bid Upon', value: selectedDealer.vehiclesBidUpon },
-                    { label: 'Bid Amount', value: selectedDealer.bidAmount },
-                    { label: 'Bid Status', value: selectedDealer.bidStatus },
-                    { label: 'Dealer Note', value: selectedDealer.dealerNote },
-                  ],
-                },
-              ]
-            : []
-        }
-      />
+        title={<span className="text-white">{selectedDealer?.dealerName ?? 'Dealer Details'}</span>}
+        width={980}
+        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        {selectedDealer && (
+          <Tabs
+            defaultActiveKey="dealer-details"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#c8c8c8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            items={[
+              {
+                key: 'dealer-details',
+                label: 'Dealer Details',
+                children: (
+                  <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                    {[
+                      { label: 'Dealer Name', value: selectedDealer.dealerName },
+                      { label: 'Dealer Email', value: selectedDealer.dealerEmail },
+                      { label: 'Dealer Phone', value: selectedDealer.dealerPhone },
+                      { label: 'Date Created', value: formatDateLabel(selectedDealer.dateCreated) },
+                      { label: 'Date Registered', value: selectedDealer.dateRegistered },
+                      { label: 'Dealer Note', value: selectedDealer.dealerNote },
+                    ].map((field) => (
+                      <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={field.label}>
+                        <Text className="block !text-xs !font-bold !uppercase !text-[#a8a8a8]">
+                          {field.label}
+                        </Text>
+                        <div className="mt-2 break-words text-base text-white">{field.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                key: 'bid-history',
+                label: 'Bid History',
+                children: (
+                  <DataTable
+                    columns={bidColumns}
+                    dataSource={dealerBidHistory}
+                    rowKey="bidId"
+                    searchable
+                    searchPlaceholder="Search bid history"
+                  />
+                ),
+              },
+            ]}
+          />
+        )}
+      </Modal>
       <DetailModal
         open={Boolean(selectedContact)}
         onClose={() => setSelectedContact(null)}

@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 export type UserRole = 'dealer' | 'admin';
 
 export type AuthUser = {
+  name?: string;
   email: string;
   role: UserRole;
 };

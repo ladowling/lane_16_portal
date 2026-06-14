@@ -6,15 +6,26 @@ import { InventoryPage } from './pages/InventoryPage';
 import { CarDetailsPage } from './pages/CarDetailsPage';
 import { ConditionReportPage } from './pages/ConditionReportPage';
 import { ContactPage } from './pages/ContactPage';
+import { LoginPage } from './pages/LoginPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import HowItWorksSeller from './pages/HowItWorksSeller';
 import SubmitVehicle from './pages/SubmitsVehicle';
-import { LoginPage } from './pages/LoginPage';
-import { AdminDashboard } from './pages/AdminDashboard';
 import { ProtectedRoute } from './Protectedroute';
+import { AuthProvider, useAuth } from './Authontext';
 
-type Page = 'home' | 'inventory' | 'details' | 'report' | 'contact' | 'howItWorks' | 'howItWorksSeller' | 'submitVehicle' | 'login' | 'adminDashboard';
+type Page =
+  | 'home'
+  | 'inventory'
+  | 'details'
+  | 'report'
+  | 'contact'
+  | 'howItWorks'
+  | 'howItWorksSeller'
+  | 'submitVehicle'
+  | 'login'
+  | 'dashboard';
 
 const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   home: '/home',
@@ -24,7 +35,7 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   howItWorksSeller: '/how-it-works-seller',
   submitVehicle: '/submit-vehicle',
   login: '/login',
-  adminDashboard: '/dashboard',
+  dashboard: '/dashboard',
 };
 
 const getRouteState = (pathname: string) => {
@@ -35,34 +46,43 @@ const getRouteState = (pathname: string) => {
   }
 
   if (firstSegment === 'vehicle' && secondSegment) {
-    const vehicleId = vehicles.some((vehicle) => vehicle.id === secondSegment) ? secondSegment : vehicles[0].id;
-    return { page: thirdSegment === 'report' ? 'report' as Page : 'details' as Page, vehicleId };
+    const vehicleId = vehicles.some((v) => v.id === secondSegment) ? secondSegment : vehicles[0].id;
+    return {
+      page: thirdSegment === 'report' ? ('report' as Page) : ('details' as Page),
+      vehicleId,
+    };
   }
 
-  const pathPage = (Object.entries(pagePaths).find(([, path]) => path === `/${firstSegment}`)?.[0] ?? 'home') as Page;
-  return { page: pathPage, vehicleId: vehicles[0].id, shouldReplace: !Object.values(pagePaths).includes(`/${firstSegment}`) };
+  const pathPage = (
+    Object.entries(pagePaths).find(([, path]) => path === `/${firstSegment}`)?.[0] ?? 'home'
+  ) as Page;
+
+  return {
+    page: pathPage,
+    vehicleId: vehicles[0].id,
+    shouldReplace: !Object.values(pagePaths).includes(`/${firstSegment}`),
+  };
 };
 
 const getPagePath = (page: Page, vehicleId: string) => {
-  if (page === 'details') {
-    return `/vehicle/${vehicleId}`;
-  }
-
-  if (page === 'report') {
-    return `/vehicle/${vehicleId}/report`;
-  }
-
+  if (page === 'details') return `/vehicle/${vehicleId}`;
+  if (page === 'report') return `/vehicle/${vehicleId}/report`;
   return pagePaths[page];
 };
 
-function App() {
+// ---------------------------------------------------------------------------
+// Inner component — needs to be inside AuthProvider to call useAuth()
+// ---------------------------------------------------------------------------
+function AppInner() {
+  const { user, logout } = useAuth();
+
   const initialRoute = getRouteState(window.location.pathname);
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
 
   const selectedVehicle = useMemo(
-    () => vehicles.find((vehicle) => vehicle.id === selectedVehicleId) ?? vehicles[0],
-    [selectedVehicleId]
+    () => vehicles.find((v) => v.id === selectedVehicleId) ?? vehicles[0],
+    [selectedVehicleId],
   );
 
   useEffect(() => {
@@ -78,30 +98,94 @@ function App() {
     };
 
     window.addEventListener('popstate', handlePopState);
-
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigateTo = (nextPage: Page, vehicleId = selectedVehicleId) => {
     const nextPath = getPagePath(nextPage, vehicleId);
-
     if (window.location.pathname !== nextPath) {
       window.history.pushState(null, '', nextPath);
     }
-
     setPage(nextPage);
     setSelectedVehicleId(vehicleId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openVehicleDetails = (vehicleId: string) => {
-    navigateTo('details', vehicleId);
+  const openVehicleDetails = (vehicleId: string) => navigateTo('details', vehicleId);
+  const openPage = (nextPage: Page) => navigateTo(nextPage);
+
+  const handleLogout = () => {
+    logout();
+    navigateTo('home');
   };
 
-  const openPage = (nextPage: Page) => {
-    navigateTo(nextPage);
-  };
+  return (
+    <div className="min-h-screen bg-lane-ink font-sans text-white">
+      {page !== 'dashboard' && (
+        <SiteHeader
+          onHomeClick={() => openPage('home')}
+          onInventoryClick={() => openPage('inventory')}
+          onContactClick={() => openPage('contact')}
+          onHowItWorksClick={() => openPage('howItWorks')}
+          onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
+          onLoginClick={() => openPage('login')}
+          onLogoutClick={handleLogout}
+          onDashboardClick={() => openPage('dashboard')}
+          showDealerLogin={page === 'home'}
+          showLogo={page !== 'home'}
+          activePage={page}
+        />
+      )}
 
+      {/* ── Public pages ────────────────────────────────────────────── */}
+      {page === 'home' && (
+        <Home
+          onSellVehicleClick={() => openPage('submitVehicle')}
+          onContactClick={() => openPage('contact')}
+        />
+      )}
+      {page === 'login' && (
+        <LoginPage
+          onDealerLogin={() => navigateTo('inventory')}
+          onAdminLogin={() => navigateTo('dashboard')}
+        />
+      )}
+      {page === 'contact' && <ContactPage />}
+      {page === 'howItWorks' && <HowItWorks />}
+      {page === 'howItWorksSeller' && <HowItWorksSeller />}
+      {page === 'submitVehicle' && <SubmitVehicle />}
+
+      {/* ── Dealer-only pages ────────────────────────────────────────── */}
+      {page === 'inventory' && (
+        <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
+          <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />
+        </ProtectedRoute>
+      )}
+      {page === 'details' && (
+        <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
+          <CarDetailsPage
+            vehicle={selectedVehicle}
+            onViewReport={() => navigateTo('report', selectedVehicle.id)}
+          />
+        </ProtectedRoute>
+      )}
+      {page === 'report' && (
+        <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
+          <ConditionReportPage vehicle={selectedVehicle} />
+        </ProtectedRoute>
+      )}
+
+      {/* ── Admin-only pages ─────────────────────────────────────────── */}
+      {page === 'dashboard' && (
+        <ProtectedRoute allowedRole="admin" onRedirectToLogin={() => navigateTo('login')}>
+          <AdminDashboard />
+        </ProtectedRoute>
+      )}
+    </div>
+  );
+}
+
+function App() {
   return (
     <ConfigProvider
       theme={{
@@ -112,34 +196,9 @@ function App() {
         },
       }}
     >
-      <div className="min-h-screen bg-lane-ink font-sans text-white">
-        <SiteHeader
-          onHomeClick={() => openPage('home')}
-          onInventoryClick={() => openPage('inventory')}
-          onContactClick={() => openPage('contact')}
-          onHowItWorksClick={() => openPage('howItWorks')}
-          onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
-          onDealerLoginClick={() => openPage('login')}
-          showDealerLogin={page === 'home'}
-          showLogo={page !== 'home'}
-          activePage={page}
-        />
-        {page === 'home' && <Home onSellVehicleClick={() => openPage('submitVehicle')} onContactClick={() => openPage('contact')} />}
-        {page === 'inventory' && <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />}
-        {page === 'details' && <CarDetailsPage vehicle={selectedVehicle} onViewReport={() => navigateTo('report', selectedVehicle.id)} />}
-        {page === 'report' && <ConditionReportPage vehicle={selectedVehicle} />}
-        {page === 'contact' && <ContactPage />}
-        {page === 'howItWorks' && <HowItWorks />}
-        {page === 'howItWorksSeller' && <HowItWorksSeller />}
-        {page === 'submitVehicle' && <SubmitVehicle />}
-        {page === 'login' && <LoginPage onDealerLogin={() => openPage('inventory')} onAdminLogin={() => openPage('adminDashboard')} />}
-        {page === 'adminDashboard' && (
-          <ProtectedRoute allowedRole="admin" onRedirectToLogin={() => openPage('login')}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        )}
-
-      </div>
+      <AuthProvider>
+        <AppInner />
+      </AuthProvider>
     </ConfigProvider>
   );
 }

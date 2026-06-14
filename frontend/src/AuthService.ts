@@ -10,9 +10,9 @@ type LoginResponse = {
 // MOCK CREDENTIALS — replace this function body with a real fetch() call
 // when the backend is ready. The shape of LoginResponse must stay the same.
 // ---------------------------------------------------------------------------
-const MOCK_USERS: Record<string, { password: string; role: AuthUser['role'] }> = {
-  'dealer@lane16.com':  { password: 'dealer123', role: 'dealer' },
-  'admin@lane16.com':   { password: 'admin123',  role: 'admin'  },
+const MOCK_USERS: Record<string, { password: string; role: AuthUser['role']; name: string }> = {
+  'dealer@lane16.com':  { password: 'dealer123', role: 'dealer', name: 'Lane16 Dealer' },
+  'admin@lane16.com':   { password: 'admin123',  role: 'admin', name: 'Benedict Nwosu' },
 };
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
@@ -27,6 +27,6 @@ export async function login(email: string, password: string): Promise<LoginRespo
 
   return {
     token: `mock-jwt-token-${Date.now()}`,
-    user: { email: email.toLowerCase(), role: entry.role },
+    user: { email: email.toLowerCase(), role: entry.role, name: entry.name },
   };
 }
