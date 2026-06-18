@@ -5,6 +5,7 @@ import { useAuth } from '../Authontext';
 
 type SiteHeaderProps = {
   onHomeClick: () => void;
+  onVehicleClick: () => void;
   onInventoryClick: () => void;
   onContactClick: () => void;
   onHowItWorksClick: () => void;
@@ -19,6 +20,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({
   onHomeClick,
+  onVehicleClick,
   onInventoryClick,
   onContactClick,
   onHowItWorksClick,
@@ -55,6 +57,10 @@ export function SiteHeader({
             HOME
           </Button>
 
+          <Button className={getNavClass('submitVehicle')} type="text" onClick={onVehicleClick}>
+            VEHICLE
+          </Button>
+
           <Dropdown
             menu={{
               items: [
@@ -80,7 +86,7 @@ export function SiteHeader({
           )}
 
           {/* Admin-only link */}
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'staff') && (
             <Button className={getNavClass('dashboard')} type="text" onClick={onDashboardClick}>
               DASHBOARD
             </Button>

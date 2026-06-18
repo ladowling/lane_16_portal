@@ -122,9 +122,10 @@ function AppInner() {
   return (
     <div className="min-h-screen bg-lane-ink font-sans text-white">
       {page !== 'dashboard' && (
-        <SiteHeader
-          onHomeClick={() => openPage('home')}
-          onInventoryClick={() => openPage('inventory')}
+          <SiteHeader
+            onHomeClick={() => openPage('home')}
+            onVehicleClick={() => openPage('submitVehicle')}
+            onInventoryClick={() => openPage('inventory')}
           onContactClick={() => openPage('contact')}
           onHowItWorksClick={() => openPage('howItWorks')}
           onHowItWorksSellerClick={() => openPage('howItWorksSeller')}
@@ -177,7 +178,7 @@ function AppInner() {
 
       {/* ── Admin-only pages ─────────────────────────────────────────── */}
       {page === 'dashboard' && (
-        <ProtectedRoute allowedRole="admin" onRedirectToLogin={() => navigateTo('login')}>
+        <ProtectedRoute allowedRole={['admin', 'staff']} onRedirectToLogin={() => navigateTo('login')}>
           <AdminDashboard />
         </ProtectedRoute>
       )}

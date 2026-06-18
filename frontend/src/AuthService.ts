@@ -1,32 +1,14 @@
-import { AuthUser } from "./Authontext";
-
+import { getAuthUser, loginUser, mapApiUser } from './api';
+import { AuthUser } from './Authontext';
 
 type LoginResponse = {
   token: string;
   user: AuthUser;
 };
 
-// ---------------------------------------------------------------------------
-// MOCK CREDENTIALS — replace this function body with a real fetch() call
-// when the backend is ready. The shape of LoginResponse must stay the same.
-// ---------------------------------------------------------------------------
-const MOCK_USERS: Record<string, { password: string; role: AuthUser['role']; name: string }> = {
-  'dealer@lane16.com':  { password: 'dealer123', role: 'dealer', name: 'Lane16 Dealer' },
-  'admin@lane16.com':   { password: 'admin123',  role: 'admin', name: 'Benedict Nwosu' },
-};
-
 export async function login(email: string, password: string): Promise<LoginResponse> {
-  // Simulate network latency
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  const { accessToken } = await loginUser(email, password);
+  const user = await getAuthUser(accessToken);
 
-  const entry = MOCK_USERS[email.toLowerCase()];
-
-  if (!entry || entry.password !== password) {
-    throw new Error('Invalid email or password.');
-  }
-
-  return {
-    token: `mock-jwt-token-${Date.now()}`,
-    user: { email: email.toLowerCase(), role: entry.role, name: entry.name },
-  };
+  return { token: accessToken, user: mapApiUser(user) };
 }

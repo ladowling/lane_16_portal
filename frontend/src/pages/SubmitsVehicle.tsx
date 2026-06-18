@@ -1,13 +1,62 @@
-import React from 'react';
-import { Form, Input, Select, Upload, ConfigProvider, theme, Button } from 'antd';
+import { useState } from 'react';
+import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message } from 'antd';
 import { Upload as UploadIcon } from 'lucide-react';
+import { submitVehicleListing } from '../api';
 
 const { Option } = Select;
 const { Dragger } = Upload;
 
 export default function SubmitVehicle() {
-  const handleSubmit = (values: Record<string, any>) => {
-    console.log('Submit Vehicle form values:', values);
+  const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (values: Record<string, unknown>) => {
+    setIsSubmitting(true);
+
+    try {
+      const year = Number(values.year);
+      const mileage = Number(values.mileage);
+      const minimumAcceptablePrice = Number(values.minimumAcceptablePrice);
+      const location = [values.city, values.state].filter(Boolean).join(', ');
+      const exteriorCondition = String(values.exterior ?? '');
+      const mechanicalCondition = String(values.mechanical___warning ?? '');
+      const tireCondition = String(values.tires ?? '');
+      const warningLight = String(values.warning_light ?? '');
+      const interiorOdor = String(values.interiorOdor || values['Interior Odor'] || '');
+
+      await submitVehicleListing({
+        vehicleName: `${year || ''} ${values.make || ''} ${values.model || ''}`.trim(),
+        sellerName: values.name,
+        sellerPhoneNo: values.phoneNumber,
+        sellerEmail: values.email,
+        vin: values.vin,
+        year,
+        make: values.make,
+        model: values.model,
+        mileage,
+        location,
+        condition: [exteriorCondition, mechanicalCondition, tireCondition, warningLight, interiorOdor]
+          .filter(Boolean)
+          .join(' | '),
+        minimumAcceptablePrice,
+        trim: values.trim,
+        exteriorColor: values.exteriorColor,
+        interiorColor: values.interiorColor,
+        smokerVehicle: interiorOdor.toLowerCase().includes('smoker'),
+        exteriorCondition,
+        mechanicalCondition,
+        tireCondition,
+        interiorCondition: interiorOdor,
+        uploads: [],
+      });
+
+      message.success('Vehicle submitted successfully. It will appear in the admin vehicle table after review.');
+      form.resetFields();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Vehicle submission failed.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -18,7 +67,7 @@ export default function SubmitVehicle() {
 
       <div className="max-w-4xl mx-auto px-6">
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#22c55e', colorBgContainer: '#111' } }}>
-          <Form layout="vertical" size="large" className="space-y-12" onFinish={handleSubmit}>
+          <Form form={form} layout="vertical" size="large" className="space-y-12" onFinish={handleSubmit}>
             
             {/* Section 1: Vehicle Information */}
             <section>
@@ -170,6 +219,7 @@ export default function SubmitVehicle() {
                 <Dragger 
                   multiple 
                   maxCount={3} 
+                  beforeUpload={() => false}
                   className="bg-[#111] border-gray-700 hover:border-green-500"
                 >
                   <p className="ant-upload-drag-icon flex justify-center mb-4">
@@ -204,7 +254,7 @@ export default function SubmitVehicle() {
               </Form.Item>
 
               <Form.Item className="text-right">
-                <Button htmlType="submit" type="primary" size="large" className="bg-green-600 border-green-600 hover:bg-green-500">
+                <Button htmlType="submit" type="primary" size="large" loading={isSubmitting} className="bg-green-600 border-green-600 hover:bg-green-500">
                   Submit
                 </Button>
               </Form.Item>

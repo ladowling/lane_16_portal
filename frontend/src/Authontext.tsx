@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-export type UserRole = 'dealer' | 'admin';
+export type UserRole = 'dealer' | 'admin' | 'staff';
 
 export type AuthUser = {
+  id?: string;
   name?: string;
   email: string;
   role: UserRole;

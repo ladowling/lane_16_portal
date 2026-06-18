@@ -29,7 +29,7 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
       const { token, user } = await authService.login(values.email, values.password);
       login(token, user);
 
-      if (user.role === 'admin') {
+      if (user.role === 'admin' || user.role === 'staff') {
         onAdminLogin();
       } else {
         onDealerLogin();
@@ -48,10 +48,10 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
           level={2}
           className="!mb-2 !mt-0 !text-center !text-[32px] !font-bold !text-white"
         >
-          Dealer Login
+          Login
         </Title>
         <Text className="mb-8 block !text-center !text-[#c8c8c8]">
-          Sign in to access Lane16 inventory
+          Sign in to access your Lane16 account
         </Text>
 
         <Form

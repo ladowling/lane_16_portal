@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, DatePicker, Dropdown, Form, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
@@ -6,16 +6,19 @@ import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
+import { createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
 type StaffRecord = {
+  id?: string;
   name: string;
   email: string;
   role: 'admin' | 'staff';
 };
 
 type VehicleRecord = {
+  id?: string;
   vehicleName: string;
   dateCreated: string;
   sellerName: string;
@@ -67,6 +70,7 @@ type BidRecord = {
 };
 
 type DealerRecord = {
+  id?: string;
   dealerName: string;
   dealerEmail: string;
   dealerPhone: string;
@@ -79,6 +83,7 @@ type DealerRecord = {
 };
 
 type ContactRecord = {
+  id?: string;
   name: string;
   phoneNo: string;
   email: string;
@@ -381,15 +386,155 @@ const bidStatusLabel = (status: string) =>
 
 const getTodayDate = () => new Date().toISOString().slice(0, 10);
 
-const formatDateLabel = (dateValue: string) =>
-  new Date(`${dateValue}T00:00:00`).toLocaleDateString('en-US', {
+const formatDateLabel = (dateValue: string) => {
+  const date = new Date(dateValue.includes('T') ? dateValue : `${dateValue}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return dateValue || 'N/A';
+  }
+
+  return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   });
+};
 
 const normalizeDateString = (dateString: string | string[] | null) =>
   Array.isArray(dateString) ? dateString[0] ?? '' : dateString ?? '';
+
+const getRecordValue = (record: Record<string, unknown>, keys: string[]) =>
+  keys.map((key) => record[key]).find((value) => value !== undefined && value !== null);
+
+const getStringValue = (record: Record<string, unknown>, keys: string[], fallback = '') =>
+  String(getRecordValue(record, keys) ?? fallback);
+
+const getNumberValue = (record: Record<string, unknown>, keys: string[], fallback = 0) => {
+  const value = Number(getRecordValue(record, keys));
+  return Number.isFinite(value) ? value : fallback;
+};
+
+const getBooleanLabel = (value: unknown) => {
+  if (typeof value === 'boolean') {
+    return value ? 'Yes' : 'No';
+  }
+  return String(value ?? 'No');
+};
+
+const getDateValue = (record: Record<string, unknown>) => {
+  const value = getStringValue(record, ['dateCreated', 'createdAt', 'created_at', 'dateRegistered'], getTodayDate());
+  return value.includes('T') ? value.slice(0, 10) : value;
+};
+
+const getArrayPayload = (payload: unknown): unknown[] => {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (payload && typeof payload === 'object') {
+    const record = payload as Record<string, unknown>;
+    const arrayValue = getRecordValue(record, ['data', 'items', 'results', 'vehicles', 'staff', 'dealers', 'contacts']);
+    return Array.isArray(arrayValue) ? arrayValue : [];
+  }
+
+  return [];
+};
+
+const getTemporaryPassword = (response: Record<string, unknown>, fallback?: string) =>
+  getStringValue(response, ['temporaryPassword', 'tempPassword', 'password', 'generatedPassword'], fallback ?? '');
+
+const generateTemporaryPassword = () => {
+  const random = Math.random().toString(36).slice(2, 10);
+  return `Lane16-${random}#1`;
+};
+
+const mapStaffRecord = (item: unknown): StaffRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const isAdmin = Boolean(getRecordValue(record, ['isAdmin']));
+  const role = getStringValue(record, ['role']).toUpperCase() === 'STAFF' && !isAdmin ? 'staff' : isAdmin ? 'admin' : 'staff';
+
+  return {
+    id: getStringValue(record, ['id', '_id']),
+    name: getStringValue(record, ['name']),
+    email: getStringValue(record, ['email']),
+    role,
+  };
+};
+
+const mapVehicleRecord = (item: unknown): VehicleRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const auctionStatus = getStringValue(record, ['auctionStatus'], 'ACTIVE').toUpperCase() === 'CLOSED' ? 'Closed' : 'Active';
+  const vehicleName =
+    getStringValue(record, ['vehicleName']) ||
+    `${getStringValue(record, ['year'])} ${getStringValue(record, ['make'])} ${getStringValue(record, ['model'])}`.trim();
+
+  return {
+    id: getStringValue(record, ['id', '_id']),
+    vehicleName,
+    dateCreated: getDateValue(record),
+    sellerName: getStringValue(record, ['sellerName']),
+    sellerPhoneNo: getStringValue(record, ['sellerPhoneNo', 'sellerPhone', 'phoneNumber']),
+    sellerEmail: getStringValue(record, ['sellerEmail', 'email']),
+    vin: getStringValue(record, ['vin']),
+    year: getNumberValue(record, ['year']),
+    make: getStringValue(record, ['make']),
+    model: getStringValue(record, ['model']),
+    mileage: getStringValue(record, ['mileage']),
+    location: getStringValue(record, ['location']),
+    condition: getStringValue(record, ['condition']),
+    minimumAcceptablePrice: getStringValue(record, ['minimumAcceptablePrice']),
+    uploads: Array.isArray(record.uploads) ? record.uploads.length ? `${record.uploads.length} upload(s)` : 'None' : getStringValue(record, ['uploads'], 'None'),
+    status: getStringValue(record, ['status'], 'PENDING'),
+    auctionStatus,
+    bids: getStringValue(record, ['bids'], '0'),
+    highestBid: getStringValue(record, ['highestBid'], '0'),
+    bidCount: getNumberValue(record, ['bidCount']),
+    auctionEndTime: getStringValue(record, ['auctionEndTime']),
+    winningBidderName: getStringValue(record, ['winningBidderName']),
+    winningBidAmount: getStringValue(record, ['winningBidAmount']),
+    tireCondition: getStringValue(record, ['tireCondition']),
+    mechanicalCondition: getStringValue(record, ['mechanicalCondition']),
+    interiorCondition: getStringValue(record, ['interiorCondition']),
+    exteriorCondition: getStringValue(record, ['exteriorCondition']),
+    lastUpdatedBy: getStringValue(record, ['lastUpdatedBy']),
+    bidIncrementNo: getStringValue(record, ['bidIncrementNo']),
+    trim: getStringValue(record, ['trim']),
+    exteriorColor: getStringValue(record, ['exteriorColor']),
+    interiorColor: getStringValue(record, ['interiorColor']),
+    smokerVehicle: getBooleanLabel(record.smokerVehicle),
+    reserveMet: getBooleanLabel(record.reserveMet),
+  };
+};
+
+const mapDealerRecord = (item: unknown): DealerRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const dateCreated = getDateValue(record);
+
+  return {
+    id: getStringValue(record, ['id', '_id']),
+    dealerName: getStringValue(record, ['dealerName', 'name']),
+    dealerEmail: getStringValue(record, ['dealerEmail', 'email']),
+    dealerPhone: getStringValue(record, ['dealerPhone', 'phoneNumber', 'phone']),
+    dateCreated,
+    dateRegistered: getStringValue(record, ['dateRegistered'], formatDateLabel(dateCreated)),
+    vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
+    bidAmount: getStringValue(record, ['bidAmount'], '$0'),
+    bidStatus: getStringValue(record, ['bidStatus'], 'New'),
+    dealerNote: getStringValue(record, ['dealerNote', 'note'], ''),
+  };
+};
+
+const mapContactRecord = (item: unknown): ContactRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+
+  return {
+    id: getStringValue(record, ['id', '_id']),
+    name: getStringValue(record, ['name']),
+    phoneNo: getStringValue(record, ['phoneNo', 'phoneNumber', 'phone']),
+    email: getStringValue(record, ['email']),
+    message: getStringValue(record, ['message']),
+  };
+};
 
 const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) => {
   if (!rows.length) {
@@ -428,9 +573,17 @@ const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) =>
 };
 
 export function AdminDashboard() {
-  const { logout, user } = useAuth();
+  const { logout, token, user } = useAuth();
   const [staff, setStaff] = useState<StaffRecord[]>(staffSeed);
+  const [vehicles, setVehicles] = useState<VehicleRecord[]>(vehicleSeed);
   const [dealers, setDealers] = useState<DealerRecord[]>(dealerSeed);
+  const [contacts, setContacts] = useState<ContactRecord[]>(contactSeed);
+  const [isStaffLoading, setIsStaffLoading] = useState(false);
+  const [isVehiclesLoading, setIsVehiclesLoading] = useState(false);
+  const [isDealersLoading, setIsDealersLoading] = useState(false);
+  const [isContactsLoading, setIsContactsLoading] = useState(false);
+  const [isStaffSaving, setIsStaffSaving] = useState(false);
+  const [isDealerSaving, setIsDealerSaving] = useState(false);
   const [activeSection, setActiveSection] = useState<DashboardTabKey>('staff');
   const [vehicleMakeFilter, setVehicleMakeFilter] = useState<string>();
   const [vehicleModelFilter, setVehicleModelFilter] = useState<string>();
@@ -442,19 +595,116 @@ export function AdminDashboard() {
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
+  const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
   const [form] = Form.useForm<StaffRecord>();
   const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
 
-  const saveStaff = (values: StaffRecord) => {
-    setStaff((currentStaff) => {
-      if (editingStaffEmail) {
-        return currentStaff.map((member) => (member.email === editingStaffEmail ? values : member));
+  const loadStaff = async () => {
+    if (!token || user?.role !== 'admin') {
+      return;
+    }
+
+    setIsStaffLoading(true);
+    try {
+      const response = await fetchStaff(token);
+      setStaff(getArrayPayload(response).map(mapStaffRecord));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to load staff.');
+    } finally {
+      setIsStaffLoading(false);
+    }
+  };
+
+  const loadVehicles = async () => {
+    if (!token) {
+      return;
+    }
+
+    setIsVehiclesLoading(true);
+    try {
+      const response = await fetchVehicles(token);
+      setVehicles(getArrayPayload(response).map(mapVehicleRecord));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to load vehicles.');
+    } finally {
+      setIsVehiclesLoading(false);
+    }
+  };
+
+  const loadDealers = async () => {
+    if (!token) {
+      return;
+    }
+
+    setIsDealersLoading(true);
+    try {
+      const response = await fetchDealers(token);
+      setDealers(getArrayPayload(response).map(mapDealerRecord));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to load dealers.');
+    } finally {
+      setIsDealersLoading(false);
+    }
+  };
+
+  const loadContacts = async () => {
+    if (!token || user?.role !== 'admin') {
+      return;
+    }
+
+    setIsContactsLoading(true);
+    try {
+      const response = await fetchContacts(token);
+      setContacts(getArrayPayload(response).map(mapContactRecord));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to load contacts.');
+    } finally {
+      setIsContactsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadStaff();
+    void loadVehicles();
+    void loadDealers();
+    void loadContacts();
+  }, [token, user?.role]);
+
+  const saveStaff = async (values: StaffRecord) => {
+    if (!token) {
+      message.error('You must be logged in to onboard staff.');
+      return;
+    }
+
+    if (editingStaffEmail) {
+      setStaff((currentStaff) => currentStaff.map((member) => (member.email === editingStaffEmail ? values : member)));
+      setEditingStaffEmail(null);
+      form.resetFields();
+      return;
+    }
+
+    setIsStaffSaving(true);
+    try {
+      if (values.role === 'admin') {
+        const temporaryPassword = generateTemporaryPassword();
+        await createAdmin(token, { name: values.name, email: values.email, password: temporaryPassword });
+        setTemporaryPasswordMessage(`Admin created. Temporary password: ${temporaryPassword}`);
+      } else {
+        const response = await createStaff(token, { name: values.name, email: values.email });
+        const temporaryPassword = getTemporaryPassword(response);
+        setTemporaryPasswordMessage(
+          temporaryPassword ? `Staff created. Temporary password: ${temporaryPassword}` : 'Staff created successfully.'
+        );
       }
 
-      return [...currentStaff, values];
-    });
-    setEditingStaffEmail(null);
-    form.resetFields();
+      await loadStaff();
+      form.resetFields();
+      message.success(`${values.role === 'admin' ? 'Admin' : 'Staff'} onboarded successfully.`);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to onboard staff.');
+    } finally {
+      setIsStaffSaving(false);
+    }
   };
 
   const startStaffEdit = (record: StaffRecord) => {
@@ -462,45 +712,52 @@ export function AdminDashboard() {
     form.setFieldsValue(record);
   };
 
-  const saveDealer = (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
-    setDealers((currentDealers) => [
-      ...currentDealers,
-      {
-        ...values,
-        dateCreated: getTodayDate(),
-        dateRegistered: new Date().toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-        vehiclesBidUpon: 'None yet',
-        bidAmount: '$0',
-        bidStatus: 'New',
-        dealerNote: 'Newly onboarded dealer.',
-      },
-    ]);
-    dealerForm.resetFields();
+  const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
+    if (!token) {
+      message.error('You must be logged in to onboard dealers.');
+      return;
+    }
+
+    setIsDealerSaving(true);
+    try {
+      const response = await createDealer(token, {
+        name: values.dealerName,
+        email: values.dealerEmail,
+        phoneNumber: values.dealerPhone,
+      });
+      const temporaryPassword = getTemporaryPassword(response);
+      setTemporaryPasswordMessage(
+        temporaryPassword ? `Dealer created. Temporary password: ${temporaryPassword}` : 'Dealer created successfully.'
+      );
+      await loadDealers();
+      dealerForm.resetFields();
+      message.success('Dealer onboarded successfully.');
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to onboard dealer.');
+    } finally {
+      setIsDealerSaving(false);
+    }
   };
 
   const vehicleMakeOptions = useMemo(
-    () => Array.from(new Set(vehicleSeed.map((vehicle) => vehicle.make))).map((make) => ({ label: make, value: make })),
-    []
+    () => Array.from(new Set(vehicles.map((vehicle) => vehicle.make).filter(Boolean))).map((make) => ({ label: make, value: make })),
+    [vehicles]
   );
 
   const vehicleModelOptions = useMemo(
-    () => Array.from(new Set(vehicleSeed.map((vehicle) => vehicle.model))).map((model) => ({ label: model, value: model })),
-    []
+    () => Array.from(new Set(vehicles.map((vehicle) => vehicle.model).filter(Boolean))).map((model) => ({ label: model, value: model })),
+    [vehicles]
   );
 
   const filteredVehicles = useMemo(
     () =>
-      vehicleSeed.filter(
+      vehicles.filter(
         (vehicle) =>
           (!vehicleMakeFilter || vehicle.make === vehicleMakeFilter) &&
           (!vehicleModelFilter || vehicle.model === vehicleModelFilter) &&
           (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter)
       ),
-    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter]
+    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter, vehicles]
   );
 
   const filteredBids = useMemo(
@@ -734,7 +991,7 @@ export function AdminDashboard() {
                 </Form.Item>
                 <Form.Item label=" " className="max-[620px]:!mb-0">
                   <Space>
-                    <Button htmlType="submit" type="primary">
+                    <Button htmlType="submit" loading={isStaffSaving} type="primary">
                       {editingStaffEmail ? 'Save' : 'Add'}
                     </Button>
                     {editingStaffEmail && (
@@ -757,7 +1014,7 @@ export function AdminDashboard() {
               Export
             </Button>
           </div>
-          <DataTable columns={staffColumns} dataSource={staff} rowKey="email" searchable searchPlaceholder="Search staff" />
+          <DataTable columns={staffColumns} dataSource={staff} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search staff" />
         </div>
       ),
     },
@@ -804,7 +1061,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} rowKey="vin" searchable searchPlaceholder="Search vehicles" />
+          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} searchable searchPlaceholder="Search vehicles" />
         </div>
       ),
     },
@@ -852,7 +1109,7 @@ export function AdminDashboard() {
                   <Input placeholder="(555) 555-0123" />
                 </Form.Item>
                 <Form.Item label=" " className="max-[620px]:!mb-0">
-                  <Button htmlType="submit" type="primary">
+                  <Button htmlType="submit" loading={isDealerSaving} type="primary">
                     Add Dealer
                   </Button>
                 </Form.Item>
@@ -873,7 +1130,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={dealerColumns} dataSource={filteredDealers} rowKey="dealerEmail" searchable searchPlaceholder="Search dealers" />
+          <DataTable columns={dealerColumns} dataSource={filteredDealers} loading={isDealersLoading} rowKey={(record) => record.id || record.dealerEmail} searchable searchPlaceholder="Search dealers" />
         </div>
       ),
     },
@@ -883,11 +1140,11 @@ export function AdminDashboard() {
       children: (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('contacts', contactSeed)}>
+            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('contacts', contacts)}>
               Export
             </Button>
           </div>
-          <DataTable columns={contactColumns} dataSource={contactSeed} rowKey={(record) => `${record.email}-${record.phoneNo}`} />
+          <DataTable columns={contactColumns} dataSource={contacts} loading={isContactsLoading} rowKey={(record) => record.id || `${record.email}-${record.phoneNo}`} />
         </div>
       ),
     },
@@ -973,6 +1230,16 @@ export function AdminDashboard() {
       </div>
 
       <DetailModal open={Boolean(selectedVehicle)} onClose={() => setSelectedVehicle(null)} title={selectedVehicle?.vehicleName ?? 'Vehicle Details'} sections={vehicleSections} />
+      <Modal
+        centered
+        okText="Close"
+        onCancel={() => setTemporaryPasswordMessage('')}
+        onOk={() => setTemporaryPasswordMessage('')}
+        open={Boolean(temporaryPasswordMessage)}
+        title="Onboarding Complete"
+      >
+        <Text>{temporaryPasswordMessage}</Text>
+      </Modal>
       <DetailModal
         open={Boolean(selectedBid)}
         onClose={() => setSelectedBid(null)}

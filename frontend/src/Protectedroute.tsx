@@ -3,7 +3,7 @@ import { useAuth, UserRole } from './Authontext';
 
 
 type ProtectedRouteProps = {
-  allowedRole: UserRole;
+  allowedRole: UserRole | UserRole[];
   onRedirectToLogin: () => void;
   children: ReactNode;
 };
@@ -17,8 +17,9 @@ type ProtectedRouteProps = {
  */
 export function ProtectedRoute({ allowedRole, onRedirectToLogin, children }: ProtectedRouteProps) {
   const { user, token } = useAuth();
+  const allowedRoles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
 
-  if (!token || !user || user.role !== allowedRole) {
+  if (!token || !user || !allowedRoles.includes(user.role)) {
     // Schedule the redirect after render to avoid setState-during-render
     setTimeout(onRedirectToLogin, 0);
     return null;
