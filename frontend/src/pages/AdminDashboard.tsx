@@ -735,10 +735,10 @@ export function AdminDashboard() {
       if (values.role === 'admin') {
         const temporaryPassword = generateTemporaryPassword();
         await createAdmin(token, { name: values.name, email: values.email, password: temporaryPassword });
-        setTemporaryPasswordMessage('Admin created successfully. The temporary password is no longer displayed in the frontend.');
+        setTemporaryPasswordMessage('Admin created successfully. ');
       } else {
         await createStaff(token, { name: values.name, email: values.email });
-        setTemporaryPasswordMessage('Staff created successfully. The temporary password is no longer displayed in the frontend.');
+        setTemporaryPasswordMessage('Staff created successfully.');
       }
 
       await loadStaff();
@@ -769,7 +769,7 @@ export function AdminDashboard() {
         email: values.dealerEmail,
         phoneNumber: values.dealerPhone,
       });
-      setTemporaryPasswordMessage('Dealer created successfully. The temporary password is no longer displayed in the frontend.');
+      setTemporaryPasswordMessage('Dealer created successfully.');
       await loadDealers();
       dealerForm.resetFields();
       message.success('Dealer onboarded successfully.');
@@ -836,6 +836,12 @@ export function AdminDashboard() {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join('');
+
+  useEffect(() => {
+    if (user?.role === 'staff' && activeSection === 'staff') {
+      setActiveSection('vehicles');
+    }
+  }, [activeSection, user?.role]);
 
   const staffColumns: TableColumnsType<StaffRecord> = [
     { title: 'Name', dataIndex: 'name' },
@@ -1227,6 +1233,8 @@ export function AdminDashboard() {
     { key: 'dealers', label: 'Dealer' },
     { key: 'contacts', label: 'Contact' },
   ];
+  const visibleTabs = user?.role === 'staff' ? tabs.filter((tab) => tab.key !== 'staff') : tabs;
+  const visibleDashboardMenuItems = user?.role === 'staff' ? dashboardMenuItems.filter((item) => item.key !== 'staff') : dashboardMenuItems;
 
   return (
     <main className="min-h-screen bg-lane-ink text-white">
@@ -1235,7 +1243,7 @@ export function AdminDashboard() {
         <div className="flex items-center gap-8 max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-4">
           <nav aria-label="Admin dashboard navigation">
             <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
-              {dashboardMenuItems.map((item) => {
+              {visibleDashboardMenuItems.map((item) => {
                 const isActive = activeSection === item.key;
 
                 return (
@@ -1293,7 +1301,7 @@ export function AdminDashboard() {
 
         <Tabs
           activeKey={activeSection}
-          items={tabs}
+          items={visibleTabs}
           onChange={(key) => setActiveSection(key as DashboardTabKey)}
           renderTabBar={() => <></>}
         />
@@ -1304,9 +1312,9 @@ export function AdminDashboard() {
         footer={null}
         onCancel={() => setSelectedVehicle(null)}
         open={Boolean(selectedVehicle)}
-        title={<span className="text-white">{selectedVehicle?.vehicleName ?? 'Vehicle Details'}</span>}
+        title={<span className="text-white m-3">{selectedVehicle?.vehicleName ?? 'Vehicle Details'}</span>}
         width={980}
-        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         {selectedVehicle && (
           <Tabs
@@ -1409,9 +1417,9 @@ export function AdminDashboard() {
         footer={null}
         onCancel={() => setSelectedDealer(null)}
         open={Boolean(selectedDealer)}
-        title={<span className="text-white">{selectedDealer?.dealerName ?? 'Dealer Details'}</span>}
+        title={<span className="text-white m-3">{selectedDealer?.dealerName ?? 'Dealer Details'}</span>}
         width={980}
-        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         {selectedDealer && (
           <Tabs
@@ -1481,3 +1489,5 @@ export function AdminDashboard() {
     </main>
   );
 }
+
+

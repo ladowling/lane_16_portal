@@ -59,7 +59,7 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
         <Form
           layout="vertical"
           onFinish={handleSubmit}
-          className="mt-8 [&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!rounded-lg [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white [&_.ant-input-affix-wrapper]:!rounded-lg [&_.ant-input-affix-wrapper]:!border-[#575757] [&_.ant-input-affix-wrapper]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!text-white"
+          className="mt-8 [&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!rounded-lg [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white [&_.ant-input-affix-wrapper]:!rounded-lg [&_.ant-input-affix-wrapper]:!border-[#575757] [&_.ant-input-affix-wrapper]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!text-white [&_.ant-input-password-icon]:!text-white"
         >
           <Form.Item
             label="Email"
@@ -108,3 +108,4 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
     </main>
   );
 }
+

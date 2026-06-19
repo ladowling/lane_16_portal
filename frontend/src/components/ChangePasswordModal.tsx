@@ -48,15 +48,15 @@ export function ChangePasswordModal({ open, onClose, token }: ChangePasswordModa
       footer={null}
       onCancel={onClose}
       open={open}
-      title={<span className="text-white !p-2">Change Password</span>}
-      className="[&_.ant-modal-close]:!text-white [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      title={<span className="text-white m-3">Change Password</span>}
+      className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
     >
       <Text className="mb-5 block !text-[#c8c8c8]">Enter your current password and choose a new one.</Text>
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
-        className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-affix-wrapper]:!border-[#575757] [&_.ant-input-affix-wrapper]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!text-white"
+        className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-affix-wrapper]:!border-[#575757] [&_.ant-input-affix-wrapper]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!bg-[#242424] [&_.ant-input-affix-wrapper_input]:!text-white [&_.ant-input-password-icon]:!text-white"
       >
         <Form.Item label="Current Password" name="currentPassword" rules={[{ required: true, message: 'Enter current password' }]}>
           <Input.Password autoComplete="current-password" />
@@ -92,3 +92,4 @@ export function ChangePasswordModal({ open, onClose, token }: ChangePasswordModa
     </Modal>
   );
 }
+

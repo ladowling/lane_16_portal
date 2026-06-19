@@ -79,7 +79,7 @@ export function DataTable<T extends object>({
       {searchable && (
         <Input.Search
           allowClear
-          className="mb-4 max-w-md [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white [&_.ant-input::placeholder]:!text-[#a8a8a8] [&_.ant-input-group-addon_button]:!border-[#3ba321] [&_.ant-input-group-addon_button]:!bg-[#3ba321]"
+          className="mb-4 max-w-md [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-white [&_.ant-input]:!text-black [&_.ant-input::placeholder]:!text-gray-300 [&_.ant-input-clear-icon]:!text-black [&_.ant-input-group-addon_button]:!border-[#3ba321] [&_.ant-input-group-addon_button]:!bg-[#3ba321]"
           onChange={(event) => setSearchText(event.target.value)}
           placeholder={searchPlaceholder}
           value={searchText}
@@ -97,3 +97,4 @@ export function DataTable<T extends object>({
     </section>
   );
 }
+
