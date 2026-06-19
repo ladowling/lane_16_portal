@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form, Input, Typography } from 'antd';
 import { useAuth } from '../Authontext';
 import * as authService from '../AuthService';
+import { ForgotPasswordModal } from '../components/ForgotPasswordModal';
 
 
 const { Text, Title } = Typography;
@@ -19,6 +20,7 @@ type LoginFormValues = {
 export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (values: LoginFormValues) => {
@@ -92,8 +94,17 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
           >
             {isLoading ? 'Signing in…' : 'Sign In'}
           </Button>
+          <Button
+            block
+            className="!mt-3 !text-[#24d725] hover:!text-white"
+            onClick={() => setIsForgotPasswordOpen(true)}
+            type="link"
+          >
+            Forgot password?
+          </Button>
         </Form>
       </div>
+      <ForgotPasswordModal open={isForgotPasswordOpen} onClose={() => setIsForgotPasswordOpen(false)} />
     </main>
   );
 }

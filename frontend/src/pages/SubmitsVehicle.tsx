@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message } from 'antd';
 import { Upload as UploadIcon } from 'lucide-react';
-import { submitVehicleListing } from '../api';
+import { submitVehicleListing, uploadVehicleFile } from '../api';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -14,6 +14,18 @@ export default function SubmitVehicle() {
     setIsSubmitting(true);
 
     try {
+      const photoFiles = Array.isArray(values.photos)
+        ? values.photos
+            .map((file) => (file && typeof file === 'object' ? (file as { originFileObj?: File }).originFileObj : undefined))
+            .filter((file): file is File => Boolean(file))
+        : [];
+      const uploadIds = await Promise.all(
+        photoFiles.map(async (file, index) => {
+          const uploadId = crypto.randomUUID();
+          await uploadVehicleFile(uploadId, file, index + 1);
+          return uploadId;
+        })
+      );
       const year = Number(values.year);
       const mileage = Number(values.mileage);
       const minimumAcceptablePrice = Number(values.minimumAcceptablePrice);
@@ -47,7 +59,7 @@ export default function SubmitVehicle() {
         mechanicalCondition,
         tireCondition,
         interiorCondition: interiorOdor,
-        uploads: [],
+        uploads: uploadIds,
       });
 
       message.success('Vehicle submitted successfully. It will appear in the admin vehicle table after review.');
@@ -215,7 +227,13 @@ export default function SubmitVehicle() {
             {/* Section 3: Additional Information */}
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Additional information</h2>
-              <Form.Item label="Upload photos" name="photos" rules={[{ required: true, message: 'Please upload photos' }]}> 
+              <Form.Item
+                label="Upload photos"
+                name="photos"
+                rules={[{ required: true, message: 'Please upload photos' }]}
+                valuePropName="fileList"
+                getValueFromEvent={(event) => (Array.isArray(event) ? event : event?.fileList)}
+              > 
                 <Dragger 
                   multiple 
                   maxCount={3} 

@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, DatePicker, Dropdown, Form, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
+import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
+import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles } from '../api';
+import { createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles, getUploadUrl } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -15,6 +16,12 @@ type StaffRecord = {
   name: string;
   email: string;
   role: 'admin' | 'staff';
+};
+
+type VehicleUpload = {
+  id: string;
+  name: string;
+  url: string;
 };
 
 type VehicleRecord = {
@@ -33,11 +40,13 @@ type VehicleRecord = {
   condition: string;
   minimumAcceptablePrice: string;
   uploads: string;
+  uploadItems: VehicleUpload[];
   status: string;
   auctionStatus: 'Active' | 'Closed';
   bids: string;
   highestBid: string;
   bidCount: number;
+  auctionStartTime: string;
   auctionEndTime: string;
   winningBidderName: string;
   winningBidAmount: string;
@@ -114,11 +123,13 @@ const vehicleSeed: VehicleRecord[] = [
     condition: 'Excellent',
     minimumAcceptablePrice: '$38,500',
     uploads: '31 photos, title scan, service record',
+    uploadItems: [],
     status: 'Approved',
     auctionStatus: 'Active',
     bids: 'BID-1042, BID-1045, BID-1048',
     highestBid: '$41,800',
     bidCount: 9,
+    auctionStartTime: 'Jun 12, 2026 4:30 PM',
     auctionEndTime: 'Jun 14, 2026 4:30 PM',
     winningBidderName: 'Pending',
     winningBidAmount: 'Pending',
@@ -149,11 +160,13 @@ const vehicleSeed: VehicleRecord[] = [
     condition: 'Very Good',
     minimumAcceptablePrice: '$29,750',
     uploads: '24 photos, payoff letter',
+    uploadItems: [],
     status: 'Approved',
     auctionStatus: 'Active',
     bids: 'BID-1051, BID-1053',
     highestBid: '$30,500',
     bidCount: 5,
+    auctionStartTime: 'Jun 12, 2026 1:00 PM',
     auctionEndTime: 'Jun 15, 2026 1:00 PM',
     winningBidderName: 'Pending',
     winningBidAmount: 'Pending',
@@ -184,11 +197,13 @@ const vehicleSeed: VehicleRecord[] = [
     condition: 'Good',
     minimumAcceptablePrice: '$31,000',
     uploads: '27 photos, Carfax PDF',
+    uploadItems: [],
     status: 'Closed',
     auctionStatus: 'Closed',
     bids: 'BID-1010, BID-1017, BID-1021',
     highestBid: '$32,900',
     bidCount: 7,
+    auctionStartTime: 'Jun 8, 2026 6:00 PM',
     auctionEndTime: 'Jun 10, 2026 6:00 PM',
     winningBidderName: 'Metro Auto Group',
     winningBidAmount: '$32,900',
@@ -219,11 +234,13 @@ const vehicleSeed: VehicleRecord[] = [
     condition: 'Excellent',
     minimumAcceptablePrice: '$44,000',
     uploads: '35 photos, window sticker, title scan',
+    uploadItems: [],
     status: 'Approved',
     auctionStatus: 'Closed',
     bids: 'BID-1060, BID-1068',
     highestBid: '$45,250',
     bidCount: 4,
+    auctionStartTime: 'Jun 9, 2026 5:15 PM',
     auctionEndTime: 'Jun 11, 2026 5:15 PM',
     winningBidderName: 'Summit Ford Wholesale',
     winningBidAmount: '$45,250',
@@ -448,6 +465,30 @@ const generateTemporaryPassword = () => {
   return `Lane16-${random}#1`;
 };
 
+const mapVehicleUpload = (upload: unknown, index: number): VehicleUpload | null => {
+  if (typeof upload === 'string') {
+    return { id: upload, name: `Upload ${index + 1}`, url: getUploadUrl(upload) };
+  }
+
+  if (!upload || typeof upload !== 'object') {
+    return null;
+  }
+
+  const record = upload as Record<string, unknown>;
+  const id = getStringValue(record, ['id', '_id', 'uploadId']);
+  const url = getStringValue(record, ['url', 'src', 'path'], id ? getUploadUrl(id) : '');
+
+  if (!url) {
+    return null;
+  }
+
+  return {
+    id: id || url,
+    name: getStringValue(record, ['name', 'fileName', 'filename', 'originalName'], `Upload ${index + 1}`),
+    url,
+  };
+};
+
 const mapStaffRecord = (item: unknown): StaffRecord => {
   const record = (item ?? {}) as Record<string, unknown>;
   const isAdmin = Boolean(getRecordValue(record, ['isAdmin']));
@@ -467,6 +508,9 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
   const vehicleName =
     getStringValue(record, ['vehicleName']) ||
     `${getStringValue(record, ['year'])} ${getStringValue(record, ['make'])} ${getStringValue(record, ['model'])}`.trim();
+  const uploadItems = Array.isArray(record.uploads)
+    ? record.uploads.map(mapVehicleUpload).filter((upload): upload is VehicleUpload => Boolean(upload))
+    : [];
 
   return {
     id: getStringValue(record, ['id', '_id']),
@@ -483,12 +527,14 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     location: getStringValue(record, ['location']),
     condition: getStringValue(record, ['condition']),
     minimumAcceptablePrice: getStringValue(record, ['minimumAcceptablePrice']),
-    uploads: Array.isArray(record.uploads) ? record.uploads.length ? `${record.uploads.length} upload(s)` : 'None' : getStringValue(record, ['uploads'], 'None'),
+    uploads: uploadItems.length ? `${uploadItems.length} upload(s)` : getStringValue(record, ['uploads'], 'None'),
+    uploadItems,
     status: getStringValue(record, ['status'], 'PENDING'),
     auctionStatus,
     bids: getStringValue(record, ['bids'], '0'),
     highestBid: getStringValue(record, ['highestBid'], '0'),
     bidCount: getNumberValue(record, ['bidCount']),
+    auctionStartTime: getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt', 'createdAt']),
     auctionEndTime: getStringValue(record, ['auctionEndTime']),
     winningBidderName: getStringValue(record, ['winningBidderName']),
     winningBidAmount: getStringValue(record, ['winningBidAmount']),
@@ -596,6 +642,7 @@ export function AdminDashboard() {
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
   const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [form] = Form.useForm<StaffRecord>();
   const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
 
@@ -688,13 +735,10 @@ export function AdminDashboard() {
       if (values.role === 'admin') {
         const temporaryPassword = generateTemporaryPassword();
         await createAdmin(token, { name: values.name, email: values.email, password: temporaryPassword });
-        setTemporaryPasswordMessage(`Admin created. Temporary password: ${temporaryPassword}`);
+        setTemporaryPasswordMessage('Admin created successfully. The temporary password is no longer displayed in the frontend.');
       } else {
-        const response = await createStaff(token, { name: values.name, email: values.email });
-        const temporaryPassword = getTemporaryPassword(response);
-        setTemporaryPasswordMessage(
-          temporaryPassword ? `Staff created. Temporary password: ${temporaryPassword}` : 'Staff created successfully.'
-        );
+        await createStaff(token, { name: values.name, email: values.email });
+        setTemporaryPasswordMessage('Staff created successfully. The temporary password is no longer displayed in the frontend.');
       }
 
       await loadStaff();
@@ -720,15 +764,12 @@ export function AdminDashboard() {
 
     setIsDealerSaving(true);
     try {
-      const response = await createDealer(token, {
+      await createDealer(token, {
         name: values.dealerName,
         email: values.dealerEmail,
         phoneNumber: values.dealerPhone,
       });
-      const temporaryPassword = getTemporaryPassword(response);
-      setTemporaryPasswordMessage(
-        temporaryPassword ? `Dealer created. Temporary password: ${temporaryPassword}` : 'Dealer created successfully.'
-      );
+      setTemporaryPasswordMessage('Dealer created successfully. The temporary password is no longer displayed in the frontend.');
       await loadDealers();
       dealerForm.resetFields();
       message.success('Dealer onboarded successfully.');
@@ -780,7 +821,7 @@ export function AdminDashboard() {
   };
 
   const handleResetPassword = () => {
-    message.info('Change password flow is not connected yet.');
+    setIsChangePasswordOpen(true);
   };
 
   const accountName =
@@ -827,7 +868,35 @@ export function AdminDashboard() {
   ];
 
   const vehicleColumns: TableColumnsType<VehicleRecord> = [
-    { title: 'Vehicle Name', dataIndex: 'vehicleName' },
+    {
+      title: 'Vehicle',
+      key: 'vehicle',
+      width: 360,
+      render: (_, vehicle) => {
+        const firstUpload = vehicle.uploadItems[0];
+
+        return (
+          <div className="flex min-w-[320px] items-center gap-4">
+            {firstUpload ? (
+              <Image
+                alt={firstUpload.name || vehicle.vehicleName}
+                className="!h-16 !w-24 rounded-md object-cover"
+                preview={{ mask: 'Preview' }}
+                src={firstUpload.url}
+              />
+            ) : (
+              <div className="flex h-16 w-24 items-center justify-center rounded-md border border-[#575757] bg-[#171717] text-xs font-bold text-[#a8a8a8]">
+                No Image
+              </div>
+            )}
+            <div>
+              <Text className="block !font-bold !text-white">{vehicle.vehicleName}</Text>
+              <Text className="mt-1 block !text-sm !text-[#c8c8c8]">VIN: {vehicle.vin || 'N/A'}</Text>
+            </div>
+          </div>
+        );
+      },
+    },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Seller Name', dataIndex: 'sellerName' },
     { title: 'Seller Phone', dataIndex: 'sellerPhoneNo' },
@@ -944,6 +1013,7 @@ export function AdminDashboard() {
               fields: [
                 { label: 'Status', value: selectedVehicle.status },
                 { label: 'Auction Status', value: <Tag color={statusTagColor[selectedVehicle.auctionStatus]}>{selectedVehicle.auctionStatus}</Tag> },
+                { label: 'Auction Start Time', value: selectedVehicle.auctionStartTime },
                 { label: 'Auction End Time', value: selectedVehicle.auctionEndTime },
                 { label: 'Bid Count', value: selectedVehicle.bidCount },
                 { label: 'Bids', value: selectedVehicle.bids },
@@ -1229,7 +1299,74 @@ export function AdminDashboard() {
         />
       </div>
 
-      <DetailModal open={Boolean(selectedVehicle)} onClose={() => setSelectedVehicle(null)} title={selectedVehicle?.vehicleName ?? 'Vehicle Details'} sections={vehicleSections} />
+      <Modal
+        centered
+        footer={null}
+        onCancel={() => setSelectedVehicle(null)}
+        open={Boolean(selectedVehicle)}
+        title={<span className="text-white">{selectedVehicle?.vehicleName ?? 'Vehicle Details'}</span>}
+        width={980}
+        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        {selectedVehicle && (
+          <Tabs
+            defaultActiveKey="vehicle-details"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#c8c8c8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            items={[
+              {
+                key: 'vehicle-details',
+                label: 'Vehicle Details',
+                children: (
+                  <div className="space-y-8">
+                    {vehicleSections.map((section) => (
+                      <section key={section.heading}>
+                        <Title className="!mb-4 !mt-0 !text-xl !text-[#24d725]" level={3}>
+                          {section.heading}
+                        </Title>
+                        <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                          {section.fields.map((field) => (
+                            <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={`${section.heading}-${field.label}`}>
+                              <Text className="block !text-xs !font-bold !uppercase !text-[#a8a8a8]">
+                                {field.label}
+                              </Text>
+                              <div className="mt-2 break-words text-base text-white">{field.value || 'N/A'}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                key: 'vehicle-uploads',
+                label: 'Uploads',
+                children: selectedVehicle.uploadItems.length ? (
+                  <Image.PreviewGroup>
+                    <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
+                      {selectedVehicle.uploadItems.map((upload) => (
+                        <figure className="rounded-lg border border-[#575757] bg-[#111111] p-3" key={upload.id}>
+                          <Image
+                            alt={upload.name}
+                            className="!h-44 !w-full rounded-md object-cover"
+                            src={upload.url}
+                          />
+                          <figcaption className="mt-3 truncate text-sm text-[#c8c8c8]">{upload.name}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </Image.PreviewGroup>
+                ) : (
+                  <div className="rounded-lg border border-[#575757] bg-[#111111] p-6 text-center text-[#c8c8c8]">
+                    No uploads available for this vehicle.
+                  </div>
+                ),
+              },
+            ]}
+          />
+        )}
+      </Modal>
+      <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
       <Modal
         centered
         okText="Close"

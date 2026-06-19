@@ -1,6 +1,9 @@
 import { Button, Dropdown, Space } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
+import { ChangePasswordModal } from './ChangePasswordModal';
 
 
 type SiteHeaderProps = {
@@ -32,7 +35,8 @@ export function SiteHeader({
   showLogo = true,
   activePage,
 }: SiteHeaderProps) {
-  const { user } = useAuth();
+  const { token, user } = useAuth();
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const baseNavClass = '!h-auto !px-0 !py-1 !text-[18px] !font-bold hover:!bg-transparent max-[980px]:!text-lg';
   const headerWidthClass = activePage === 'home' ? 'min-h-[70px]' : 'min-h-[92px] w-full';
@@ -41,14 +45,23 @@ export function SiteHeader({
     const isActive = activePage === pageName;
     return `${baseNavClass} ${isActive ? '!text-lane-green' : '!text-white hover:!text-lane-green'}`;
   };
+  const accountName = user?.name || user?.email?.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (character) => character.toUpperCase()) || 'User Account';
+  const accountRole = user?.role === 'admin' ? 'Admin' : user?.role === 'staff' ? 'Staff' : 'Dealer';
+  const accountInitials = accountName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
 
   return (
-    <header
-      className={`sticky top-0 z-[1000] flex min-h-[92px] items-center w-full ${headerWidthClass} ${
-        showLogo ? 'justify-between' : 'justify-end'
-      } bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5`}
-    >
-      {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
+    <>
+      <header
+        className={`sticky top-0 z-[1000] flex min-h-[92px] items-center w-full ${headerWidthClass} ${
+          showLogo ? 'justify-between' : 'justify-end'
+        } bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5`}
+      >
+        {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
 
       <nav aria-label="Primary navigation">
         <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
@@ -102,17 +115,35 @@ export function SiteHeader({
             </Button>
           )}
 
-          {/* Authenticated: logout */}
+          {/* Authenticated: profile menu */}
           {user && (
-            <Button
-              className="!h-auto !border-[#575757] !bg-transparent !px-4 !py-1.5 !text-[18px] !font-bold !text-[#c8c8c8] hover:!border-white hover:!text-white max-[980px]:!text-base"
-              onClick={onLogoutClick}
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'change-password', label: 'Change Password', onClick: () => setIsChangePasswordOpen(true) },
+                  { key: 'logout', label: 'Log Out', danger: true, onClick: onLogoutClick },
+                ],
+              }}
+              trigger={['click']}
             >
-              Logout
-            </Button>
+              <Button className="!h-auto !border !border-[#575757] !bg-black !px-3 !py-2 !text-left !shadow-none hover:!border-[#24d725] hover:!bg-black">
+                <span className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#123414] text-xs font-bold text-[#24d725]">
+                    {accountInitials}
+                  </span>
+                  <span className="min-w-[130px]">
+                    <span className="block text-sm font-bold leading-5 text-white">{accountName}</span>
+                    <span className="block text-xs leading-4 text-[#c8c8c8]">{accountRole}</span>
+                  </span>
+                  <DownOutlined className="text-sm !text-[#24d725]" />
+                </span>
+              </Button>
+            </Dropdown>
           )}
         </Space>
       </nav>
     </header>
+      <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
+    </>
   );
 }
