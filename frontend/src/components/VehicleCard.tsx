@@ -64,7 +64,7 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
       <div className="mt-3 flex items-center justify-between gap-3.5 max-[620px]:items-start max-[620px]:flex-col">
         <Space size={8}>
           <CalendarOutlined className="!text-[#cfcfcf]" />
-          <Text className="!text-[15px] !text-[#c8c8c8]">{vehicle.endsIn}</Text>
+          <Text className="!text-[15px] !text-[#c8c8c8]">{vehicle.biddingStatusLabel || vehicle.endsIn}</Text>
         </Space>
         <Text className="!text-[15px] !text-[#c8c8c8]" strong>{vehicle.bidCount} Bids</Text>
         <Button
@@ -76,7 +76,7 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
             onSelect(vehicle.id);
           }}
         >
-          Place Bid
+          {vehicle.canBid === false ? 'View' : 'Place Bid'}
         </Button>
       </div>
 
@@ -84,3 +84,4 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
     </Card>
   );
 }
+

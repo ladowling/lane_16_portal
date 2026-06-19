@@ -21,4 +21,13 @@ export type Vehicle = {
   specs: string[];
   description: string;
   condition: string;
+  canBid?: boolean;
+  biddingStatusLabel?: string;
+  /** ISO string for when the auction ends — used for the live countdown in BidPanel */
+  auctionEndTime?: string;
+  /** ISO string for when the auction starts — used to determine upcoming status */
+  auctionStartTime?: string;
+  /** Minimum bid increment amount in dollars */
+  bidIncrementAmount?: number;
 };
+

@@ -1,6 +1,6 @@
 import { ConfigProvider } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
-import { vehicles } from './data/vehicles';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { vehicles as staticVehicles } from './data/vehicles';
 import { SiteHeader } from './components/SiteHeader';
 import { InventoryPage } from './pages/InventoryPage';
 import { CarDetailsPage } from './pages/CarDetailsPage';
@@ -14,6 +14,8 @@ import HowItWorksSeller from './pages/HowItWorksSeller';
 import SubmitVehicle from './pages/SubmitsVehicle';
 import { ProtectedRoute } from './Protectedroute';
 import { AuthProvider, useAuth } from './Authontext';
+import { fetchVehicles, getUploadUrl } from './api';
+import type { Vehicle } from './types';
 
 type Page =
   | 'home'
@@ -42,11 +44,11 @@ const getRouteState = (pathname: string) => {
   const [, firstSegment, secondSegment, thirdSegment] = pathname.split('/');
 
   if (!firstSegment) {
-    return { page: 'home' as Page, vehicleId: vehicles[0].id, shouldReplace: true };
+    return { page: 'home' as Page, vehicleId: staticVehicles[0].id, shouldReplace: true };
   }
 
   if (firstSegment === 'vehicle' && secondSegment) {
-    const vehicleId = vehicles.some((v) => v.id === secondSegment) ? secondSegment : vehicles[0].id;
+    const vehicleId = secondSegment || staticVehicles[0].id;
     return {
       page: thirdSegment === 'report' ? ('report' as Page) : ('details' as Page),
       vehicleId,
@@ -59,7 +61,7 @@ const getRouteState = (pathname: string) => {
 
   return {
     page: pathPage,
-    vehicleId: vehicles[0].id,
+    vehicleId: staticVehicles[0].id,
     shouldReplace: !Object.values(pagePaths).includes(`/${firstSegment}`),
   };
 };
@@ -70,21 +72,165 @@ const getPagePath = (page: Page, vehicleId: string) => {
   return pagePaths[page];
 };
 
+const dealerVisibleStatuses = new Set(['APPROVED', 'BIDDING_ACTIVE', 'BIDDING_ENDED']);
+
+const getArrayPayload = (payload: unknown) => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object') {
+    const record = payload as Record<string, unknown>;
+    if (Array.isArray(record.data)) return record.data;
+    if (Array.isArray(record.items)) return record.items;
+    if (Array.isArray(record.vehicles)) return record.vehicles;
+  }
+  return [];
+};
+
+const getStringValue = (record: Record<string, unknown>, keys: string[], fallback = '') => {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) return value;
+    if (typeof value === 'number') return String(value);
+  }
+  return fallback;
+};
+
+const formatCurrency = (value: unknown) => {
+  if (typeof value === 'string' && value.trim()) return value.startsWith('$') ? value : `$${value}`;
+  if (typeof value === 'number') return `$${value.toLocaleString()}`;
+  return '$0';
+};
+
+const formatMileage = (value: unknown) => {
+  if (typeof value === 'number') return `${value.toLocaleString()} mi`;
+  if (typeof value === 'string' && value.trim()) return value;
+  return 'Mileage unavailable';
+};
+
+const formatDateTime = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+};
+
+const getDealerVehicleStatusLabel = (status: string, startTime: string, endTime: string) => {
+  if (status === 'APPROVED') {
+    const formattedStart = formatDateTime(startTime);
+    return formattedStart ? `Starts ${formattedStart}` : 'Approved - bidding pending';
+  }
+
+  if (status === 'BIDDING_ACTIVE') {
+    const formattedEnd = formatDateTime(endTime);
+    return formattedEnd ? `Ends ${formattedEnd}` : 'Bidding active';
+  }
+
+  if (status === 'BIDDING_ENDED') return 'Bidding ended';
+  return status.replace(/_/g, ' ');
+};
+
+const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const status = getStringValue(record, ['status'], 'PENDING').toUpperCase();
+
+  if (!dealerVisibleStatuses.has(status)) {
+    return null;
+  }
+
+  const fallbackVehicle = staticVehicles[index % staticVehicles.length] ?? staticVehicles[0];
+  const rawUploads = Array.isArray(record.uploads) ? record.uploads : [];
+  const uploadUrls = rawUploads
+    .map((upload) => {
+      if (typeof upload === 'string') return getUploadUrl(upload);
+      if (upload && typeof upload === 'object') {
+        const uploadRecord = upload as Record<string, unknown>;
+        const url = getStringValue(uploadRecord, ['url']);
+        const id = getStringValue(uploadRecord, ['id', '_id']);
+        return url || (id ? getUploadUrl(id) : '');
+      }
+      return '';
+    })
+    .filter(Boolean);
+  const galleryImageSrcs = uploadUrls.length ? uploadUrls : fallbackVehicle.galleryImageSrcs;
+  const year = getStringValue(record, ['year']);
+  const make = getStringValue(record, ['make']);
+  const model = getStringValue(record, ['model']);
+  const trim = getStringValue(record, ['trim', 'status']);
+  const title = getStringValue(record, ['vehicleName']) || [year, make, model].filter(Boolean).join(' ') || fallbackVehicle.title;
+  const auctionStartTime = getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt']);
+  const auctionEndTime = getStringValue(record, ['auctionEndTime', 'auctionEndAt']);
+  const highestBid = formatCurrency(record.highestBid);
+  const minimumBid = formatCurrency(record.minimumAcceptablePrice);
+
+  return {
+    ...fallbackVehicle,
+    id: getStringValue(record, ['id', '_id'], fallbackVehicle.id),
+    title,
+    subtitle: getStringValue(record, ['vin'], fallbackVehicle.subtitle),
+    mileage: formatMileage(record.mileage),
+    status: (trim || status.replace(/_/g, ' ')) as Vehicle['status'],
+    highestBid,
+    currentHighBid: highestBid,
+    nextMinimumBid: formatCurrency(record.bidIncrementNo) || minimumBid,
+    endsIn: getDealerVehicleStatusLabel(status, auctionStartTime, auctionEndTime),
+    biddingStatusLabel: getDealerVehicleStatusLabel(status, auctionStartTime, auctionEndTime),
+    canBid: status === 'BIDDING_ACTIVE',
+    bidCount: typeof record.bidCount === 'number' ? record.bidCount : Number(record.bidCount) || 0,
+    imageSrc: galleryImageSrcs[0] || fallbackVehicle.imageSrc,
+    galleryImageSrcs,
+    detailsTitle: [year, make, model, trim].filter(Boolean).join(' ') || title,
+    specs: [
+      formatMileage(record.mileage),
+      getStringValue(record, ['location']),
+      [getStringValue(record, ['exteriorColor']), getStringValue(record, ['interiorColor'])].filter(Boolean).join('/'),
+      getStringValue(record, ['condition']),
+    ].filter(Boolean),
+    description: getStringValue(record, ['description', 'sellerNote'], 'Seller-submitted vehicle listing.'),
+    condition: getStringValue(record, ['condition'], fallbackVehicle.condition),
+    // Auction timing fields for live countdown and bidding
+    auctionStartTime: auctionStartTime || undefined,
+    auctionEndTime: auctionEndTime || undefined,
+    bidIncrementAmount: typeof record.bidIncrementNo === 'number' ? record.bidIncrementNo : Number(record.bidIncrementNo) || undefined,
+  };
+};
 // ---------------------------------------------------------------------------
-// Inner component — needs to be inside AuthProvider to call useAuth()
+// Inner component - needs to be inside AuthProvider to call useAuth()
 // ---------------------------------------------------------------------------
 function AppInner() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
 
   const initialRoute = getRouteState(window.location.pathname);
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
+  const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>(staticVehicles);
 
   const selectedVehicle = useMemo(
-    () => vehicles.find((v) => v.id === selectedVehicleId) ?? vehicles[0],
-    [selectedVehicleId],
+    () => inventoryVehicles.find((v) => v.id === selectedVehicleId) ?? inventoryVehicles[0] ?? staticVehicles[0],
+    [inventoryVehicles, selectedVehicleId],
   );
 
+  // Expose loadDealerInventory as a stable callback so CarDetailsPage can call it after a bid
+  const loadDealerInventory = useCallback(async () => {
+    if (user?.role !== 'dealer' || !token) return;
+    try {
+      const response = await fetchVehicles(token);
+      const approvedVehicles = getArrayPayload(response)
+        .map(mapDealerVehicle)
+        .filter((vehicle): vehicle is Vehicle => Boolean(vehicle));
+      setInventoryVehicles(approvedVehicles);
+      if (approvedVehicles.length && !approvedVehicles.some((vehicle) => vehicle.id === selectedVehicleId)) {
+        setSelectedVehicleId(approvedVehicles[0].id);
+      }
+    } catch {
+      setInventoryVehicles([]);
+    }
+  }, [token, user?.role, selectedVehicleId]);
+
+  useEffect(() => {
+    if (user?.role !== 'dealer' || !token) {
+      setInventoryVehicles(staticVehicles);
+      return;
+    }
+    void loadDealerInventory();
+  }, [loadDealerInventory, token, user?.role]);
   useEffect(() => {
     if (initialRoute.shouldReplace) {
       window.history.replaceState(null, '', getPagePath(initialRoute.page, initialRoute.vehicleId));
@@ -159,7 +305,7 @@ function AppInner() {
       {/* ── Dealer-only pages ────────────────────────────────────────── */}
       {page === 'inventory' && (
         <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
-          <InventoryPage vehicles={vehicles} onVehicleSelect={openVehicleDetails} />
+          <InventoryPage vehicles={inventoryVehicles} onVehicleSelect={openVehicleDetails} />
         </ProtectedRoute>
       )}
       {page === 'details' && (
@@ -167,6 +313,7 @@ function AppInner() {
           <CarDetailsPage
             vehicle={selectedVehicle}
             onViewReport={() => navigateTo('report', selectedVehicle.id)}
+            onBidPlaced={() => void loadDealerInventory()}
           />
         </ProtectedRoute>
       )}
@@ -185,7 +332,6 @@ function AppInner() {
     </div>
   );
 }
-
 function App() {
   return (
     <ConfigProvider
@@ -205,3 +351,4 @@ function App() {
 }
 
 export default App;
+

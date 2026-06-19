@@ -97,6 +97,17 @@ export const uploadVehicleFile = (id: string, file: File, order: number) => {
 export const fetchVehicles = (token: string) =>
   apiRequest<unknown[]>('/sellers/vehicles', { method: 'GET', token });
 
+export const approveVehicle = (
+  token: string,
+  id: string,
+  payload: { status: 'APPROVED' | 'REJECTED'; auctionStartTime: string; auctionEndTime: string }
+) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/approve`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
+  });
+
 export const fetchContacts = (token: string) =>
   apiRequest<unknown[]>('/contact', { method: 'GET', token });
 
@@ -128,3 +139,23 @@ export const createDealer = (token: string, payload: { name: string; email: stri
   });
 
 export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
+
+export type PlaceBidPayload = {
+  dealerName: string;
+  dealerEmail: string;
+  dealerPhone: string;
+  contactPerson: string;
+  contactPhone: string;
+  bidAmount: number;
+  note?: string;
+};
+
+export const placeBid = (token: string, vehicleId: string, payload: PlaceBidPayload) =>
+  apiRequest<Record<string, unknown>>(`/dealers/vehicles/${vehicleId}/bid`, {
+    method: 'POST',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+export const fetchVehicleBids = (token: string, vehicleId: string) =>
+  apiRequest<unknown[]>(`/dealers/vehicles/${vehicleId}/bids`, { method: 'GET', token });

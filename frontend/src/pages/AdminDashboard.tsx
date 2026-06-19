@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles, getUploadUrl } from '../api';
+import { approveVehicle, createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles, getUploadUrl } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -100,6 +100,11 @@ type ContactRecord = {
 };
 
 type DashboardTabKey = 'staff' | 'vehicles' | 'bids' | 'dealers' | 'contacts';
+
+type VehicleApprovalForm = {
+  auctionStartTime: { toISOString: () => string };
+  auctionEndTime: { toISOString: () => string };
+};
 
 const staffSeed: StaffRecord[] = [
   { name: 'Maya Brooks', email: 'maya@lane16.com', role: 'admin' },
@@ -391,10 +396,18 @@ const contactSeed: ContactRecord[] = [
   },
 ];
 
-const statusTagColor = {
-  Active: 'green',
-  Closed: 'red',
-} as const;
+const approvalStatusColor: Record<string, string> = {
+  PENDING: 'gold',
+  APPROVED: 'green',
+  REJECTED: 'red',
+  BIDDING_ACTIVE: 'cyan',
+  BIDDING_ENDED: 'default',
+};
+
+const renderApprovalStatusTag = (status: string) => {
+  const normalizedStatus = status.toUpperCase();
+  return <Tag color={approvalStatusColor[normalizedStatus] || 'default'}>{normalizedStatus.replace(/_/g, ' ')}</Tag>;
+};
 
 const bidStatusLabel = (status: string) =>
   status === 'currentHighBid'
@@ -630,6 +643,7 @@ export function AdminDashboard() {
   const [isContactsLoading, setIsContactsLoading] = useState(false);
   const [isStaffSaving, setIsStaffSaving] = useState(false);
   const [isDealerSaving, setIsDealerSaving] = useState(false);
+  const [isVehicleApprovalSaving, setIsVehicleApprovalSaving] = useState(false);
   const [activeSection, setActiveSection] = useState<DashboardTabKey>('staff');
   const [vehicleMakeFilter, setVehicleMakeFilter] = useState<string>();
   const [vehicleModelFilter, setVehicleModelFilter] = useState<string>();
@@ -638,6 +652,8 @@ export function AdminDashboard() {
   const [bidDateFilter, setBidDateFilter] = useState('');
   const [editingStaffEmail, setEditingStaffEmail] = useState<string | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleRecord | null>(null);
+  const [approvalVehicle, setApprovalVehicle] = useState<VehicleRecord | null>(null);
+  const [approvalStatus, setApprovalStatus] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
@@ -645,6 +661,7 @@ export function AdminDashboard() {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [form] = Form.useForm<StaffRecord>();
   const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
+  const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
 
   const loadStaff = async () => {
     if (!token || user?.role !== 'admin') {
@@ -780,6 +797,60 @@ export function AdminDashboard() {
     }
   };
 
+  const openVehicleApproval = (record: VehicleRecord, status: 'APPROVED' | 'REJECTED') => {
+    setApprovalVehicle(record);
+    setApprovalStatus(status);
+    vehicleApprovalForm.resetFields();
+  };
+
+  const closeVehicleApproval = () => {
+    setApprovalVehicle(null);
+    vehicleApprovalForm.resetFields();
+  };
+
+  const submitVehicleApproval = async (values: VehicleApprovalForm) => {
+    if (!token) {
+      message.error('You must be logged in to update vehicles.');
+      return;
+    }
+
+    if (!approvalVehicle?.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    const auctionStartTime = values.auctionStartTime.toISOString();
+    const auctionEndTime = values.auctionEndTime.toISOString();
+
+    if (new Date(auctionEndTime).getTime() <= new Date(auctionStartTime).getTime()) {
+      message.error('Auction end time must be after the start time.');
+      return;
+    }
+
+    setIsVehicleApprovalSaving(true);
+    try {
+      await approveVehicle(token, approvalVehicle.id, {
+        status: approvalStatus,
+        auctionStartTime,
+        auctionEndTime,
+      });
+
+      setSelectedVehicle((currentVehicle) => {
+        if (!currentVehicle || currentVehicle.id !== approvalVehicle.id) {
+          return currentVehicle;
+        }
+
+        return { ...currentVehicle, status: approvalStatus, auctionStartTime, auctionEndTime };
+      });
+      await loadVehicles();
+      closeVehicleApproval();
+      message.success(`Vehicle ${approvalStatus === 'APPROVED' ? 'approved' : 'rejected'} successfully.`);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update vehicle approval.');
+    } finally {
+      setIsVehicleApprovalSaving(false);
+    }
+  };
   const vehicleMakeOptions = useMemo(
     () => Array.from(new Set(vehicles.map((vehicle) => vehicle.make).filter(Boolean))).map((make) => ({ label: make, value: make })),
     [vehicles]
@@ -864,9 +935,9 @@ export function AdminDashboard() {
             onConfirm={() => setStaff((currentStaff) => currentStaff.filter((member) => member.email !== record.email))}
             title="Remove this staff member?"
           >
-            <Button danger size="small">
+            {/* <Button danger size="small">
               Remove
-            </Button>
+            </Button> */}
           </Popconfirm>
         </Space>
       ),
@@ -910,22 +981,60 @@ export function AdminDashboard() {
     { title: 'Make', dataIndex: 'make' },
     { title: 'Model', dataIndex: 'model' },
     {
-      title: 'Auction Status',
-      dataIndex: 'auctionStatus',
+      title: 'Approval Status',
+      dataIndex: 'status',
       filters: [
-        { text: 'Active', value: 'Active' },
-        { text: 'Closed', value: 'Closed' },
+        { text: 'Pending', value: 'PENDING' },
+        { text: 'Approved', value: 'APPROVED' },
+        { text: 'Rejected', value: 'REJECTED' },
+        { text: 'Bidding Active', value: 'BIDDING_ACTIVE' },
+        { text: 'Bidding Ended', value: 'BIDDING_ENDED' },
       ],
-      onFilter: (value, record) => record.auctionStatus === value,
-      render: (status: VehicleRecord['auctionStatus']) => <Tag color={statusTagColor[status]}>{status}</Tag>,
+      onFilter: (value, record) => record.status.toUpperCase() === value,
+      render: renderApprovalStatusTag,
     },
     {
       title: 'Actions',
-      render: (_, record) => (
-        <Button onClick={() => setSelectedVehicle(record)} size="small" type="primary">
-          View
-        </Button>
-      ),
+      render: (_, record) => {
+        const isPending = record.status.toUpperCase() === 'PENDING';
+        const items = [
+          { key: 'view', label: 'View' },
+          ...(isPending && record.id
+            ? [
+                { key: 'approve', label: 'Approve' },
+                { key: 'reject', label: 'Reject', danger: true },
+              ]
+            : []),
+        ];
+
+        return (
+          <Dropdown
+            menu={{
+              items,
+              onClick: ({ key }) => {
+                if (key === 'view') {
+                  setSelectedVehicle(record);
+                }
+                if (key === 'approve') {
+                  openVehicleApproval(record, 'APPROVED');
+                }
+                if (key === 'reject') {
+                  openVehicleApproval(record, 'REJECTED');
+                }
+              },
+            }}
+            placement="bottomRight"
+            trigger={['click']}
+          >
+            <Button
+              aria-label={`Open actions for ${record.vehicleName}`}
+              className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]"
+              icon={<RightOutlined />}
+              size="small"
+            />
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -1017,8 +1126,7 @@ export function AdminDashboard() {
             {
               heading: 'Auction & Bid Info',
               fields: [
-                { label: 'Status', value: selectedVehicle.status },
-                { label: 'Auction Status', value: <Tag color={statusTagColor[selectedVehicle.auctionStatus]}>{selectedVehicle.auctionStatus}</Tag> },
+                { label: 'Approval Status', value: renderApprovalStatusTag(selectedVehicle.status) },
                 { label: 'Auction Start Time', value: selectedVehicle.auctionStartTime },
                 { label: 'Auction End Time', value: selectedVehicle.auctionEndTime },
                 { label: 'Bid Count', value: selectedVehicle.bidCount },
@@ -1374,6 +1482,42 @@ export function AdminDashboard() {
           />
         )}
       </Modal>
+      <Modal
+        centered
+        confirmLoading={isVehicleApprovalSaving}
+        okButtonProps={{ danger: approvalStatus === 'REJECTED' }}
+        okText={approvalStatus === 'APPROVED' ? 'Approve Vehicle' : 'Reject Vehicle'}
+        onCancel={closeVehicleApproval}
+        onOk={() => vehicleApprovalForm.submit()}
+        open={Boolean(approvalVehicle)}
+        title={<span className="text-white m-3">{approvalStatus === 'APPROVED' ? 'Approve Vehicle' : 'Reject Vehicle'}</span>}
+        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        <Form
+          form={vehicleApprovalForm}
+          layout="vertical"
+          onFinish={submitVehicleApproval}
+          className="[&_.ant-form-item-label>label]:!text-white [&_.ant-picker]:!border-[#575757] [&_.ant-picker]:!bg-[#242424] [&_.ant-picker-input>input]:!text-white [&_.ant-picker-input>input::placeholder]:!text-[#c8c8c8]"
+        >
+          <Paragraph className="!text-[#c8c8c8]">
+            {approvalVehicle?.vehicleName} will be marked as {approvalStatus.replace(/_/g, ' ').toLowerCase()}. Set the auction window required by the server.
+          </Paragraph>
+          <Form.Item
+            label="Auction Start Time"
+            name="auctionStartTime"
+            rules={[{ required: true, message: 'Select auction start time' }]}
+          >
+            <DatePicker className="w-full" showTime />
+          </Form.Item>
+          <Form.Item
+            label="Auction End Time"
+            name="auctionEndTime"
+            rules={[{ required: true, message: 'Select auction end time' }]}
+          >
+            <DatePicker className="w-full" showTime />
+          </Form.Item>
+        </Form>
+      </Modal>
       <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
       <Modal
         centered
@@ -1489,5 +1633,4 @@ export function AdminDashboard() {
     </main>
   );
 }
-
 

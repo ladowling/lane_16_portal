@@ -9,9 +9,10 @@ const { Title } = Typography;
 type CarDetailsPageProps = {
   vehicle: Vehicle;
   onViewReport: () => void;
+  onBidPlaced?: () => void;
 };
 
-export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
+export function CarDetailsPage({ vehicle, onViewReport, onBidPlaced }: CarDetailsPageProps) {
   const parseTitle = (title: string) => {
     const parts = title.split(/\s+/);
     const year = parts[0] && /^\d{4}$/.test(parts[0]) ? parts[0] : '';
@@ -54,7 +55,7 @@ export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
           <VehicleSummary vehicle={vehicle} onViewReport={onViewReport} />
         </Col>
         <Col xs={24} lg={11}>
-          <BidPanel vehicle={vehicle} />
+          <BidPanel vehicle={vehicle} onBidPlaced={onBidPlaced} />
         </Col>
       </Row>
     </main>
