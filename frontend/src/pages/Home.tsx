@@ -7,9 +7,10 @@ import logo from '../assets/cars/lane-pic.png'
 interface HomeProps {
   onSellVehicleClick?: () => void;
   onContactClick?: () => void;
+  onLoginClick: () => void;
 }
 
-export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) {
+export default function Home({ onSellVehicleClick, onContactClick, onLoginClick }: HomeProps) {
   const features = [
     {
       icon: <CheckCircle size={26} className="shrink-0 text-green-500" />,
@@ -50,7 +51,7 @@ export default function Home({ onSellVehicleClick, onContactClick }: HomeProps) 
           </h2>
           <div className="mb-7 h-1 w-20 bg-green-600"></div>
           <div className="flex flex-row flex-wrap gap-3">
-            <button className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
+            <button onClick={onLoginClick} className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
               Dealer Access <ArrowRight className="ml-2" size={18} />
             </button>
             <button onClick={onSellVehicleClick} className="mb-4 flex items-center rounded bg-green-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-green-500">
