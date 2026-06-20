@@ -258,13 +258,13 @@ export default function SubmitVehicle() {
     className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500"
   />
 </Form.Item>
-                <Form.Item label="Interior Odor" name="interiorOdor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
+                {/* <Form.Item label="Interior Odor" name="interiorOdor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
                   <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                     <Option value="none">None</Option>
                     <Option value="smoker">Smoker</Option>
                     <Option value="other">Other</Option>
                   </Select>
-                </Form.Item>
+                </Form.Item> */}
               </div>
 
               <Form.Item label="Additional disclosures / notes" name="notes" rules={[{ required: true, message: 'Additional notes are required' }]}> 
