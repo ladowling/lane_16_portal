@@ -18,13 +18,15 @@ export function ConfirmationModal({ open, title, message, onClose }: Confirmatio
       footer={null}
       closable={false}
       width={760}
-      className="[&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-10 [&_.ant-modal-content]:text-center"
+      className="[&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-white [&_.ant-modal-content]:p-10"
       onCancel={onClose}
       maskClosable
     >
-      <CheckCircleOutlined className="mb-5 text-6xl !text-[#24d725]" />
-      <Title className="!text-white" level={2}>{title}</Title>
-      <Paragraph className="!text-white">{message}</Paragraph>
+      <div className="flex flex-col items-center justify-center text-center">
+        <CheckCircleOutlined className="mb-5 text-6xl !text-[#24d725]" />
+        <Title className="!text-black" level={2}>{title}</Title>
+        <Paragraph className="!text-[#555]">{message}</Paragraph>
+      </div>
     </Modal>
   );
 }

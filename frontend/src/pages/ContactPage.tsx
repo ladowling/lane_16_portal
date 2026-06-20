@@ -1,17 +1,39 @@
 import { MailOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Form, Input, Row, Typography } from 'antd';
+import { Button, Col, Divider, Form, Input, Row, Typography, message } from 'antd';
 import { useState } from 'react';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { submitContact } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
-export function ContactPage() {
-  const [form] = Form.useForm();
-  const [isSubmitted, setIsSubmitted] = useState(false);
+type ContactFormValues = {
+  name: string;
+  phone: string;
+  email: string;
+  message: string;
+};
 
-  const submitForm = () => {
-    setIsSubmitted(true);
-    form.resetFields();
+export function ContactPage() {
+  const [form] = Form.useForm<ContactFormValues>();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submitForm = async (values: ContactFormValues) => {
+    setIsSubmitting(true);
+    try {
+      await submitContact({
+        name: values.name,
+        phoneNo: values.phone,
+        email: values.email,
+        message: values.message,
+      });
+      setIsSubmitted(true);
+      form.resetFields();
+    } catch (err) {
+      message.error(err instanceof Error ? err.message : 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,7 +53,7 @@ export function ContactPage() {
         <Title className="!mt-0 !text-[26px] !font-bold !text-white" level={2}>Contact Information</Title>
         <div className="flex items-center gap-3 text-lg text-[#cfcfcf]">
           <MailOutlined className="!text-2xl !text-[#24d725]" />
-          <a className="text-white transition-colors hover:text-[#24d725]" href="mailto:support@lane16.com">Support@Lane16.com.</a>
+          <a className="text-white transition-colors hover:text-[#24d725]" href="mailto:info@lane16.com">info@lane16.com</a>
         </div>
       </section>
 
@@ -41,7 +63,12 @@ export function ContactPage() {
         <Title level={2} className="!mt-0 !text-[26px] !font-bold !text-white">
           Contact Form
         </Title>
-        <Form form={form} layout="vertical" onFinish={submitForm} className="[&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!rounded-lg [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white [&_textarea.ant-input]:!resize-none">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={submitForm}
+          className="[&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!rounded-lg [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white [&_textarea.ant-input]:!resize-none"
+        >
           <Row gutter={[28, 18]}>
             <Col xs={24} md={12}>
               <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Enter your name' }]}>
@@ -60,11 +87,16 @@ export function ContactPage() {
             </Col>
             <Col span={24}>
               <Form.Item label="Message" name="message" rules={[{ required: true, message: 'Enter a message' }]}>
-              <Input.TextArea rows={7} />
-            </Form.Item>
+                <Input.TextArea rows={7} />
+              </Form.Item>
             </Col>
           </Row>
-          <Button type="primary" htmlType="submit" className="!h-14 !min-w-[220px] !rounded-lg !text-lg !font-bold">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isSubmitting}
+            className="!h-14 !min-w-[220px] !rounded-lg !text-lg !font-bold"
+          >
             Submit Message
           </Button>
         </Form>

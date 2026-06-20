@@ -111,12 +111,26 @@ export const approveVehicle = (
 export const fetchContacts = (token: string) =>
   apiRequest<unknown[]>('/contact', { method: 'GET', token });
 
+export const submitContact = (payload: { name: string; phoneNo: string; email: string; message: string }) =>
+  apiRequest<{ message: string }>('/contact', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+
+
 export const fetchStaff = (token: string) =>
   apiRequest<unknown[]>('/admin/staff', { method: 'GET', token });
 
 export const createStaff = (token: string, payload: { name: string; email: string }) =>
   apiRequest<Record<string, unknown>>('/admin/staff', {
     method: 'POST',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+export const updateStaff = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
+  apiRequest<Record<string, unknown>>(`/admin/staff/${id}`, {
+    method: 'PATCH',
     token,
     body: JSON.stringify(payload),
   });
@@ -138,24 +152,32 @@ export const createDealer = (token: string, payload: { name: string; email: stri
     body: JSON.stringify(payload),
   });
 
-export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
-
-export type PlaceBidPayload = {
-  dealerName: string;
-  dealerEmail: string;
-  dealerPhone: string;
-  contactPerson: string;
-  contactPhone: string;
-  bidAmount: number;
-  note?: string;
-};
-
-export const placeBid = (token: string, vehicleId: string, payload: PlaceBidPayload) =>
-  apiRequest<Record<string, unknown>>(`/dealers/vehicles/${vehicleId}/bid`, {
-    method: 'POST',
+export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
+  apiRequest<Record<string, unknown>>(`/dealers/${id}`, {
+    method: 'PATCH',
     token,
     body: JSON.stringify(payload),
   });
 
+export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
+
+// ── Bids ────────────────────────────────────────────────────────────────────
+// POST /dealers/bids  — { vehicleId, amount }
+export const placeBid = (token: string, vehicleId: string, amount: number) =>
+  apiRequest<Record<string, unknown>>('/dealers/bids', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({ vehicleId, amount }),
+  });
+
+// GET /dealers/bids/vehicle/{id}  — all bids for a vehicle
 export const fetchVehicleBids = (token: string, vehicleId: string) =>
-  apiRequest<unknown[]>(`/dealers/vehicles/${vehicleId}/bids`, { method: 'GET', token });
+  apiRequest<unknown[]>(`/dealers/bids/vehicle/${vehicleId}`, { method: 'GET', token });
+
+// GET /dealers/bids/{id}  — single bid
+export const fetchBidById = (token: string, bidId: string) =>
+  apiRequest<unknown>(`/dealers/bids/${bidId}`, { method: 'GET', token });
+
+// GET /dealers/bids/dealer/{id} — Note: user mentioned /dealers/bids/{id} fetches all bids for a dealer
+export const fetchDealerBids = (token: string, dealerId: string) =>
+  apiRequest<unknown[]>(`/dealers/bids/${dealerId}`, { method: 'GET', token });

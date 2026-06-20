@@ -49,7 +49,7 @@ export function ChangePasswordModal({ open, onClose, token }: ChangePasswordModa
       onCancel={onClose}
       open={open}
       title={<span className="text-white m-3">Change Password</span>}
-      className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
     >
       <Text className="mb-5 block !text-[#c8c8c8]">Enter your current password and choose a new one.</Text>
       <Form

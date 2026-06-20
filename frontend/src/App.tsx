@@ -127,7 +127,10 @@ const getDealerVehicleStatusLabel = (status: string, startTime: string, endTime:
   return status.replace(/_/g, ' ');
 };
 
-const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
+// Neutral placeholder shown when a vehicle has no uploaded photos
+const NO_IMAGE_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22260%22 viewBox=%220 0 400 260%22%3E%3Crect width=%22400%22 height=%22260%22 fill=%22%23111%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22 font-family=%22Arial%22 fill=%22%23444%22%3ENo Photo%3C/text%3E%3C/svg%3E';
+
+const mapDealerVehicle = (item: unknown): Vehicle | null => {
   const record = (item ?? {}) as Record<string, unknown>;
   const status = getStringValue(record, ['status'], 'PENDING').toUpperCase();
 
@@ -135,7 +138,6 @@ const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
     return null;
   }
 
-  const fallbackVehicle = staticVehicles[index % staticVehicles.length] ?? staticVehicles[0];
   const rawUploads = Array.isArray(record.uploads) ? record.uploads : [];
   const uploadUrls = rawUploads
     .map((upload) => {
@@ -149,22 +151,22 @@ const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
       return '';
     })
     .filter(Boolean);
-  const galleryImageSrcs = uploadUrls.length ? uploadUrls : fallbackVehicle.galleryImageSrcs;
+
   const year = getStringValue(record, ['year']);
   const make = getStringValue(record, ['make']);
   const model = getStringValue(record, ['model']);
-  const trim = getStringValue(record, ['trim', 'status']);
-  const title = getStringValue(record, ['vehicleName']) || [year, make, model].filter(Boolean).join(' ') || fallbackVehicle.title;
+  const trim = getStringValue(record, ['trim']);
+  const title = getStringValue(record, ['vehicleName']) || [year, make, model].filter(Boolean).join(' ') || 'Unknown Vehicle';
   const auctionStartTime = getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt']);
   const auctionEndTime = getStringValue(record, ['auctionEndTime', 'auctionEndAt']);
   const highestBid = formatCurrency(record.highestBid);
   const minimumBid = formatCurrency(record.minimumAcceptablePrice);
+  const imageSrc = uploadUrls[0] || NO_IMAGE_PLACEHOLDER;
 
   return {
-    ...fallbackVehicle,
-    id: getStringValue(record, ['id', '_id'], fallbackVehicle.id),
+    id: getStringValue(record, ['id', '_id']),
     title,
-    subtitle: getStringValue(record, ['vin'], fallbackVehicle.subtitle),
+    subtitle: getStringValue(record, ['vin'], 'N/A'),
     mileage: formatMileage(record.mileage),
     status: (trim || status.replace(/_/g, ' ')) as Vehicle['status'],
     highestBid,
@@ -174,8 +176,11 @@ const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
     biddingStatusLabel: getDealerVehicleStatusLabel(status, auctionStartTime, auctionEndTime),
     canBid: status === 'BIDDING_ACTIVE',
     bidCount: typeof record.bidCount === 'number' ? record.bidCount : Number(record.bidCount) || 0,
-    imageSrc: galleryImageSrcs[0] || fallbackVehicle.imageSrc,
-    galleryImageSrcs,
+    imageSrc,
+    galleryImageSrcs: uploadUrls.length ? uploadUrls : [NO_IMAGE_PLACEHOLDER],
+    // These are required by the type but not meaningful without static data — use safe defaults
+    heroVariant: 'road',
+    galleryVariants: [],
     detailsTitle: [year, make, model, trim].filter(Boolean).join(' ') || title,
     specs: [
       formatMileage(record.mileage),
@@ -184,8 +189,8 @@ const mapDealerVehicle = (item: unknown, index: number): Vehicle | null => {
       getStringValue(record, ['condition']),
     ].filter(Boolean),
     description: getStringValue(record, ['description', 'sellerNote'], 'Seller-submitted vehicle listing.'),
-    condition: getStringValue(record, ['condition'], fallbackVehicle.condition),
-    // Auction timing fields for live countdown and bidding
+    condition: getStringValue(record, ['condition'], ''),
+    // Auction timing fields
     auctionStartTime: auctionStartTime || undefined,
     auctionEndTime: auctionEndTime || undefined,
     bidIncrementAmount: typeof record.bidIncrementNo === 'number' ? record.bidIncrementNo : Number(record.bidIncrementNo) || undefined,
@@ -203,12 +208,12 @@ function AppInner() {
   const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>(staticVehicles);
 
   const selectedVehicle = useMemo(
-    () => inventoryVehicles.find((v) => v.id === selectedVehicleId) ?? inventoryVehicles[0] ?? staticVehicles[0],
+    () => inventoryVehicles.find((v) => v.id === selectedVehicleId) ?? inventoryVehicles[0],
     [inventoryVehicles, selectedVehicleId],
   );
 
   // Expose loadDealerInventory as a stable callback so CarDetailsPage can call it after a bid
-  const loadDealerInventory = useCallback(async () => {
+  const loadDealerInventory = useCallback(async () => { // eslint-disable-line react-hooks/exhaustive-deps
     if (user?.role !== 'dealer' || !token) return;
     try {
       const response = await fetchVehicles(token);
@@ -314,8 +319,8 @@ function AppInner() {
           <CarDetailsPage
             vehicle={selectedVehicle}
             onViewReport={() => navigateTo('report', selectedVehicle.id)}
-            onBidPlaced={() => void loadDealerInventory()}
           />
+
         </ProtectedRoute>
       )}
       {page === 'report' && (

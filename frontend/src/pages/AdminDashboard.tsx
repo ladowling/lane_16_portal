@@ -7,7 +7,7 @@ import { DetailModal } from './adminDashboard/components/DetailModal';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchStaff, fetchVehicles, getUploadUrl } from '../api';
+import { approveVehicle, createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchDealerBids, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateDealer, updateStaff } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -16,6 +16,9 @@ type StaffRecord = {
   name: string;
   email: string;
   role: 'admin' | 'staff';
+  lastModifiedBy?: string | null;
+  lastModifiedAt?: string | null;
+  createdAt?: string | null;
 };
 
 type VehicleUpload = {
@@ -512,6 +515,9 @@ const mapStaffRecord = (item: unknown): StaffRecord => {
     name: getStringValue(record, ['name']),
     email: getStringValue(record, ['email']),
     role,
+    lastModifiedBy: getStringValue(record, ['lastModifiedBy']),
+    lastModifiedAt: getStringValue(record, ['lastModifiedAt']),
+    createdAt: getStringValue(record, ['createdAt', 'dateCreated']),
   };
 };
 
@@ -577,9 +583,28 @@ const mapDealerRecord = (item: unknown): DealerRecord => {
     dateCreated,
     dateRegistered: getStringValue(record, ['dateRegistered'], formatDateLabel(dateCreated)),
     vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
-    bidAmount: getStringValue(record, ['bidAmount'], '$0'),
-    bidStatus: getStringValue(record, ['bidStatus'], 'New'),
-    dealerNote: getStringValue(record, ['dealerNote', 'note'], ''),
+    bidAmount: getStringValue(record, ['bidAmount']),
+    bidStatus: getStringValue(record, ['bidStatus']),
+    dealerNote: getStringValue(record, ['dealerNote', 'note']),
+  };
+};
+
+const mapBidRecord = (item: unknown): BidRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const dateCreated = getDateValue(record);
+  return {
+    bidId: getStringValue(record, ['id', 'bidId']),
+    dateCreated,
+    vehicleName: getStringValue(record, ['vehicleName', 'vehicleId', 'vehicle']),
+    dealerName: getStringValue(record, ['dealerName', 'dealerId', 'dealer']),
+    dealerEmail: getStringValue(record, ['dealerEmail', 'email']),
+    dealerPhone: getStringValue(record, ['dealerPhone', 'phone']),
+    contactPerson: getStringValue(record, ['contactPerson']),
+    contactPhone: getStringValue(record, ['contactPhone']),
+    bidAmount: getStringValue(record, ['bidAmount', 'amount']),
+    bidStatus: getStringValue(record, ['bidStatus', 'status'], 'currentHighBid'),
+    note: getStringValue(record, ['note']),
+    bidTimestamp: getStringValue(record, ['bidTimestamp', 'createdAt'], dateCreated),
   };
 };
 
@@ -601,7 +626,9 @@ const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) =>
     return;
   }
 
-  const headers = Object.keys(rows[0]);
+  // Exclude the 'id' field from exported columns
+  const allHeaders = Object.keys(rows[0]);
+  const headers = allHeaders.filter((h) => h !== 'id');
   const escapeCell = (value: unknown) =>
     String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -650,12 +677,19 @@ export function AdminDashboard() {
   const [vehicleDateFilter, setVehicleDateFilter] = useState('');
   const [dealerDateFilter, setDealerDateFilter] = useState('');
   const [bidDateFilter, setBidDateFilter] = useState('');
+  const [bidVehicleNameFilter, setBidVehicleNameFilter] = useState('');
+  const [bidDealerNameFilter, setBidDealerNameFilter] = useState('');
+  const [dealerNameFilter, setDealerNameFilter] = useState('');
   const [editingStaffEmail, setEditingStaffEmail] = useState<string | null>(null);
+  const [editingDealerEmail, setEditingDealerEmail] = useState<string | null>(null);
+
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleRecord | null>(null);
+  const [vehicleBidHistoryData, setVehicleBidHistoryData] = useState<BidRecord[]>([]);
   const [approvalVehicle, setApprovalVehicle] = useState<VehicleRecord | null>(null);
   const [approvalStatus, setApprovalStatus] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
+  const [dealerBidHistoryData, setDealerBidHistoryData] = useState<BidRecord[]>([]);
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
   const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -734,33 +768,57 @@ export function AdminDashboard() {
     void loadContacts();
   }, [token, user?.role]);
 
+  useEffect(() => {
+    if (selectedDealer?.id && token) {
+      fetchDealerBids(token, selectedDealer.id)
+        .then((response) => setDealerBidHistoryData(getArrayPayload(response).map(mapBidRecord)))
+        .catch((error) => console.error('Failed to load dealer bid history:', error));
+    } else {
+      setDealerBidHistoryData([]);
+    }
+  }, [selectedDealer, token]);
+
+  useEffect(() => {
+    if (selectedVehicle?.id && token) {
+      fetchVehicleBids(token, selectedVehicle.id)
+        .then((response: unknown) => setVehicleBidHistoryData(getArrayPayload(response).map(mapBidRecord)))
+        .catch((error: unknown) => console.error('Failed to load vehicle bid history:', error));
+    } else {
+      setVehicleBidHistoryData([]);
+    }
+  }, [selectedVehicle, token]);
+
   const saveStaff = async (values: StaffRecord) => {
     if (!token) {
       message.error('You must be logged in to onboard staff.');
       return;
     }
 
-    if (editingStaffEmail) {
-      setStaff((currentStaff) => currentStaff.map((member) => (member.email === editingStaffEmail ? values : member)));
-      setEditingStaffEmail(null);
-      form.resetFields();
-      return;
-    }
-
     setIsStaffSaving(true);
     try {
-      if (values.role === 'admin') {
-        const temporaryPassword = generateTemporaryPassword();
-        await createAdmin(token, { name: values.name, email: values.email, password: temporaryPassword });
-        setTemporaryPasswordMessage('Admin created successfully. ');
+      if (editingStaffEmail) {
+        const existingStaff = staff.find((member) => member.email === editingStaffEmail);
+        if (existingStaff?.id) {
+          await updateStaff(token, existingStaff.id, { name: values.name, email: values.email });
+          message.success('Staff updated successfully.');
+        } else {
+          message.error('Unable to find staff ID for update.');
+        }
+        setEditingStaffEmail(null);
       } else {
-        await createStaff(token, { name: values.name, email: values.email });
-        setTemporaryPasswordMessage('Staff created successfully.');
+        if (values.role === 'admin') {
+          const temporaryPassword = generateTemporaryPassword();
+          await createAdmin(token, { name: values.name, email: values.email, password: temporaryPassword });
+          setTemporaryPasswordMessage('Admin created successfully. ');
+        } else {
+          await createStaff(token, { name: values.name, email: values.email });
+          setTemporaryPasswordMessage('Staff created successfully.');
+        }
+        message.success(`${values.role === 'admin' ? 'Admin' : 'Staff'} onboarded successfully.`);
       }
 
       await loadStaff();
       form.resetFields();
-      message.success(`${values.role === 'admin' ? 'Admin' : 'Staff'} onboarded successfully.`);
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to onboard staff.');
     } finally {
@@ -773,6 +831,15 @@ export function AdminDashboard() {
     form.setFieldsValue(record);
   };
 
+  const startDealerEdit = (record: DealerRecord) => {
+    setEditingDealerEmail(record.dealerEmail);
+    dealerForm.setFieldsValue({
+      dealerName: record.dealerName,
+      dealerEmail: record.dealerEmail,
+      dealerPhone: record.dealerPhone,
+    });
+  };
+
   const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
     if (!token) {
       message.error('You must be logged in to onboard dealers.');
@@ -781,15 +848,30 @@ export function AdminDashboard() {
 
     setIsDealerSaving(true);
     try {
-      await createDealer(token, {
-        name: values.dealerName,
-        email: values.dealerEmail,
-        phoneNumber: values.dealerPhone,
-      });
-      setTemporaryPasswordMessage('Dealer created successfully.');
+      if (editingDealerEmail) {
+        const existingDealer = dealers.find((d) => d.dealerEmail === editingDealerEmail);
+        if (existingDealer?.id) {
+          await updateDealer(token, existingDealer.id, {
+            name: values.dealerName,
+            email: values.dealerEmail,
+            phoneNumber: values.dealerPhone,
+          });
+          message.success('Dealer updated successfully.');
+        } else {
+          message.error('Unable to find dealer ID for update.');
+        }
+        setEditingDealerEmail(null);
+      } else {
+        await createDealer(token, {
+          name: values.dealerName,
+          email: values.dealerEmail,
+          phoneNumber: values.dealerPhone,
+        });
+        setTemporaryPasswordMessage('Dealer created successfully.');
+        message.success('Dealer onboarded successfully.');
+      }
       await loadDealers();
       dealerForm.resetFields();
-      message.success('Dealer onboarded successfully.');
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to onboard dealer.');
     } finally {
@@ -861,6 +943,21 @@ export function AdminDashboard() {
     [vehicles]
   );
 
+  const bidVehicleNameOptions = useMemo(
+    () => Array.from(new Set(bidSeed.map((b) => b.vehicleName).filter(Boolean))).map((v) => ({ label: v, value: v })),
+    [bidSeed]
+  );
+
+  const bidDealerNameOptions = useMemo(
+    () => Array.from(new Set(bidSeed.map((b) => b.dealerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
+    [bidSeed]
+  );
+
+  const dealerNameOptions = useMemo(
+    () => Array.from(new Set(dealers.map((d) => d.dealerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
+    [dealers]
+  );
+
   const filteredVehicles = useMemo(
     () =>
       vehicles.filter(
@@ -873,18 +970,24 @@ export function AdminDashboard() {
   );
 
   const filteredBids = useMemo(
-    () => bidSeed.filter((bid) => !bidDateFilter || bid.dateCreated === bidDateFilter),
-    [bidDateFilter]
+    () =>
+      bidSeed.filter(
+        (bid) =>
+          (!bidDateFilter || bid.dateCreated === bidDateFilter) &&
+          (!bidVehicleNameFilter || bid.vehicleName.toLowerCase().includes(bidVehicleNameFilter.toLowerCase())) &&
+          (!bidDealerNameFilter || bid.dealerName.toLowerCase().includes(bidDealerNameFilter.toLowerCase()))
+      ),
+    [bidDateFilter, bidVehicleNameFilter, bidDealerNameFilter]
   );
 
   const filteredDealers = useMemo(
-    () => dealers.filter((dealer) => !dealerDateFilter || dealer.dateCreated === dealerDateFilter),
-    [dealerDateFilter, dealers]
-  );
-
-  const dealerBidHistory = useMemo(
-    () => bidSeed.filter((bid) => bid.dealerEmail === selectedDealer?.dealerEmail),
-    [selectedDealer]
+    () =>
+      dealers.filter(
+        (dealer) =>
+          (!dealerDateFilter || dealer.dateCreated === dealerDateFilter) &&
+          (!dealerNameFilter || dealer.dealerName.toLowerCase().includes(dealerNameFilter.toLowerCase()))
+      ),
+    [dealerDateFilter, dealerNameFilter, dealers]
   );
 
   const handleLogout = () => {
@@ -921,6 +1024,21 @@ export function AdminDashboard() {
       title: 'Role',
       dataIndex: 'role',
       render: (role: StaffRecord['role']) => <Tag color={role === 'admin' ? 'green' : 'blue'}>{role.toUpperCase()}</Tag>,
+    },
+    {
+      title: 'Date Created',
+      dataIndex: 'createdAt',
+      render: (createdAt: string) => (createdAt ? formatDateLabel(createdAt) : 'N/A'),
+    },
+    {
+      title: 'Last Modified By',
+      dataIndex: 'lastModifiedBy',
+      render: (lastModifiedBy: string) => lastModifiedBy || 'N/A',
+    },
+    {
+      title: 'Last Modified At',
+      dataIndex: 'lastModifiedAt',
+      render: (lastModifiedAt: string) => (lastModifiedAt ? formatDateLabel(lastModifiedAt) : 'N/A'),
     },
     {
       title: 'Actions',
@@ -981,7 +1099,7 @@ export function AdminDashboard() {
     { title: 'Make', dataIndex: 'make' },
     { title: 'Model', dataIndex: 'model' },
     {
-      title: 'Approval Status',
+      title: 'Status',
       dataIndex: 'status',
       filters: [
         { text: 'Pending', value: 'PENDING' },
@@ -996,7 +1114,7 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => {
-        const isPending = record.status.toUpperCase() === 'PENDING';
+        const isPending = record.status === 'PENDING';
         const items = [
           { key: 'view', label: 'View' },
           ...(isPending && record.id
@@ -1007,21 +1125,30 @@ export function AdminDashboard() {
             : []),
         ];
 
+        const handleAction = (key: string) => {
+          if (key === 'view') setSelectedVehicle(record);
+          if (key === 'approve') openVehicleApproval(record, 'APPROVED');
+          if (key === 'reject') openVehicleApproval(record, 'REJECTED');
+        };
+
+        if (items.length <= 1) {
+          return (
+            <Button
+              aria-label={`View ${record.vehicleName}`}
+              className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]"
+              size="small"
+              onClick={() => setSelectedVehicle(record)}
+            >
+              View
+            </Button>
+          );
+        }
+
         return (
           <Dropdown
             menu={{
               items,
-              onClick: ({ key }) => {
-                if (key === 'view') {
-                  setSelectedVehicle(record);
-                }
-                if (key === 'approve') {
-                  openVehicleApproval(record, 'APPROVED');
-                }
-                if (key === 'reject') {
-                  openVehicleApproval(record, 'REJECTED');
-                }
-              },
+              onClick: ({ key }) => handleAction(key),
             }}
             placement="bottomRight"
             trigger={['click']}
@@ -1069,9 +1196,14 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Button onClick={() => setSelectedDealer(record)} size="small" type="primary">
-          View
-        </Button>
+        <Space>
+          <Button onClick={() => setSelectedDealer(record)} size="small" type="primary">
+            View
+          </Button>
+          <Button onClick={() => startDealerEdit(record)} size="small" type="primary">
+            Edit
+          </Button>
+        </Space>
       ),
     },
   ];
@@ -1256,13 +1388,29 @@ export function AdminDashboard() {
         <div className="space-y-4">
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
             <Space size={16} wrap>
+              <Select
+                allowClear
+                className="min-w-[200px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
+                onChange={(val) => setBidVehicleNameFilter(val ?? '')}
+                options={bidVehicleNameOptions}
+                placeholder="Filter by vehicle name"
+                value={bidVehicleNameFilter || undefined}
+              />
+              <Select
+                allowClear
+                className="min-w-[200px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
+                onChange={(val) => setBidDealerNameFilter(val ?? '')}
+                options={bidDealerNameOptions}
+                placeholder="Filter by dealer name"
+                value={bidDealerNameFilter || undefined}
+              />
               <DatePicker
                 allowClear
                 className="!border-[#575757] !bg-[#242424] [&_.ant-picker-input_input]:!text-white [&_.ant-picker-input_input::placeholder]:!text-[#a8a8a8] [&_.ant-picker-suffix]:!text-[#c8c8c8]"
                 onChange={(_, dateString) => setBidDateFilter(normalizeDateString(dateString))}
                 placeholder="Filter by date created"
               />
-              <Button onClick={() => setBidDateFilter('')}>Clear Filter</Button>
+              <Button onClick={() => { setBidDateFilter(''); setBidVehicleNameFilter(''); setBidDealerNameFilter(''); }}>Clear Filters</Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('bids', filteredBids)}>
                 Export
               </Button>
@@ -1279,7 +1427,7 @@ export function AdminDashboard() {
         <div className="space-y-6">
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
             <Title className="!mb-5 !mt-0 !text-2xl !text-white" level={2}>
-              Onboard Dealer
+              {editingDealerEmail ? 'Edit Dealer' : 'Onboard Dealer'}
             </Title>
             <Form form={dealerForm} layout="vertical" onFinish={saveDealer} className="[&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white">
               <div className="grid grid-cols-[1fr_1fr_220px_auto] gap-4 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
@@ -1293,22 +1441,37 @@ export function AdminDashboard() {
                   <Input placeholder="(555) 555-0123" />
                 </Form.Item>
                 <Form.Item label=" " className="max-[620px]:!mb-0">
-                  <Button htmlType="submit" loading={isDealerSaving} type="primary">
-                    Add Dealer
-                  </Button>
+                  <Space>
+                    <Button htmlType="submit" loading={isDealerSaving} type="primary">
+                      {editingDealerEmail ? 'Save' : 'Add Dealer'}
+                    </Button>
+                    {editingDealerEmail && (
+                      <Button onClick={() => { setEditingDealerEmail(null); dealerForm.resetFields(); }}>
+                        Cancel
+                      </Button>
+                    )}
+                  </Space>
                 </Form.Item>
               </div>
             </Form>
           </section>
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
             <Space size={16} wrap>
+              <Select
+                allowClear
+                className="min-w-[200px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
+                onChange={(val) => setDealerNameFilter(val ?? '')}
+                options={dealerNameOptions}
+                placeholder="Filter by dealer name"
+                value={dealerNameFilter || undefined}
+              />
               <DatePicker
                 allowClear
                 className="!border-[#575757] !bg-[#242424] [&_.ant-picker-input_input]:!text-white [&_.ant-picker-input_input::placeholder]:!text-[#a8a8a8] [&_.ant-picker-suffix]:!text-[#c8c8c8]"
                 onChange={(_, dateString) => setDealerDateFilter(normalizeDateString(dateString))}
                 placeholder="Filter by date created"
               />
-              <Button onClick={() => setDealerDateFilter('')}>Clear Filter</Button>
+              <Button onClick={() => { setDealerDateFilter(''); setDealerNameFilter(''); }}>Clear Filters</Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('dealers', filteredDealers)}>
                 Export
               </Button>
@@ -1422,12 +1585,12 @@ export function AdminDashboard() {
         open={Boolean(selectedVehicle)}
         title={<span className="text-white m-3">{selectedVehicle?.vehicleName ?? 'Vehicle Details'}</span>}
         width={980}
-        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         {selectedVehicle && (
           <Tabs
             defaultActiveKey="vehicle-details"
-            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#c8c8c8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-black [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
             items={[
               {
                 key: 'vehicle-details',
@@ -1442,7 +1605,7 @@ export function AdminDashboard() {
                         <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
                           {section.fields.map((field) => (
                             <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={`${section.heading}-${field.label}`}>
-                              <Text className="block !text-xs !font-bold !uppercase !text-[#a8a8a8]">
+                              <Text className="block !text-xs !font-extrabold !uppercase !text-white">
                                 {field.label}
                               </Text>
                               <div className="mt-2 break-words text-base text-white">{field.value || 'N/A'}</div>
@@ -1478,6 +1641,19 @@ export function AdminDashboard() {
                   </div>
                 ),
               },
+              {
+                key: 'vehicle-bids',
+                label: 'Bid History',
+                children: (
+                  <DataTable
+                    columns={bidColumns}
+                    dataSource={vehicleBidHistoryData}
+                    rowKey={(record) => record.bidId || record.dateCreated}
+                    searchable
+                    searchPlaceholder="Search vehicle bid history"
+                  />
+                ),
+              },
             ]}
           />
         )}
@@ -1491,13 +1667,13 @@ export function AdminDashboard() {
         onOk={() => vehicleApprovalForm.submit()}
         open={Boolean(approvalVehicle)}
         title={<span className="text-white m-3">{approvalStatus === 'APPROVED' ? 'Approve Vehicle' : 'Reject Vehicle'}</span>}
-        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         <Form
           form={vehicleApprovalForm}
           layout="vertical"
           onFinish={submitVehicleApproval}
-          className="[&_.ant-form-item-label>label]:!text-white [&_.ant-picker]:!border-[#575757] [&_.ant-picker]:!bg-[#242424] [&_.ant-picker-input>input]:!text-white [&_.ant-picker-input>input::placeholder]:!text-[#c8c8c8]"
+          className="[&_.ant-form-item-label>label]:!text-black [&_.ant-picker]:!border-[#575757] [&_.ant-picker]:!bg-[#242424] [&_.ant-picker-input>input]:!text-white [&_.ant-picker-input>input::placeholder]:!text-[#c8c8c8]"
         >
           <Paragraph className="!text-[#c8c8c8]">
             {approvalVehicle?.vehicleName} will be marked as {approvalStatus.replace(/_/g, ' ').toLowerCase()}. Set the auction window required by the server.
@@ -1510,6 +1686,7 @@ export function AdminDashboard() {
             <DatePicker className="w-full" showTime />
           </Form.Item>
           <Form.Item
+            className='!text-black'
             label="Auction End Time"
             name="auctionEndTime"
             rules={[{ required: true, message: 'Select auction end time' }]}
@@ -1563,12 +1740,12 @@ export function AdminDashboard() {
         open={Boolean(selectedDealer)}
         title={<span className="text-white m-3">{selectedDealer?.dealerName ?? 'Dealer Details'}</span>}
         width={980}
-        className="[&_.ant-modal-close]:!text-white [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         {selectedDealer && (
           <Tabs
             defaultActiveKey="dealer-details"
-            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#c8c8c8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-black [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
             items={[
               {
                 key: 'dealer-details',
@@ -1584,7 +1761,7 @@ export function AdminDashboard() {
                       { label: 'Dealer Note', value: selectedDealer.dealerNote },
                     ].map((field) => (
                       <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={field.label}>
-                        <Text className="block !text-xs !font-bold !uppercase !text-[#a8a8a8]">
+                        <Text className="block !text-xs !font-extrabold !uppercase !text-white">
                           {field.label}
                         </Text>
                         <div className="mt-2 break-words text-base text-white">{field.value}</div>
@@ -1599,8 +1776,8 @@ export function AdminDashboard() {
                 children: (
                   <DataTable
                     columns={bidColumns}
-                    dataSource={dealerBidHistory}
-                    rowKey="bidId"
+                    dataSource={dealerBidHistoryData}
+                    rowKey={(record) => record.bidId || record.dateCreated}
                     searchable
                     searchPlaceholder="Search bid history"
                   />
