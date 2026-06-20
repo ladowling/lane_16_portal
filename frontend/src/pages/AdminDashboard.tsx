@@ -68,6 +68,8 @@ type VehicleRecord = {
 
 type BidRecord = {
   bidId: string;
+  vehicleId: string;
+  dealerId: string;
   dateCreated: string;
   vehicleName: string;
   dealerName: string;
@@ -266,64 +268,6 @@ const vehicleSeed: VehicleRecord[] = [
   },
 ];
 
-const bidSeed: BidRecord[] = [
-  {
-    bidId: 'BID-1048',
-    dateCreated: '2026-06-12',
-    vehicleName: '2021 Mercedes-Benz GLE 350',
-    dealerName: 'Crestline Motors',
-    dealerEmail: 'buydesk@crestline.example',
-    dealerPhone: '(972) 555-0110',
-    contactPerson: 'Evan Ross',
-    contactPhone: '(972) 555-0111',
-    bidAmount: '$41,800',
-    bidStatus: 'currentHighBid',
-    note: 'Ready to schedule inspection within 24 hours.',
-    bidTimestamp: 'Jun 12, 2026 10:42 AM',
-  },
-  {
-    bidId: 'BID-1053',
-    dateCreated: '2026-06-12',
-    vehicleName: '2020 Toyota Tacoma TRD Off-Road',
-    dealerName: 'Desert Valley Auto',
-    dealerEmail: 'inventory@desertvalley.example',
-    dealerPhone: '(480) 555-0135',
-    contactPerson: 'Lena Ortiz',
-    contactPhone: '(480) 555-0136',
-    bidAmount: '$30,500',
-    bidStatus: 'currentHighBid',
-    note: 'Interested if payoff confirmation is current.',
-    bidTimestamp: 'Jun 12, 2026 9:18 AM',
-  },
-  {
-    bidId: 'BID-1021',
-    dateCreated: '2026-06-10',
-    vehicleName: '2019 BMW X5 xDrive40i',
-    dealerName: 'Metro Auto Group',
-    dealerEmail: 'wholesale@metroauto.example',
-    dealerPhone: '(708) 555-0174',
-    contactPerson: 'Sam Patel',
-    contactPhone: '(708) 555-0175',
-    bidAmount: '$32,900',
-    bidStatus: 'won',
-    note: 'Final verification scheduled with seller.',
-    bidTimestamp: 'Jun 10, 2026 5:58 PM',
-  },
-  {
-    bidId: 'BID-1060',
-    dateCreated: '2026-06-11',
-    vehicleName: '2022 Ford F-150 Lariat',
-    dealerName: 'Summit Ford Wholesale',
-    dealerEmail: 'lane16@summitford.example',
-    dealerPhone: '(470) 555-0188',
-    contactPerson: 'Morgan Hale',
-    contactPhone: '(470) 555-0189',
-    bidAmount: '$44,750',
-    bidStatus: 'outbid',
-    note: 'Can increase if reserve remains unmet.',
-    bidTimestamp: 'Jun 11, 2026 2:24 PM',
-  },
-];
 
 const dealerSeed: DealerRecord[] = [
   {
@@ -589,16 +533,25 @@ const mapDealerRecord = (item: unknown): DealerRecord => {
   };
 };
 
-const mapBidRecord = (item: unknown): BidRecord => {
+const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: DealerRecord[] = []): BidRecord => {
   const record = (item ?? {}) as Record<string, unknown>;
   const dateCreated = getDateValue(record);
+  
+  const vehicleId = getStringValue(record, ['vehicleId', 'vehicle']);
+  const dealerId = getStringValue(record, ['dealerId', 'dealer']);
+  
+  const matchedVehicle = vehicles.find(v => v.id === vehicleId);
+  const matchedDealer = dealers.find(d => d.id === dealerId);
+
   return {
     bidId: getStringValue(record, ['id', 'bidId']),
+    vehicleId,
+    dealerId,
     dateCreated,
-    vehicleName: getStringValue(record, ['vehicleName', 'vehicleId', 'vehicle']),
-    dealerName: getStringValue(record, ['dealerName', 'dealerId', 'dealer']),
-    dealerEmail: getStringValue(record, ['dealerEmail', 'email']),
-    dealerPhone: getStringValue(record, ['dealerPhone', 'phone']),
+    vehicleName: matchedVehicle?.vehicleName || getStringValue(record, ['vehicleName']),
+    dealerName: matchedDealer?.dealerName || getStringValue(record, ['dealerName']),
+    dealerEmail: matchedDealer?.dealerEmail || getStringValue(record, ['dealerEmail', 'email']),
+    dealerPhone: matchedDealer?.dealerPhone || getStringValue(record, ['dealerPhone', 'phone']),
     contactPerson: getStringValue(record, ['contactPerson']),
     contactPhone: getStringValue(record, ['contactPhone']),
     bidAmount: getStringValue(record, ['bidAmount', 'amount']),
@@ -684,12 +637,13 @@ export function AdminDashboard() {
   const [editingDealerEmail, setEditingDealerEmail] = useState<string | null>(null);
 
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleRecord | null>(null);
-  const [vehicleBidHistoryData, setVehicleBidHistoryData] = useState<BidRecord[]>([]);
+  const [vehicleBidHistoryData, setVehicleBidHistoryData] = useState<BidRecord[]>([]); // kept for TS ref only
+  const [allBids, setAllBids] = useState<BidRecord[]>([]);
   const [approvalVehicle, setApprovalVehicle] = useState<VehicleRecord | null>(null);
   const [approvalStatus, setApprovalStatus] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
-  const [dealerBidHistoryData, setDealerBidHistoryData] = useState<BidRecord[]>([]);
+  const [dealerBidHistoryData, setDealerBidHistoryData] = useState<BidRecord[]>([]); // kept for TS ref only
   const [selectedContact, setSelectedContact] = useState<ContactRecord | null>(null);
   const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -769,24 +723,17 @@ export function AdminDashboard() {
   }, [token, user?.role]);
 
   useEffect(() => {
-    if (selectedDealer?.id && token) {
-      fetchDealerBids(token, selectedDealer.id)
-        .then((response) => setDealerBidHistoryData(getArrayPayload(response).map(mapBidRecord)))
-        .catch((error) => console.error('Failed to load dealer bid history:', error));
-    } else {
-      setDealerBidHistoryData([]);
+    if (token && vehicles.length > 0 && dealers.length > 0) {
+      Promise.all(vehicles.map((v) => fetchVehicleBids(token, v.id!).catch(() => [])))
+        .then((responses) => {
+          const flatResponses = responses.flatMap((r) => getArrayPayload(r));
+          setAllBids(flatResponses.map((b) => mapBidRecord(b, vehicles, dealers)));
+        })
+        .catch((error) => console.error('Failed to load all bids:', error));
     }
-  }, [selectedDealer, token]);
+  }, [token, vehicles, dealers]);
 
-  useEffect(() => {
-    if (selectedVehicle?.id && token) {
-      fetchVehicleBids(token, selectedVehicle.id)
-        .then((response: unknown) => setVehicleBidHistoryData(getArrayPayload(response).map(mapBidRecord)))
-        .catch((error: unknown) => console.error('Failed to load vehicle bid history:', error));
-    } else {
-      setVehicleBidHistoryData([]);
-    }
-  }, [selectedVehicle, token]);
+  // Vehicle & dealer bid history are derived from allBids (no extra API calls needed)
 
   const saveStaff = async (values: StaffRecord) => {
     if (!token) {
@@ -901,28 +848,37 @@ export function AdminDashboard() {
       return;
     }
 
-    const auctionStartTime = values.auctionStartTime.toISOString();
-    const auctionEndTime = values.auctionEndTime.toISOString();
+    const payload: { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string } = {
+      status: approvalStatus,
+    };
 
-    if (new Date(auctionEndTime).getTime() <= new Date(auctionStartTime).getTime()) {
-      message.error('Auction end time must be after the start time.');
-      return;
+    if (approvalStatus === 'APPROVED') {
+      const auctionStartTime = values.auctionStartTime.toISOString();
+      const auctionEndTime = values.auctionEndTime.toISOString();
+
+      if (new Date(auctionEndTime).getTime() <= new Date(auctionStartTime).getTime()) {
+        message.error('Auction end time must be after the start time.');
+        return;
+      }
+
+      payload.auctionStartTime = auctionStartTime;
+      payload.auctionEndTime = auctionEndTime;
     }
 
     setIsVehicleApprovalSaving(true);
     try {
-      await approveVehicle(token, approvalVehicle.id, {
-        status: approvalStatus,
-        auctionStartTime,
-        auctionEndTime,
-      });
+      await approveVehicle(token, approvalVehicle.id, payload);
 
       setSelectedVehicle((currentVehicle) => {
         if (!currentVehicle || currentVehicle.id !== approvalVehicle.id) {
           return currentVehicle;
         }
-
-        return { ...currentVehicle, status: approvalStatus, auctionStartTime, auctionEndTime };
+        return { 
+          ...currentVehicle, 
+          status: approvalStatus, 
+          auctionStartTime: payload.auctionStartTime ?? currentVehicle.auctionStartTime, 
+          auctionEndTime: payload.auctionEndTime ?? currentVehicle.auctionEndTime 
+        };
       });
       await loadVehicles();
       closeVehicleApproval();
@@ -944,13 +900,24 @@ export function AdminDashboard() {
   );
 
   const bidVehicleNameOptions = useMemo(
-    () => Array.from(new Set(bidSeed.map((b) => b.vehicleName).filter(Boolean))).map((v) => ({ label: v, value: v })),
-    [bidSeed]
+    () => Array.from(new Set(allBids.map((b) => b.vehicleName).filter(Boolean))).map((v) => ({ label: v, value: v })),
+    [allBids]
   );
 
   const bidDealerNameOptions = useMemo(
-    () => Array.from(new Set(bidSeed.map((b) => b.dealerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
-    [bidSeed]
+    () => Array.from(new Set(allBids.map((b) => b.dealerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
+    [allBids]
+  );
+
+  // Derived bid history — filter allBids by the selected vehicle/dealer ID
+  const vehicleBids = useMemo(
+    () => (selectedVehicle?.id ? allBids.filter((b) => b.vehicleId === selectedVehicle.id) : []),
+    [allBids, selectedVehicle]
+  );
+
+  const dealerBids = useMemo(
+    () => (selectedDealer?.id ? allBids.filter((b) => b.dealerId === selectedDealer.id) : []),
+    [allBids, selectedDealer]
   );
 
   const dealerNameOptions = useMemo(
@@ -971,13 +938,13 @@ export function AdminDashboard() {
 
   const filteredBids = useMemo(
     () =>
-      bidSeed.filter(
+      allBids.filter(
         (bid) =>
           (!bidDateFilter || bid.dateCreated === bidDateFilter) &&
           (!bidVehicleNameFilter || bid.vehicleName.toLowerCase().includes(bidVehicleNameFilter.toLowerCase())) &&
           (!bidDealerNameFilter || bid.dealerName.toLowerCase().includes(bidDealerNameFilter.toLowerCase()))
       ),
-    [bidDateFilter, bidVehicleNameFilter, bidDealerNameFilter]
+    [bidDateFilter, bidVehicleNameFilter, bidDealerNameFilter, allBids]
   );
 
   const filteredDealers = useMemo(
@@ -1647,7 +1614,7 @@ export function AdminDashboard() {
                 children: (
                   <DataTable
                     columns={bidColumns}
-                    dataSource={vehicleBidHistoryData}
+                    dataSource={vehicleBids}
                     rowKey={(record) => record.bidId || record.dateCreated}
                     searchable
                     searchPlaceholder="Search vehicle bid history"
@@ -1676,23 +1643,28 @@ export function AdminDashboard() {
           className="[&_.ant-form-item-label>label]:!text-black [&_.ant-picker]:!border-[#575757] [&_.ant-picker]:!bg-[#242424] [&_.ant-picker-input>input]:!text-white [&_.ant-picker-input>input::placeholder]:!text-[#c8c8c8]"
         >
           <Paragraph className="!text-[#c8c8c8]">
-            {approvalVehicle?.vehicleName} will be marked as {approvalStatus.replace(/_/g, ' ').toLowerCase()}. Set the auction window required by the server.
+            {approvalVehicle?.vehicleName} will be marked as {approvalStatus.replace(/_/g, ' ').toLowerCase()}.
+            {approvalStatus === 'APPROVED' && ' Set the auction window required by the server.'}
           </Paragraph>
-          <Form.Item
-            label="Auction Start Time"
-            name="auctionStartTime"
-            rules={[{ required: true, message: 'Select auction start time' }]}
-          >
-            <DatePicker className="w-full" showTime />
-          </Form.Item>
-          <Form.Item
-            className='!text-black'
-            label="Auction End Time"
-            name="auctionEndTime"
-            rules={[{ required: true, message: 'Select auction end time' }]}
-          >
-            <DatePicker className="w-full" showTime />
-          </Form.Item>
+          {approvalStatus === 'APPROVED' && (
+            <>
+              <Form.Item
+                label="Auction Start Time"
+                name="auctionStartTime"
+                rules={[{ required: true, message: 'Select auction start time' }]}
+              >
+                <DatePicker className="w-full" showTime />
+              </Form.Item>
+              <Form.Item
+                className="!text-black"
+                label="Auction End Time"
+                name="auctionEndTime"
+                rules={[{ required: true, message: 'Select auction end time' }]}
+              >
+                <DatePicker className="w-full" showTime />
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Modal>
       <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
@@ -1776,7 +1748,7 @@ export function AdminDashboard() {
                 children: (
                   <DataTable
                     columns={bidColumns}
-                    dataSource={dealerBidHistoryData}
+                    dataSource={dealerBids}
                     rowKey={(record) => record.bidId || record.dateCreated}
                     searchable
                     searchPlaceholder="Search bid history"

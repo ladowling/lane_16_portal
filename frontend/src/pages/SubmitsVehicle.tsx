@@ -236,7 +236,7 @@ export default function SubmitVehicle() {
               > 
                 <Dragger 
                   multiple 
-                  maxCount={3} 
+                  maxCount={10} 
                   beforeUpload={() => false}
                   className="bg-[#111] border-gray-700 hover:border-green-500"
                 >
