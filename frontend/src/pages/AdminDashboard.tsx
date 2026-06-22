@@ -311,10 +311,27 @@ const renderApprovalStatusTag = (status: string) => {
   return <Tag color={approvalStatusColor[normalizedStatus] || 'default'}>{normalizedStatus.replace(/_/g, ' ')}</Tag>;
 };
 
-const bidStatusLabel = (status: string) =>
-  status === 'currentHighBid'
-    ? 'Current High Bid'
-    : status.replace(/([A-Z])/g, ' $1').replace(/^./, (character) => character.toUpperCase());
+const bidStatusLabel = (status: string) => {
+  if (!status) return '';
+  const normalized = status.toUpperCase().replace(/_/g, '');
+  if (normalized === 'CURRENTHIGHBID') return 'Current High Bid';
+  return status.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+};
+
+const formatCurrency = (value: string | number) => {
+  if (!value) return '';
+  const num = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g, '')) : value;
+  if (isNaN(num)) return typeof value === 'string' ? value : String(value);
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+};
+
+const formatShortBidId = (id: string) => {
+  if (!id) return '';
+  if (id.startsWith('BID-') || id.match(/^\d{4}-/)) return id;
+  const year = new Date().getFullYear();
+  const shortPart = id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+  return `${year}-${shortPart}`;
+};
 
 const getTodayDate = () => new Date().toISOString().slice(0, 10);
 
@@ -444,7 +461,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     mileage: getStringValue(record, ['mileage']),
     location: getStringValue(record, ['location']),
     condition: getStringValue(record, ['condition']),
-    minimumAcceptablePrice: getStringValue(record, ['minimumAcceptablePrice']),
+    minimumAcceptablePrice: formatCurrency(getStringValue(record, ['minimumAcceptablePrice'])),
     uploads: uploadItems.length ? `${uploadItems.length} upload(s)` : getStringValue(record, ['uploads'], 'None'),
     uploadItems,
     status: getStringValue(record, ['status'], 'PENDING'),
@@ -455,7 +472,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     auctionStartTime: getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt', 'createdAt']),
     auctionEndTime: getStringValue(record, ['auctionEndTime']),
     winningBidderName: getStringValue(record, ['winningBidderName']),
-    winningBidAmount: getStringValue(record, ['winningBidAmount']),
+    winningBidAmount: formatCurrency(getStringValue(record, ['winningBidAmount'])),
     tireCondition: getStringValue(record, ['tireCondition']),
     mechanicalCondition: getStringValue(record, ['mechanicalCondition']),
     interiorCondition: getStringValue(record, ['interiorCondition']),
@@ -481,7 +498,7 @@ const mapDealerRecord = (item: unknown): DealerRecord => {
     dealerPhone: getStringValue(record, ['dealerPhone', 'phoneNumber', 'phone']),
     dateCreated,
     vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
-    bidAmount: getStringValue(record, ['bidAmount']),
+    bidAmount: formatCurrency(getStringValue(record, ['bidAmount'])),
     bidStatus: getStringValue(record, ['bidStatus']),
     dealerNote: getStringValue(record, ['dealerNote', 'note']),
     lastModifiedBy: getStringValue(record, ['lastModifiedBy'], '-'),
@@ -500,7 +517,7 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
   const matchedDealer = dealers.find(d => d.id === dealerId);
 
   return {
-    bidId: getStringValue(record, ['id', 'bidId']),
+    bidId: formatShortBidId(getStringValue(record, ['id', 'bidId'])),
     vehicleId,
     dealerId,
     dateCreated,
@@ -510,7 +527,7 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
     dealerPhone: matchedDealer?.dealerPhone || getStringValue(record, ['dealerPhone', 'phone']),
     contactPerson: getStringValue(record, ['contactPerson']),
     contactPhone: getStringValue(record, ['contactPhone']),
-    bidAmount: getStringValue(record, ['bidAmount', 'amount']),
+    bidAmount: formatCurrency(getStringValue(record, ['bidAmount', 'amount'])),
     bidStatus: getStringValue(record, ['bidStatus', 'status'], 'currentHighBid'),
     note: getStringValue(record, ['note']),
     bidTimestamp: getStringValue(record, ['bidTimestamp', 'createdAt'], dateCreated),
@@ -544,6 +561,13 @@ const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) =>
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  const formatHeader = (header: string) => {
+    return header
+      .replace(/([A-Z])/g, ' $1') // Add space before uppercase letters
+      .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+      .trim();
+  };
+
   const tableRows = rows
     .map((row) => `<tr>${headers.map((header) => `<td>${escapeCell(row[header])}</td>`).join('')}</tr>`)
     .join('');
@@ -552,7 +576,7 @@ const exportRowsToExcel = (filename: string, rows: Record<string, unknown>[]) =>
       <head><meta charset="utf-8" /></head>
       <body>
         <table>
-          <thead><tr>${headers.map((header) => `<th>${escapeCell(header)}</th>`).join('')}</tr></thead>
+          <thead><tr>${headers.map((header) => `<th>${escapeCell(formatHeader(header))}</th>`).join('')}</tr></thead>
           <tbody>${tableRows}</tbody>
         </table>
       </body>
@@ -966,21 +990,20 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Space>
-          <Button onClick={() => startStaffEdit(record)} size="small" type="primary">
-            Edit
-          </Button>
-          <Popconfirm
-            okText="Remove"
-            okButtonProps={{ danger: true }}
-            onConfirm={() => setStaff((currentStaff) => currentStaff.filter((member) => member.email !== record.email))}
-            title="Remove this staff member?"
-          >
-            {/* <Button danger size="small">
-              Remove
-            </Button> */}
-          </Popconfirm>
-        </Space>
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'edit', label: 'Edit' },
+            ],
+            onClick: ({ key }) => {
+              if (key === 'edit') startStaffEdit(record);
+            },
+          }}
+          placement="bottomRight"
+          trigger={['click']}
+        >
+          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+        </Dropdown>
       ),
     },
   ];
@@ -1054,19 +1077,6 @@ export function AdminDashboard() {
           if (key === 'reject') openVehicleApproval(record, 'REJECTED');
         };
 
-        if (items.length <= 1) {
-          return (
-            <Button
-              aria-label={`View ${record.vehicleName}`}
-              className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]"
-              size="small"
-              onClick={() => setSelectedVehicle(record)}
-            >
-              View
-            </Button>
-          );
-        }
-
         return (
           <Dropdown
             menu={{
@@ -1103,9 +1113,16 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Button onClick={() => setSelectedBid(record)} size="small" type="primary">
-          View
-        </Button>
+        <Dropdown
+          menu={{
+            items: [{ key: 'view', label: 'View' }],
+            onClick: ({ key }) => { if (key === 'view') setSelectedBid(record); },
+          }}
+          placement="bottomRight"
+          trigger={['click']}
+        >
+          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+        </Dropdown>
       ),
     },
   ];
@@ -1120,14 +1137,22 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Space>
-          <Button onClick={() => setSelectedDealer(record)} size="small" type="primary">
-            View
-          </Button>
-          <Button onClick={() => startDealerEdit(record)} size="small" type="primary">
-            Edit
-          </Button>
-        </Space>
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'view', label: 'View' },
+              { key: 'edit', label: 'Edit' },
+            ],
+            onClick: ({ key }) => {
+              if (key === 'view') setSelectedDealer(record);
+              if (key === 'edit') startDealerEdit(record);
+            },
+          }}
+          placement="bottomRight"
+          trigger={['click']}
+        >
+          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+        </Dropdown>
       ),
     },
   ];
@@ -1148,9 +1173,16 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Button onClick={() => setSelectedContact(record)} size="small" type="primary">
-          View
-        </Button>
+        <Dropdown
+          menu={{
+            items: [{ key: 'view', label: 'View' }],
+            onClick: ({ key }) => { if (key === 'view') setSelectedContact(record); },
+          }}
+          placement="bottomRight"
+          trigger={['click']}
+        >
+          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+        </Dropdown>
       ),
     },
   ];
@@ -1260,7 +1292,7 @@ export function AdminDashboard() {
     },
     {
       key: 'vehicles',
-      label: 'Vehicle',
+      label: 'Vehicles',
       children: (
         <div className="space-y-4">
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-4">
@@ -1346,7 +1378,7 @@ export function AdminDashboard() {
     },
     {
       key: 'dealers',
-      label: 'Dealer',
+      label: 'Dealers',
       children: (
         <div className="space-y-6">
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
@@ -1407,7 +1439,7 @@ export function AdminDashboard() {
     },
     {
       key: 'contacts',
-      label: 'Contact',
+      label: 'Contacts',
       children: (
         <div className="space-y-4">
           <div className="flex justify-end">
@@ -1423,10 +1455,10 @@ export function AdminDashboard() {
 
   const dashboardMenuItems: { key: DashboardTabKey; label: string }[] = [
     { key: 'staff', label: 'Staff' },
-    { key: 'vehicles', label: 'Vehicle' },
+    { key: 'vehicles', label: 'Vehicles' },
     { key: 'bids', label: 'Bids' },
-    { key: 'dealers', label: 'Dealer' },
-    { key: 'contacts', label: 'Contact' },
+    { key: 'dealers', label: 'Dealers' },
+    { key: 'contacts', label: 'Contacts' },
   ];
   const visibleTabs = user?.role === 'staff' ? tabs.filter((tab) => tab.key !== 'staff') : tabs;
   const visibleDashboardMenuItems = user?.role === 'staff' ? dashboardMenuItems.filter((item) => item.key !== 'staff') : dashboardMenuItems;
