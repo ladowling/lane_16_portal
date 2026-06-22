@@ -293,9 +293,9 @@ function AppInner() {
       {page === 'home' && (
         <Home
           onSellVehicleClick={() => openPage('submitVehicle')}
-          onContactClick={() => openPage('contact')} onLoginClick={function (): void {
-            throw new Error('Function not implemented.');
-          } }        />
+          onContactClick={() => openPage('contact')}
+          onLoginClick={() => openPage('login')}
+        />
       )}
       {page === 'login' && (
         <LoginPage

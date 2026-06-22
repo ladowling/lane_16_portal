@@ -89,11 +89,12 @@ type DealerRecord = {
   dealerEmail: string;
   dealerPhone: string;
   dateCreated: string;
-  dateRegistered: string;
   vehiclesBidUpon: string;
   bidAmount: string;
   bidStatus: string;
   dealerNote: string;
+  lastModifiedBy: string;
+  lastModifiedAt: string;
 };
 
 type ContactRecord = {
@@ -269,52 +270,6 @@ const vehicleSeed: VehicleRecord[] = [
 ];
 
 
-const dealerSeed: DealerRecord[] = [
-  {
-    dealerName: 'Crestline Motors',
-    dealerEmail: 'buydesk@crestline.example',
-    dealerPhone: '(972) 555-0110',
-    dateCreated: '2026-05-18',
-    dateRegistered: 'May 18, 2026',
-    vehiclesBidUpon: 'Mercedes-Benz GLE 350, Ford F-150',
-    bidAmount: '$41,800',
-    bidStatus: 'Current High Bid',
-    dealerNote: 'High close rate and fast inspection scheduling.',
-  },
-  {
-    dealerName: 'Desert Valley Auto',
-    dealerEmail: 'inventory@desertvalley.example',
-    dealerPhone: '(480) 555-0135',
-    dateCreated: '2026-05-21',
-    dateRegistered: 'May 21, 2026',
-    vehiclesBidUpon: 'Toyota Tacoma',
-    bidAmount: '$30,500',
-    bidStatus: 'Current High Bid',
-    dealerNote: 'Prefers trucks and Southwest inventory.',
-  },
-  {
-    dealerName: 'Metro Auto Group',
-    dealerEmail: 'wholesale@metroauto.example',
-    dealerPhone: '(708) 555-0174',
-    dateCreated: '2026-05-24',
-    dateRegistered: 'May 24, 2026',
-    vehiclesBidUpon: 'BMW X5, Mercedes-Benz GLE 350',
-    bidAmount: '$32,900',
-    bidStatus: 'Won',
-    dealerNote: 'Needs title scans before final pickup.',
-  },
-  {
-    dealerName: 'Summit Ford Wholesale',
-    dealerEmail: 'lane16@summitford.example',
-    dealerPhone: '(470) 555-0188',
-    dateCreated: '2026-06-02',
-    dateRegistered: 'Jun 2, 2026',
-    vehiclesBidUpon: 'Ford F-150',
-    bidAmount: '$45,250',
-    bidStatus: 'Won',
-    dealerNote: 'Ford franchise partner with quick payment approval.',
-  },
-];
 
 const contactSeed: ContactRecord[] = [
   {
@@ -525,11 +480,12 @@ const mapDealerRecord = (item: unknown): DealerRecord => {
     dealerEmail: getStringValue(record, ['dealerEmail', 'email']),
     dealerPhone: getStringValue(record, ['dealerPhone', 'phoneNumber', 'phone']),
     dateCreated,
-    dateRegistered: getStringValue(record, ['dateRegistered'], formatDateLabel(dateCreated)),
     vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
     bidAmount: getStringValue(record, ['bidAmount']),
     bidStatus: getStringValue(record, ['bidStatus']),
     dealerNote: getStringValue(record, ['dealerNote', 'note']),
+    lastModifiedBy: getStringValue(record, ['lastModifiedBy'], '-'),
+    lastModifiedAt: getStringValue(record, ['lastModifiedAt']),
   };
 };
 
@@ -615,7 +571,7 @@ export function AdminDashboard() {
   const { logout, token, user } = useAuth();
   const [staff, setStaff] = useState<StaffRecord[]>(staffSeed);
   const [vehicles, setVehicles] = useState<VehicleRecord[]>(vehicleSeed);
-  const [dealers, setDealers] = useState<DealerRecord[]>(dealerSeed);
+  const [dealers, setDealers] = useState<DealerRecord[]>([]);
   const [contacts, setContacts] = useState<ContactRecord[]>(contactSeed);
   const [isStaffLoading, setIsStaffLoading] = useState(false);
   const [isVehiclesLoading, setIsVehiclesLoading] = useState(false);
@@ -1159,7 +1115,8 @@ export function AdminDashboard() {
     { title: 'Dealer Email', dataIndex: 'dealerEmail' },
     { title: 'Dealer Phone', dataIndex: 'dealerPhone' },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
-    { title: 'Date Registered', dataIndex: 'dateRegistered' },
+    { title: 'Last Modified By', dataIndex: 'lastModifiedBy' },
+    { title: 'Last Modified At', dataIndex: 'lastModifiedAt', render: (date: string) => formatDateLabel(date) },
     {
       title: 'Actions',
       render: (_, record) => (
@@ -1729,7 +1686,7 @@ export function AdminDashboard() {
                       { label: 'Dealer Email', value: selectedDealer.dealerEmail },
                       { label: 'Dealer Phone', value: selectedDealer.dealerPhone },
                       { label: 'Date Created', value: formatDateLabel(selectedDealer.dateCreated) },
-                      { label: 'Date Registered', value: selectedDealer.dateRegistered },
+                      { label: 'Last Modified At', value: formatDateLabel(selectedDealer.lastModifiedAt) },
                       { label: 'Dealer Note', value: selectedDealer.dealerNote },
                     ].map((field) => (
                       <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={field.label}>
