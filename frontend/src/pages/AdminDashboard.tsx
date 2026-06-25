@@ -1113,16 +1113,9 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Dropdown
-          menu={{
-            items: [{ key: 'view', label: 'View' }],
-            onClick: ({ key }) => { if (key === 'view') setSelectedBid(record); },
-          }}
-          placement="bottomRight"
-          trigger={['click']}
-        >
-          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
-        </Dropdown>
+        <Button onClick={() => setSelectedBid(record)} size="small" type="primary">
+          View
+        </Button>
       ),
     },
   ];
