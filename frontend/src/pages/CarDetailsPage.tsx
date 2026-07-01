@@ -1,4 +1,4 @@
-import { Col, Row, Typography } from 'antd';
+import { Col, Row, Typography, Spin } from 'antd';
 import type { Vehicle } from '../types';
 import { BidPanel } from '../components/BidPanel';
 import { VehicleGallery } from '../components/VehicleGallery';
@@ -7,11 +7,18 @@ import { VehicleSummary } from '../components/VehicleSummary';
 const { Title } = Typography;
 
 type CarDetailsPageProps = {
-  vehicle: Vehicle;
+  vehicle?: Vehicle;
   onViewReport: () => void;
 };
 
 export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
+  if (!vehicle) {
+    return (
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-black pt-20">
+        <Spin size="large" />
+      </div>
+    );
+  }
   const parseTitle = (title: string) => {
     const parts = title.split(/\s+/);
     const year = parts[0] && /^\d{4}$/.test(parts[0]) ? parts[0] : '';

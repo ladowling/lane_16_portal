@@ -1,4 +1,4 @@
-export type TitleStatus = '4S' | 'Turbo' | 'xDrive' | '4MATIC' | 'F Sport' | 'XSE'  | 'Premium Plus' | '3.5T Sport Prsetige' | 'Touring' | 'Salvage' | 'Rebuilt' | 'Lien' | 'Missing' | 'Unknown' | 'BIDDING_ENDED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'BIDDING_ACTIVE';
+export type TitleStatus = '4S' | 'Turbo' | 'xDrive' | '4MATIC' | 'F Sport' | 'XSE'  | 'Premium Plus' | '3.5T Sport Prsetige' | 'Touring' | 'Salvage' | 'Rebuilt' | 'Lien' | 'Missing' | 'Unknown' | 'BIDDING_ENDED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'BIDDING_ACTIVE' | 'SOLD' | 'AVAILABLE';
 
 export type VehiclePhotoVariant = 'road' | 'garage' | 'silver' | 'detail' | 'engine' | 'interior' | 'spring';
 

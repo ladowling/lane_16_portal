@@ -100,7 +100,7 @@ export const fetchVehicles = (token: string) =>
 export const approveVehicle = (
   token: string,
   id: string,
-  payload: { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string }
+  payload: { status: 'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE'; auctionStartTime?: string; auctionEndTime?: string }
 ) =>
   apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/approve`, {
     method: 'PATCH',

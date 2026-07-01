@@ -317,6 +317,8 @@ const approvalStatusColor: Record<string, string> = {
   REJECTED: 'red',
   BIDDING_ACTIVE: 'cyan',
   BIDDING_ENDED: 'default',
+  SOLD: 'purple',
+  AVAILABLE: 'blue',
 };
 
 const renderApprovalStatusTag = (status: string) => {
@@ -649,7 +651,7 @@ export function AdminDashboard() {
   const [vehicleBidHistoryData, setVehicleBidHistoryData] = useState<BidRecord[]>([]); // kept for TS ref only
   const [allBids, setAllBids] = useState<BidRecord[]>([]);
   const [approvalVehicle, setApprovalVehicle] = useState<VehicleRecord | null>(null);
-  const [approvalStatus, setApprovalStatus] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
+  const [approvalStatus, setApprovalStatus] = useState<'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE'>('APPROVED');
   const [selectedBid, setSelectedBid] = useState<BidRecord | null>(null);
   const [selectedDealer, setSelectedDealer] = useState<DealerRecord | null>(null);
   const [dealerBidHistoryData, setDealerBidHistoryData] = useState<BidRecord[]>([]); // kept for TS ref only
@@ -842,7 +844,7 @@ export function AdminDashboard() {
     }
   };
 
-  const openVehicleApproval = (record: VehicleRecord, status: 'APPROVED' | 'REJECTED') => {
+  const openVehicleApproval = (record: VehicleRecord, status: 'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE') => {
     setApprovalVehicle(record);
     setApprovalStatus(status);
     vehicleApprovalForm.resetFields();
@@ -864,7 +866,7 @@ export function AdminDashboard() {
       return;
     }
 
-    const payload: { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string } = {
+    const payload: { status: 'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE'; auctionStartTime?: string; auctionEndTime?: string } = {
       status: approvalStatus,
     };
 
@@ -898,7 +900,7 @@ export function AdminDashboard() {
       });
       await loadVehicles();
       closeVehicleApproval();
-      message.success(`Vehicle ${approvalStatus === 'APPROVED' ? 'approved' : 'rejected'} successfully.`);
+      message.success(`Vehicle marked as ${approvalStatus.toLowerCase()} successfully.`);
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to update vehicle status.');
     } finally {
@@ -1117,6 +1119,8 @@ export function AdminDashboard() {
         { text: 'Rejected', value: 'REJECTED' },
         { text: 'Bidding Active', value: 'BIDDING_ACTIVE' },
         { text: 'Bidding Ended', value: 'BIDDING_ENDED' },
+        { text: 'Sold', value: 'SOLD' },
+        { text: 'Available', value: 'AVAILABLE' },
       ],
       onFilter: (value, record) => record.status.toUpperCase() === value,
       render: renderApprovalStatusTag,
@@ -1125,12 +1129,21 @@ export function AdminDashboard() {
       title: 'Actions',
       render: (_, record) => {
         const isPending = record.status === 'PENDING';
+        const isBiddingEnded = record.status === 'BIDDING_ENDED';
+        const isAvailable = record.status === 'AVAILABLE';
+
         const items = [
           { key: 'view', label: 'View' },
-          ...(isPending && record.id
+          ...((isPending || isAvailable) && record.id
             ? [
                 { key: 'approve', label: 'Approve' },
                 { key: 'reject', label: 'Reject', danger: true },
+              ]
+            : []),
+          ...(isBiddingEnded && record.id
+            ? [
+                { key: 'mark_sold', label: 'Mark as Sold' },
+                { key: 'mark_available', label: 'Mark as Available' },
               ]
             : []),
         ];
@@ -1139,6 +1152,8 @@ export function AdminDashboard() {
           if (key === 'view') setSelectedVehicle(record);
           if (key === 'approve') openVehicleApproval(record, 'APPROVED');
           if (key === 'reject') openVehicleApproval(record, 'REJECTED');
+          if (key === 'mark_sold') openVehicleApproval(record, 'SOLD');
+          if (key === 'mark_available') openVehicleApproval(record, 'AVAILABLE');
         };
 
         return (
@@ -1231,16 +1246,9 @@ export function AdminDashboard() {
     {
       title: 'Actions',
       render: (_, record) => (
-        <Dropdown
-          menu={{
-            items: [{ key: 'view', label: 'View' }],
-            onClick: ({ key }) => { if (key === 'view') setSelectedContact(record); },
-          }}
-          placement="bottomRight"
-          trigger={['click']}
-        >
-          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
-        </Dropdown>
+        <Button onClick={() => setSelectedContact(record)} size="small" type="primary">
+          View
+        </Button>
       ),
     },
   ];
@@ -1740,11 +1748,11 @@ export function AdminDashboard() {
         centered
         confirmLoading={isVehicleApprovalSaving}
         okButtonProps={{ danger: approvalStatus === 'REJECTED' }}
-        okText={approvalStatus === 'APPROVED' ? 'Approve Vehicle' : 'Reject Vehicle'}
+        okText={approvalStatus === 'APPROVED' ? 'Approve Vehicle' : approvalStatus === 'SOLD' ? 'Mark as Sold' : approvalStatus === 'AVAILABLE' ? 'Mark as Available' : 'Reject Vehicle'}
         onCancel={closeVehicleApproval}
         onOk={() => vehicleApprovalForm.submit()}
         open={Boolean(approvalVehicle)}
-        title={<span className="text-white m-3">{approvalStatus === 'APPROVED' ? 'Approve Vehicle' : 'Reject Vehicle'}</span>}
+        title={<span className="text-white m-3">{approvalStatus === 'APPROVED' ? 'Approve Vehicle' : approvalStatus === 'SOLD' ? 'Mark as Sold' : approvalStatus === 'AVAILABLE' ? 'Mark as Available' : 'Reject Vehicle'}</span>}
         className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
         <Form
