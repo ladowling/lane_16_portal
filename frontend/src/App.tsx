@@ -188,12 +188,13 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
       [getStringValue(record, ['exteriorColor']), getStringValue(record, ['interiorColor'])].filter(Boolean).join('/'),
       getStringValue(record, ['condition']),
     ].filter(Boolean),
-    description: getStringValue(record, ['description', 'sellerNote'], 'Seller-submitted vehicle listing.'),
+    description: getStringValue(record, ['description', 'sellerNote'], ''),
     condition: getStringValue(record, ['condition'], ''),
     // Auction timing fields
     auctionStartTime: auctionStartTime || undefined,
     auctionEndTime: auctionEndTime || undefined,
     bidIncrementAmount: typeof record.bidIncrementNo === 'number' ? record.bidIncrementNo : Number(record.bidIncrementNo) || undefined,
+    reserveMet: Boolean(record.reserveMet),
   };
 };
 // ---------------------------------------------------------------------------
@@ -206,6 +207,7 @@ function AppInner() {
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
   const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>(staticVehicles);
+  const [isLoadingInventory, setIsLoadingInventory] = useState(false);
 
   const selectedVehicle = useMemo(
     () => inventoryVehicles.find((v) => v.id === selectedVehicleId) ?? inventoryVehicles[0],
@@ -215,6 +217,11 @@ function AppInner() {
   // Expose loadDealerInventory as a stable callback so CarDetailsPage can call it after a bid
   const loadDealerInventory = useCallback(async () => { // eslint-disable-line react-hooks/exhaustive-deps
     if (user?.role !== 'dealer' || !token) return;
+    setIsLoadingInventory(true);
+    // Clear out static placeholder data if it exists
+    if (inventoryVehicles === staticVehicles) {
+      setInventoryVehicles([]);
+    }
     try {
       const response = await fetchVehicles(token);
       const approvedVehicles = getArrayPayload(response)
@@ -226,6 +233,8 @@ function AppInner() {
       }
     } catch {
       setInventoryVehicles([]);
+    } finally {
+      setIsLoadingInventory(false);
     }
   }, [token, user?.role, selectedVehicleId]);
 
@@ -311,7 +320,7 @@ function AppInner() {
       {/* ── Dealer-only pages ────────────────────────────────────────── */}
       {page === 'inventory' && (
         <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
-          <InventoryPage vehicles={inventoryVehicles} onVehicleSelect={openVehicleDetails} />
+          <InventoryPage vehicles={inventoryVehicles} isLoading={isLoadingInventory} onVehicleSelect={openVehicleDetails} />
         </ProtectedRoute>
       )}
       {page === 'details' && (

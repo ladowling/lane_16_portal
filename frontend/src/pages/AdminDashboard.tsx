@@ -7,7 +7,7 @@ import { DetailModal } from './adminDashboard/components/DetailModal';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createDealer, createStaff, fetchContacts, fetchDealers, fetchDealerBids, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateDealer, updateStaff } from '../api';
+import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -64,6 +64,15 @@ type VehicleRecord = {
   interiorColor: string;
   smokerVehicle: string;
   reserveMet: string;
+  kbbTradeInValue?: number;
+  kbbPrivatePartyValue?: number;
+  mmrValue?: number;
+  carMaxOffer?: number;
+  carvanaOffer?: number;
+  acvWholesaleEstimate?: number;
+  finalTransactionPrice?: number | null;
+  reasonNotSold?: string | null;
+  adminValuationNotes?: string | null;
 };
 
 type BidRecord = {
@@ -72,22 +81,26 @@ type BidRecord = {
   dealerId: string;
   dateCreated: string;
   vehicleName: string;
-  dealerName: string;
-  dealerEmail: string;
-  dealerPhone: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
   contactPerson: string;
   contactPhone: string;
   bidAmount: string;
   bidStatus: 'currentHighBid' | string;
   note: string;
   bidTimestamp: string;
+  dealershipName?: string;
+  dealershipAddress?: string;
 };
 
 type DealerRecord = {
   id?: string;
-  dealerName: string;
-  dealerEmail: string;
-  dealerPhone: string;
+  dealerName: string;       // buyer's name
+  dealerEmail: string;      // buyer's email
+  dealerPhone: string;      // buyer's phone
+  dealershipName: string;   // default dealership name
+  dealershipAddress: string; // default dealership address
   dateCreated: string;
   vehiclesBidUpon: string;
   bidAmount: string;
@@ -484,18 +497,32 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     interiorColor: getStringValue(record, ['interiorColor']),
     smokerVehicle: getBooleanLabel(record.smokerVehicle),
     reserveMet: getBooleanLabel(record.reserveMet),
+    kbbTradeInValue: getNumberValue(record, ['kbbTradeInValue']),
+    kbbPrivatePartyValue: getNumberValue(record, ['kbbPrivatePartyValue']),
+    mmrValue: getNumberValue(record, ['mmrValue']),
+    carMaxOffer: getNumberValue(record, ['carMaxOffer']),
+    carvanaOffer: getNumberValue(record, ['carvanaOffer']),
+    acvWholesaleEstimate: getNumberValue(record, ['acvWholesaleEstimate']),
+    finalTransactionPrice: getNumberValue(record, ['finalTransactionPrice']) || null,
+    reasonNotSold: getStringValue(record, ['reasonNotSold']) || null,
+    adminValuationNotes: getStringValue(record, ['adminValuationNotes']) || null,
   };
 };
 
 const mapDealerRecord = (item: unknown): DealerRecord => {
   const record = (item ?? {}) as Record<string, unknown>;
   const dateCreated = getDateValue(record);
+  // Buyers may have a dealerships array; pick the first one as the default
+  const dealerships = Array.isArray(record.dealerships) ? record.dealerships as Record<string, unknown>[] : [];
+  const defaultDealership = dealerships[0] ?? {};
 
   return {
     id: getStringValue(record, ['id', '_id']),
     dealerName: getStringValue(record, ['dealerName', 'name']),
     dealerEmail: getStringValue(record, ['dealerEmail', 'email']),
     dealerPhone: getStringValue(record, ['dealerPhone', 'phoneNumber', 'phone']),
+    dealershipName: getStringValue(defaultDealership as Record<string, unknown>, ['name'], 'N/A'),
+    dealershipAddress: getStringValue(defaultDealership as Record<string, unknown>, ['address'], 'N/A'),
     dateCreated,
     vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
     bidAmount: formatCurrency(getStringValue(record, ['bidAmount'])),
@@ -511,7 +538,7 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
   const dateCreated = getDateValue(record);
   
   const vehicleId = getStringValue(record, ['vehicleId', 'vehicle']);
-  const dealerId = getStringValue(record, ['dealerId', 'dealer']);
+  const dealerId = getStringValue(record, ['buyerId', 'dealerId', 'dealer']);
   
   const matchedVehicle = vehicles.find(v => v.id === vehicleId);
   const matchedDealer = dealers.find(d => d.id === dealerId);
@@ -521,16 +548,18 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
     vehicleId,
     dealerId,
     dateCreated,
-    vehicleName: matchedVehicle?.vehicleName || getStringValue(record, ['vehicleName']),
-    dealerName: matchedDealer?.dealerName || getStringValue(record, ['dealerName']),
-    dealerEmail: matchedDealer?.dealerEmail || getStringValue(record, ['dealerEmail', 'email']),
-    dealerPhone: matchedDealer?.dealerPhone || getStringValue(record, ['dealerPhone', 'phone']),
+    vehicleName: matchedVehicle?.vehicleName || getStringValue((record.vehicle ?? {}) as Record<string, unknown>, ['vehicleName']) || getStringValue(record, ['vehicleName']),
+    buyerName: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['name']) || matchedDealer?.dealerName || getStringValue(record, ['buyerName', 'dealerName']),
+    buyerEmail: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['email']) || matchedDealer?.dealerEmail || getStringValue(record, ['buyerEmail', 'dealerEmail', 'email']),
+    buyerPhone: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['phoneNumber', 'phone']) || matchedDealer?.dealerPhone || getStringValue(record, ['buyerPhone', 'dealerPhone', 'phone']),
     contactPerson: getStringValue(record, ['contactPerson']),
     contactPhone: getStringValue(record, ['contactPhone']),
     bidAmount: formatCurrency(getStringValue(record, ['bidAmount', 'amount'])),
     bidStatus: getStringValue(record, ['bidStatus', 'status'], 'currentHighBid'),
     note: getStringValue(record, ['note']),
     bidTimestamp: getStringValue(record, ['bidTimestamp', 'createdAt'], dateCreated),
+    dealershipName: getStringValue(record, ['dealershipName']),
+    dealershipAddress: getStringValue(record, ['dealershipAddress']),
   };
 };
 
@@ -611,7 +640,7 @@ export function AdminDashboard() {
   const [dealerDateFilter, setDealerDateFilter] = useState('');
   const [bidDateFilter, setBidDateFilter] = useState('');
   const [bidVehicleNameFilter, setBidVehicleNameFilter] = useState('');
-  const [bidDealerNameFilter, setBidDealerNameFilter] = useState('');
+  const [bidBuyerNameFilter, setBidBuyerNameFilter] = useState('');
   const [dealerNameFilter, setDealerNameFilter] = useState('');
   const [editingStaffEmail, setEditingStaffEmail] = useState<string | null>(null);
   const [editingDealerEmail, setEditingDealerEmail] = useState<string | null>(null);
@@ -628,8 +657,10 @@ export function AdminDashboard() {
   const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [form] = Form.useForm<StaffRecord>();
-  const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
+  const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone' | 'dealershipName' | 'dealershipAddress'>>();
   const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
+  const [vehicleValuationForm] = Form.useForm();
+  const [isVehicleValuationSaving, setIsVehicleValuationSaving] = useState(false);
 
   const loadStaff = async () => {
     if (!token || user?.role !== 'admin') {
@@ -670,7 +701,7 @@ export function AdminDashboard() {
 
     setIsDealersLoading(true);
     try {
-      const response = await fetchDealers(token);
+      const response = await fetchBuyers(token);
       setDealers(getArrayPayload(response).map(mapDealerRecord));
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to load dealers.');
@@ -704,7 +735,10 @@ export function AdminDashboard() {
 
   useEffect(() => {
     if (token && vehicles.length > 0 && dealers.length > 0) {
-      Promise.all(vehicles.map((v) => fetchVehicleBids(token, v.id!).catch(() => [])))
+      const validVehicles = vehicles.filter((v) => !!v.id);
+      if (validVehicles.length === 0) return;
+      
+      Promise.all(validVehicles.map((v) => fetchVehicleBids(token, v.id!).catch(() => [])))
         .then((responses) => {
           const flatResponses = responses.flatMap((r) => getArrayPayload(r));
           setAllBids(flatResponses.map((b) => mapBidRecord(b, vehicles, dealers)));
@@ -767,9 +801,9 @@ export function AdminDashboard() {
     });
   };
 
-  const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
+  const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone' | 'dealershipName' | 'dealershipAddress'>) => {
     if (!token) {
-      message.error('You must be logged in to onboard dealers.');
+      message.error('You must be logged in to onboard buyers.');
       return;
     }
 
@@ -778,29 +812,31 @@ export function AdminDashboard() {
       if (editingDealerEmail) {
         const existingDealer = dealers.find((d) => d.dealerEmail === editingDealerEmail);
         if (existingDealer?.id) {
-          await updateDealer(token, existingDealer.id, {
+          await updateBuyer(token, existingDealer.id, {
             name: values.dealerName,
             email: values.dealerEmail,
             phoneNumber: values.dealerPhone,
+            dealerships: [{ name: values.dealershipName, address: values.dealershipAddress }],
           });
-          message.success('Dealer updated successfully.');
+          message.success('Buyer updated successfully.');
         } else {
-          message.error('Unable to find dealer ID for update.');
+          message.error('Unable to find buyer ID for update.');
         }
         setEditingDealerEmail(null);
       } else {
-        await createDealer(token, {
+        await createBuyer(token, {
           name: values.dealerName,
           email: values.dealerEmail,
           phoneNumber: values.dealerPhone,
+          dealerships: [{ name: values.dealershipName, address: values.dealershipAddress }],
         });
-        setTemporaryPasswordMessage('Dealer created successfully.');
-        message.success('Dealer onboarded successfully.');
+        setTemporaryPasswordMessage('Buyer created successfully.');
+        message.success('Buyer onboarded successfully.');
       }
       await loadDealers();
       dealerForm.resetFields();
     } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Unable to onboard dealer.');
+      message.error(error instanceof Error ? error.message : 'Unable to onboard buyer.');
     } finally {
       setIsDealerSaving(false);
     }
@@ -864,11 +900,39 @@ export function AdminDashboard() {
       closeVehicleApproval();
       message.success(`Vehicle ${approvalStatus === 'APPROVED' ? 'approved' : 'rejected'} successfully.`);
     } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Unable to update vehicle approval.');
+      message.error(error instanceof Error ? error.message : 'Unable to update vehicle status.');
     } finally {
       setIsVehicleApprovalSaving(false);
     }
   };
+
+  const saveVehicleValuation = async (values: any) => {
+    if (!token || !selectedVehicle?.id) return;
+    
+    setIsVehicleValuationSaving(true);
+    try {
+      const parsedValues = {
+        ...values,
+        kbbTradeInValue: values.kbbTradeInValue ? Number(values.kbbTradeInValue) : undefined,
+        kbbPrivatePartyValue: values.kbbPrivatePartyValue ? Number(values.kbbPrivatePartyValue) : undefined,
+        mmrValue: values.mmrValue ? Number(values.mmrValue) : undefined,
+        carMaxOffer: values.carMaxOffer ? Number(values.carMaxOffer) : undefined,
+        carvanaOffer: values.carvanaOffer ? Number(values.carvanaOffer) : undefined,
+        acvWholesaleEstimate: values.acvWholesaleEstimate ? Number(values.acvWholesaleEstimate) : undefined,
+        finalTransactionPrice: values.finalTransactionPrice ? Number(values.finalTransactionPrice) : null,
+      };
+      await updateVehicleValuation(token, selectedVehicle.id, parsedValues);
+      message.success('Vehicle valuation updated successfully.');
+      await loadVehicles(); // refresh data
+      // Update selected vehicle in state so modal doesn't need to close
+      setSelectedVehicle(prev => prev ? { ...prev, ...parsedValues } : null);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update vehicle valuation.');
+    } finally {
+      setIsVehicleValuationSaving(false);
+    }
+  };
+
   const vehicleMakeOptions = useMemo(
     () => Array.from(new Set(vehicles.map((vehicle) => vehicle.make).filter(Boolean))).map((make) => ({ label: make, value: make })),
     [vehicles]
@@ -884,8 +948,8 @@ export function AdminDashboard() {
     [allBids]
   );
 
-  const bidDealerNameOptions = useMemo(
-    () => Array.from(new Set(allBids.map((b) => b.dealerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
+  const bidBuyerNameOptions = useMemo(
+    () => Array.from(new Set(allBids.map((b) => b.buyerName).filter(Boolean))).map((d) => ({ label: d, value: d })),
     [allBids]
   );
 
@@ -922,9 +986,9 @@ export function AdminDashboard() {
         (bid) =>
           (!bidDateFilter || bid.dateCreated === bidDateFilter) &&
           (!bidVehicleNameFilter || bid.vehicleName.toLowerCase().includes(bidVehicleNameFilter.toLowerCase())) &&
-          (!bidDealerNameFilter || bid.dealerName.toLowerCase().includes(bidDealerNameFilter.toLowerCase()))
+          (!bidBuyerNameFilter || bid.buyerName.toLowerCase().includes(bidBuyerNameFilter.toLowerCase()))
       ),
-    [bidDateFilter, bidVehicleNameFilter, bidDealerNameFilter, allBids]
+    [bidDateFilter, bidVehicleNameFilter, bidBuyerNameFilter, allBids]
   );
 
   const filteredDealers = useMemo(
@@ -1102,8 +1166,8 @@ export function AdminDashboard() {
     { title: 'Bid ID', dataIndex: 'bidId' },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Vehicle Name', dataIndex: 'vehicleName' },
-    { title: 'Dealer Name', dataIndex: 'dealerName' },
-    { title: 'Dealer Email', dataIndex: 'dealerEmail' },
+    { title: 'Buyer Name', dataIndex: 'buyerName' },
+    { title: 'Buyer Email', dataIndex: 'buyerEmail' },
     { title: 'Bid Amount', dataIndex: 'bidAmount' },
     {
       title: 'Bid Status',
@@ -1121,9 +1185,10 @@ export function AdminDashboard() {
   ];
 
   const dealerColumns: TableColumnsType<DealerRecord> = [
-    { title: 'Dealer Name', dataIndex: 'dealerName' },
-    { title: 'Dealer Email', dataIndex: 'dealerEmail' },
-    { title: 'Dealer Phone', dataIndex: 'dealerPhone' },
+    { title: 'Buyer Name', dataIndex: 'dealerName' },
+    { title: 'Buyer Email', dataIndex: 'dealerEmail' },
+    { title: 'Buyer Phone', dataIndex: 'dealerPhone' },
+    { title: 'Dealership Name', dataIndex: 'dealershipName' },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Last Modified By', dataIndex: 'lastModifiedBy' },
     { title: 'Last Modified At', dataIndex: 'lastModifiedAt', render: (date: string) => formatDateLabel(date) },
@@ -1348,10 +1413,10 @@ export function AdminDashboard() {
               <Select
                 allowClear
                 className="min-w-[200px] [&_.ant-select-selector]:!border-[#575757] [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-[#a8a8a8]"
-                onChange={(val) => setBidDealerNameFilter(val ?? '')}
-                options={bidDealerNameOptions}
-                placeholder="Filter by dealer name"
-                value={bidDealerNameFilter || undefined}
+                onChange={(val) => setBidBuyerNameFilter(val ?? '')}
+                options={bidBuyerNameOptions}
+                placeholder="Filter by buyer name"
+                value={bidBuyerNameFilter || undefined}
               />
               <DatePicker
                 allowClear
@@ -1359,7 +1424,7 @@ export function AdminDashboard() {
                 onChange={(_, dateString) => setBidDateFilter(normalizeDateString(dateString))}
                 placeholder="Filter by date created"
               />
-              <Button onClick={() => { setBidDateFilter(''); setBidVehicleNameFilter(''); setBidDealerNameFilter(''); }}>Clear Filters</Button>
+              <Button onClick={() => { setBidDateFilter(''); setBidVehicleNameFilter(''); setBidBuyerNameFilter(''); }}>Clear Filters</Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('bids', filteredBids)}>
                 Export
               </Button>
@@ -1376,23 +1441,29 @@ export function AdminDashboard() {
         <div className="space-y-6">
           <section className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
             <Title className="!mb-5 !mt-0 !text-2xl !text-white" level={2}>
-              {editingDealerEmail ? 'Edit Dealer' : 'Onboard Dealer'}
+              {editingDealerEmail ? 'Edit Buyer' : 'Onboard Buyer'}
             </Title>
             <Form form={dealerForm} layout="vertical" onFinish={saveDealer} className="[&_.ant-form-item-label>label]:!text-white [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white">
-              <div className="grid grid-cols-[1fr_1fr_220px_auto] gap-4 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
-                <Form.Item label="Dealer Name" name="dealerName" rules={[{ required: true, message: 'Enter dealer name' }]}>
-                  <Input placeholder="Dealer name" />
+              <div className="grid grid-cols-2 gap-4 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
+                <Form.Item label="Buyer Name" name="dealerName" rules={[{ required: true, message: 'Enter buyer name' }]}>
+                  <Input placeholder="e.g. John Doe" />
                 </Form.Item>
-                <Form.Item label="Dealer Email" name="dealerEmail" rules={[{ required: true, message: 'Enter dealer email' }, { type: 'email', message: 'Enter a valid email' }]}>
-                  <Input placeholder="dealer@company.com" />
+                <Form.Item label="Buyer Email" name="dealerEmail" rules={[{ required: true, message: 'Enter buyer email' }, { type: 'email', message: 'Enter a valid email' }]}>
+                  <Input placeholder="buyer@company.com" />
                 </Form.Item>
-                <Form.Item label="Phone No" name="dealerPhone" rules={[{ required: true, message: 'Enter phone number' }]}>
+                <Form.Item label="Buyer Phone" name="dealerPhone" rules={[{ required: true, message: 'Enter phone number' }]}>
                   <Input placeholder="(555) 555-0123" />
                 </Form.Item>
-                <Form.Item label=" " className="max-[620px]:!mb-0">
+                <Form.Item label="Dealership Name" name="dealershipName" rules={[{ required: true, message: 'Enter dealership name' }]}>
+                  <Input placeholder="e.g. Metro Auto Group" />
+                </Form.Item>
+                <Form.Item label="Dealership Address" name="dealershipAddress" rules={[{ required: true, message: 'Enter dealership address' }]}>
+                  <Input placeholder="e.g. 123 Main St, Louisville, KY" />
+                </Form.Item>
+                <Form.Item label=" " className="max-[620px]:!mb-0 flex items-end">
                   <Space>
                     <Button htmlType="submit" loading={isDealerSaving} type="primary">
-                      {editingDealerEmail ? 'Save' : 'Add Dealer'}
+                      {editingDealerEmail ? 'Save' : 'Add Buyer'}
                     </Button>
                     {editingDealerEmail && (
                       <Button onClick={() => { setEditingDealerEmail(null); dealerForm.resetFields(); }}>
@@ -1531,6 +1602,11 @@ export function AdminDashboard() {
         centered
         footer={null}
         onCancel={() => setSelectedVehicle(null)}
+        afterOpenChange={(open) => {
+          if (open && selectedVehicle) {
+            vehicleValuationForm.setFieldsValue(selectedVehicle);
+          }
+        }}
         open={Boolean(selectedVehicle)}
         title={<span className="text-white m-3">{selectedVehicle?.vehicleName ?? 'Vehicle Details'}</span>}
         width={980}
@@ -1603,6 +1679,59 @@ export function AdminDashboard() {
                   />
                 ),
               },
+              {
+                key: 'vehicle-valuation',
+                label: 'Valuation & Conclusion',
+                children: (
+                  <div className="space-y-6">
+                    <Paragraph className="!text-[#c8c8c8]">
+                      These fields are for internal use to track wholesale values and final sale status.
+                    </Paragraph>
+                    <Form
+                      form={vehicleValuationForm}
+                      layout="vertical"
+                      onFinish={saveVehicleValuation}
+                      initialValues={selectedVehicle}
+                      className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-number]:!w-full [&_.ant-input-number]:!bg-[#242424] [&_.ant-input-number]:!border-[#575757] [&_.ant-input-number-input]:!text-white [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white"
+                    >
+                      <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                        <Form.Item label="KBB Trade-In Value ($)" name="kbbTradeInValue">
+                          <Input type="number" prefix="$" placeholder="e.g. 25000" />
+                        </Form.Item>
+                        <Form.Item label="KBB Private Party Value ($)" name="kbbPrivatePartyValue">
+                          <Input type="number" prefix="$" placeholder="e.g. 28000" />
+                        </Form.Item>
+                        <Form.Item label="MMR Value ($)" name="mmrValue">
+                          <Input type="number" prefix="$" placeholder="e.g. 26000" />
+                        </Form.Item>
+                        <Form.Item label="ACV Wholesale Estimate ($)" name="acvWholesaleEstimate">
+                          <Input type="number" prefix="$" placeholder="e.g. 25500" />
+                        </Form.Item>
+                        <Form.Item label="CarMax Offer ($)" name="carMaxOffer">
+                          <Input type="number" prefix="$" placeholder="e.g. 24000" />
+                        </Form.Item>
+                        <Form.Item label="Carvana Offer ($)" name="carvanaOffer">
+                          <Input type="number" prefix="$" placeholder="e.g. 24500" />
+                        </Form.Item>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                        <Form.Item label="Final Transaction Price ($)" name="finalTransactionPrice">
+                          <Input type="number" prefix="$" placeholder="e.g. 25000" />
+                        </Form.Item>
+                        <Form.Item label="Reason Not Sold" name="reasonNotSold">
+                          <Input placeholder="e.g. Seller backed out, Reserve not met" />
+                        </Form.Item>
+                      </div>
+                      <Form.Item label="Admin Valuation Notes" name="adminValuationNotes" className="mt-4">
+                        <Input.TextArea rows={4} placeholder="Internal notes..." />
+                      </Form.Item>
+                      <Button type="primary" htmlType="submit" loading={isVehicleValuationSaving}>
+                        Save Valuation Data
+                      </Button>
+                    </Form>
+                  </div>
+                ),
+              },
             ]}
           />
         )}
@@ -1672,9 +1801,11 @@ export function AdminDashboard() {
                   fields: [
                     { label: 'Bid ID', value: selectedBid.bidId },
                     { label: 'Vehicle Name', value: selectedBid.vehicleName },
-                    { label: 'Dealer Name', value: selectedBid.dealerName },
-                    { label: 'Dealer Email', value: selectedBid.dealerEmail },
-                    { label: 'Dealer Phone', value: selectedBid.dealerPhone },
+                    { label: 'Buyer Name', value: selectedBid.buyerName },
+                    { label: 'Buyer Email', value: selectedBid.buyerEmail },
+                    { label: 'Buyer Phone', value: selectedBid.buyerPhone },
+                    { label: 'Dealership Override Name', value: selectedBid.dealershipName },
+                    { label: 'Dealership Override Address', value: selectedBid.dealershipAddress },
                     { label: 'Contact Person', value: selectedBid.contactPerson },
                     { label: 'Contact Phone', value: selectedBid.contactPhone },
                     { label: 'Bid Amount', value: selectedBid.bidAmount },
@@ -1692,7 +1823,7 @@ export function AdminDashboard() {
         footer={null}
         onCancel={() => setSelectedDealer(null)}
         open={Boolean(selectedDealer)}
-        title={<span className="text-white m-3">{selectedDealer?.dealerName ?? 'Dealer Details'}</span>}
+        title={<span className="text-white m-3">{selectedDealer?.dealerName ?? 'Buyer Details'}</span>}
         width={980}
         className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
       >
@@ -1701,19 +1832,21 @@ export function AdminDashboard() {
             defaultActiveKey="dealer-details"
             className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-black [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
             items={[
-              {
-                key: 'dealer-details',
-                label: 'Dealer Details',
-                children: (
-                  <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
-                    {[
-                      { label: 'Dealer Name', value: selectedDealer.dealerName },
-                      { label: 'Dealer Email', value: selectedDealer.dealerEmail },
-                      { label: 'Dealer Phone', value: selectedDealer.dealerPhone },
-                      { label: 'Date Created', value: formatDateLabel(selectedDealer.dateCreated) },
-                      { label: 'Last Modified At', value: formatDateLabel(selectedDealer.lastModifiedAt) },
-                      { label: 'Dealer Note', value: selectedDealer.dealerNote },
-                    ].map((field) => (
+                    {
+                      key: 'dealer-details',
+                      label: 'Buyer Details',
+                      children: (
+                        <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                          {[
+                            { label: 'Buyer Name', value: selectedDealer.dealerName },
+                            { label: 'Buyer Email', value: selectedDealer.dealerEmail },
+                            { label: 'Buyer Phone', value: selectedDealer.dealerPhone },
+                            { label: 'Dealership Name', value: selectedDealer.dealershipName },
+                            { label: 'Dealership Address', value: selectedDealer.dealershipAddress },
+                            { label: 'Date Created', value: formatDateLabel(selectedDealer.dateCreated) },
+                            { label: 'Last Modified At', value: formatDateLabel(selectedDealer.lastModifiedAt) },
+                            { label: 'Last Modified By', value: selectedDealer.lastModifiedBy },
+                          ].map((field) => (
                       <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={field.label}>
                         <Text className="block !text-xs !font-extrabold !uppercase !text-white">
                           {field.label}

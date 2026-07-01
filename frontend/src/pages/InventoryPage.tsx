@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Button, Col, Empty, Input, Row, Select, Segmented, Table, Typography, message } from 'antd';
+import { Button, Col, Empty, Input, Row, Select, Segmented, Spin, Table, Typography, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import type { Vehicle } from '../types';
 import { VehicleCard } from '../components/VehicleCard';
@@ -47,10 +47,11 @@ const toSelectOptions = (values: string[]) => [
 
 type InventoryPageProps = {
   vehicles: Vehicle[];
+  isLoading?: boolean;
   onVehicleSelect: (vehicleId: string) => void;
 };
 
-export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps) {
+export function InventoryPage({ vehicles, isLoading, onVehicleSelect }: InventoryPageProps) {
   const [selectedMake, setSelectedMake] = useState<string>();
   const [selectedModel, setSelectedModel] = useState<string>();
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,6 +86,7 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
       .filter(({ make }) => !selectedMake || make === selectedMake)
       .filter(({ model }) => !selectedModel || model === selectedModel)
       .filter(({ vehicle }) => !normalizedSearchTerm || getVehicleSearchText(vehicle).includes(normalizedSearchTerm))
+      .filter(({ vehicle }) => vehicle.biddingStatusLabel !== 'Bidding ended')
       .map(({ vehicle }) => vehicle);
   }, [searchTerm, selectedMake, selectedModel, vehicleFilters]);
 
@@ -218,14 +220,16 @@ export function InventoryPage({ vehicles, onVehicleSelect }: InventoryPageProps)
         />
       </div>
 
-      {filteredVehicles.length === 0 && (
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Spin size="large" />
+        </div>
+      ) : filteredVehicles.length === 0 ? (
         <Empty
           className="rounded-lg border border-[#555555] bg-[#0c0c0c] py-12"
           description={<span className="text-white">No vehicles match your filters.</span>}
         />
-      )}
-
-      {viewMode === 'gallery' ? (
+      ) : viewMode === 'gallery' ? (
         <Row gutter={[34, 34]}>
           {filteredVehicles.map((vehicle) => (
             <Col key={vehicle.id} xs={24} md={12} xl={8}>

@@ -70,6 +70,8 @@ export function BidPanel({ vehicle }: BidPanelProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dealershipName, setDealershipName] = useState('');
+  const [dealershipAddress, setDealershipAddress] = useState('');
 
   const canBid = vehicle.canBid === true;
 
@@ -103,10 +105,12 @@ export function BidPanel({ vehicle }: BidPanelProps) {
     if (!token) return;
     setIsSubmitting(true);
     try {
-      await placeBid(token, vehicle.id, parsedBid);
+      await placeBid(token, vehicle.id, parsedBid, dealershipName.trim() || undefined, dealershipAddress.trim() || undefined);
       setIsConfirmOpen(false);
       setIsSuccessOpen(true);
       setBidAmount('');
+      setDealershipName('');
+      setDealershipAddress('');
     } catch (err) {
       message.error(err instanceof Error ? err.message : 'Failed to place bid. Please try again.');
     } finally {
@@ -153,6 +157,11 @@ export function BidPanel({ vehicle }: BidPanelProps) {
               <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400">
                 <FireOutlined /> LIVE
               </span>
+              {vehicle.reserveMet && (
+                <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400 animate-pulse">
+                  Reserve Met
+                </span>
+              )}
             </>
           ) : (
             <div className="flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-5 py-3 text-[#c8c8c8]">
@@ -191,6 +200,23 @@ export function BidPanel({ vehicle }: BidPanelProps) {
               type="number"
               min={nextMin}
             />
+            <div className="mb-4 space-y-3">
+              <Text className="block !text-sm !text-[#c8c8c8]">
+                Bidding on behalf of another dealership? Provide details below to override your default dealership.
+              </Text>
+              <Input
+                className="!h-10 !rounded-lg !border-white !bg-[#242424] !text-base !text-white placeholder:!text-[#888]"
+                placeholder="Dealership Name (Optional)"
+                value={dealershipName}
+                onChange={(e) => setDealershipName(e.target.value)}
+              />
+              <Input
+                className="!h-10 !rounded-lg !border-white !bg-[#242424] !text-base !text-white placeholder:!text-[#888]"
+                placeholder="Dealership Address (Optional)"
+                value={dealershipAddress}
+                onChange={(e) => setDealershipAddress(e.target.value)}
+              />
+            </div>
             <Button
               type="primary"
               size="large"
@@ -228,7 +254,14 @@ export function BidPanel({ vehicle }: BidPanelProps) {
           <Title className="!mt-1 !text-[#111]" level={3}>
             {displayBid}
           </Title>
-          <Paragraph className="mt-2 !text-base !text-[#555]">
+          {(dealershipName.trim() || dealershipAddress.trim()) && (
+            <div className="mt-4 rounded-lg bg-[#f9f9f9] p-3 text-left border border-[#eee]">
+              <Text className="!text-xs !font-bold !uppercase !tracking-widest !text-[#888] block mb-1">Dealership Override</Text>
+              {dealershipName.trim() && <div className="text-sm"><strong>Name:</strong> {dealershipName}</div>}
+              {dealershipAddress.trim() && <div className="text-sm"><strong>Address:</strong> {dealershipAddress}</div>}
+            </div>
+          )}
+          <Paragraph className="mt-4 !text-base !text-[#555]">
             This action cannot be undone
           </Paragraph>
           <Space size={20} className="mt-6 flex-wrap justify-center">

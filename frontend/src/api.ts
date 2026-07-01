@@ -39,7 +39,7 @@ export type ApiAuthUser = {
   id: string;
   email: string;
   name: string;
-  role: 'STAFF' | 'DEALER';
+  role: 'STAFF' | 'BUYER';
   isAdmin: boolean;
 };
 
@@ -47,7 +47,7 @@ export const mapApiUser = (user: ApiAuthUser): AuthUser => ({
   id: user.id,
   email: user.email,
   name: user.name,
-  role: user.role === 'DEALER' ? 'dealer' : user.isAdmin ? 'admin' : 'staff',
+  role: user.role === 'BUYER' ? 'dealer' : user.isAdmin ? 'admin' : 'staff',
 });
 
 export const loginUser = (email: string, password: string) =>
@@ -108,6 +108,28 @@ export const approveVehicle = (
     body: JSON.stringify(payload),
   });
 
+// PATCH /sellers/vehicles/{id}/valuation — Admin only
+export const updateVehicleValuation = (
+  token: string,
+  id: string,
+  payload: {
+    kbbTradeInValue?: number;
+    kbbPrivatePartyValue?: number;
+    mmrValue?: number;
+    carMaxOffer?: number;
+    carvanaOffer?: number;
+    acvWholesaleEstimate?: number;
+    finalTransactionPrice?: number | null;
+    reasonNotSold?: string | null;
+    adminValuationNotes?: string | null;
+  }
+) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/valuation`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
+  });
+
 export const fetchContacts = (token: string) =>
   apiRequest<unknown[]>('/contact', { method: 'GET', token });
 
@@ -116,7 +138,6 @@ export const submitContact = (payload: { name: string; phoneNo: string; email: s
     method: 'POST',
     body: JSON.stringify(payload),
   });
-
 
 export const fetchStaff = (token: string) =>
   apiRequest<unknown[]>('/admin/staff', { method: 'GET', token });
@@ -142,18 +163,35 @@ export const createAdmin = (token: string, payload: { name: string; email: strin
     body: JSON.stringify(payload),
   });
 
-export const fetchDealers = (token: string) =>
-  apiRequest<unknown[]>('/dealers', { method: 'GET', token });
+// ── Buyers (replaces /dealers) ───────────────────────────────────────────────
 
-export const createDealer = (token: string, payload: { name: string; email: string; phoneNumber: string }) =>
-  apiRequest<Record<string, unknown>>('/dealers', {
+export type BuyerDealership = {
+  name: string;
+  address: string;
+};
+
+// GET /buyers — fetch all buyers
+export const fetchBuyers = (token: string) =>
+  apiRequest<unknown[]>('/buyers', { method: 'GET', token });
+
+// POST /buyers — onboard a new buyer with one or more dealerships
+export const createBuyer = (
+  token: string,
+  payload: { name: string; email: string; phoneNumber: string; dealerships: BuyerDealership[] }
+) =>
+  apiRequest<Record<string, unknown>>('/buyers', {
     method: 'POST',
     token,
     body: JSON.stringify(payload),
   });
 
-export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
-  apiRequest<Record<string, unknown>>(`/dealers/${id}`, {
+// PATCH /buyers/{id} — update buyer name, email, phone, or dealership associations
+export const updateBuyer = (
+  token: string,
+  id: string,
+  payload: { name?: string; email?: string; phoneNumber?: string; dealerships?: BuyerDealership[] }
+) =>
+  apiRequest<Record<string, unknown>>(`/buyers/${id}`, {
     method: 'PATCH',
     token,
     body: JSON.stringify(payload),
@@ -162,22 +200,33 @@ export const updateDealer = (token: string, id: string, payload: { name?: string
 export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
 
 // ── Bids ────────────────────────────────────────────────────────────────────
-// POST /dealers/bids  — { vehicleId, amount }
-export const placeBid = (token: string, vehicleId: string, amount: number) =>
-  apiRequest<Record<string, unknown>>('/dealers/bids', {
+
+// POST /buyers/bids — { vehicleId, amount }
+export const placeBid = (token: string, vehicleId: string, amount: number, dealershipName?: string, dealershipAddress?: string) =>
+  apiRequest<Record<string, unknown>>('/buyers/bids', {
     method: 'POST',
     token,
-    body: JSON.stringify({ vehicleId, amount }),
+    body: JSON.stringify({ vehicleId, amount, dealershipName, dealershipAddress }),
   });
 
-// GET /dealers/bids/vehicle/{id}  — all bids for a vehicle
+// GET /buyers/bids/vehicle/{id} — all bids for a vehicle
 export const fetchVehicleBids = (token: string, vehicleId: string) =>
-  apiRequest<unknown[]>(`/dealers/bids/vehicle/${vehicleId}`, { method: 'GET', token });
+  apiRequest<unknown[]>(`/buyers/bids/vehicle/${vehicleId}`, { method: 'GET', token });
 
-// GET /dealers/bids/{id}  — single bid
+// GET /buyers/bids/{id} — single bid by bid ID
 export const fetchBidById = (token: string, bidId: string) =>
-  apiRequest<unknown>(`/dealers/bids/${bidId}`, { method: 'GET', token });
+  apiRequest<unknown>(`/buyers/bids/${bidId}`, { method: 'GET', token });
 
-// GET /dealers/bids/dealer/{id} — Note: user mentioned /dealers/bids/{id} fetches all bids for a dealer
+// Kept for backward compat — resolves to fetchBidById since no dealer-specific bid list endpoint exists in current spec
 export const fetchDealerBids = (token: string, dealerId: string) =>
-  apiRequest<unknown[]>(`/dealers/bids/${dealerId}`, { method: 'GET', token });
+  apiRequest<unknown[]>(`/buyers/bids/${dealerId}`, { method: 'GET', token });
+
+// Legacy aliases — kept so existing callers don't break during transition
+/** @deprecated Use fetchBuyers instead */
+export const fetchDealers = fetchBuyers;
+/** @deprecated Use createBuyer instead */
+export const createDealer = (token: string, payload: { name: string; email: string; phoneNumber: string }) =>
+  createBuyer(token, { ...payload, dealerships: [] });
+/** @deprecated Use updateBuyer instead */
+export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
+  updateBuyer(token, id, payload);
