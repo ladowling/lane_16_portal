@@ -30,5 +30,12 @@ export type Vehicle = {
   /** Minimum bid increment amount in dollars */
   bidIncrementAmount?: number;
   reserveMet?: boolean;
+  engine?: string;
+  leatherOrCloth?: string;
+  roof?: string;
+  drivetrain?: string;
+  transmission?: string;
+  accidentHistory?: string;
+  additionalDisclosures?: string;
 };
 

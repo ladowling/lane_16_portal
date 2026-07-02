@@ -44,12 +44,7 @@ export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
   const colorSpec = vehicle.specs.find((s) => s.includes('/')) || '';
   const [exteriorColor = '-', interiorColor = '-'] = colorSpec ? colorSpec.split('/') : ['-', '-'];
 
-  const findSpec = (keyword: string) => vehicle.specs.find((s) => s.toLowerCase().includes(keyword)) || '-';
-  const leatherCloth = /leather/i.test(vehicle.specs.join(' ')) ? 'Leather' : /cloth/i.test(vehicle.specs.join(' ')) ? 'Cloth' : '-';
-  const drivetrain = findSpec('awd') !== '-' ? findSpec('awd') : findSpec('fwd') !== '-' ? findSpec('fwd') : findSpec('rwd') !== '-' ? findSpec('rwd') : '-';
-  const transmission = findSpec('automatic') !== '-' ? findSpec('automatic') : findSpec('manual') !== '-' ? findSpec('manual') : '-';
-  const engine = findSpec('l ') !== '-' ? findSpec('l ') : '-';
-  const accidentHistory = findSpec('salvage') !== '-' ? findSpec('salvage') : findSpec('damage') !== '-' ? findSpec('damage') : '-';
+
   return (
     <main className="mx-auto w-[min(1280px,calc(100%-112px))] px-0 pb-[170px] pt-[52px] max-[980px]:w-[min(calc(100%-32px),760px)] max-[980px]:pt-10 max-[620px]:w-[min(calc(100%-24px),420px)] max-[620px]:pb-20">
       <Title className="!mb-16 !mt-0 !text-center !text-[58px] !font-medium !leading-none !text-white max-[980px]:!mb-[38px] max-[980px]:!text-[44px] max-[620px]:!text-[38px]">Car Details</Title>

@@ -100,9 +100,27 @@ export const fetchVehicles = (token: string) =>
 export const approveVehicle = (
   token: string,
   id: string,
-  payload: { status: 'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE'; auctionStartTime?: string; auctionEndTime?: string }
+  payload: { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string }
 ) =>
   apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/approve`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+export const resolveVehicle = (
+  token: string,
+  id: string,
+  payload: { status: 'SOLD' | 'AVAILABLE' }
+) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/resolve`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+export const updateBidIncrement = (token: string, id: string, payload: { bidIncrementNo: number }) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/bid-increment`, {
     method: 'PATCH',
     token,
     body: JSON.stringify(payload),

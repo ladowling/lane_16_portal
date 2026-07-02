@@ -72,7 +72,7 @@ const getPagePath = (page: Page, vehicleId: string) => {
   return pagePaths[page];
 };
 
-const dealerVisibleStatuses = new Set(['APPROVED', 'BIDDING_ACTIVE', 'BIDDING_ENDED']);
+const dealerVisibleStatuses = new Set(['APPROVED', 'BIDDING_ACTIVE']);
 
 const getArrayPayload = (payload: unknown) => {
   if (Array.isArray(payload)) return payload;
@@ -195,6 +195,13 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
     auctionEndTime: auctionEndTime || undefined,
     bidIncrementAmount: typeof record.bidIncrementNo === 'number' ? record.bidIncrementNo : Number(record.bidIncrementNo) || undefined,
     reserveMet: Boolean(record.reserveMet),
+    engine: getStringValue(record, ['engine']),
+    leatherOrCloth: getStringValue(record, ['leatherOrCloth', 'leatherCloth']),
+    roof: getStringValue(record, ['roof']),
+    drivetrain: getStringValue(record, ['drivetrain']),
+    transmission: getStringValue(record, ['transmission']),
+    accidentHistory: getStringValue(record, ['accidentHistory']),
+    additionalDisclosures: getStringValue(record, ['additionalDisclosures', 'notes']),
   };
 };
 // ---------------------------------------------------------------------------

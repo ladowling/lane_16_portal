@@ -19,13 +19,12 @@ export default function SubmitVehicle() {
             .map((file) => (file && typeof file === 'object' ? (file as { originFileObj?: File }).originFileObj : undefined))
             .filter((file): file is File => Boolean(file))
         : [];
-      const uploadIds = await Promise.all(
-        photoFiles.map(async (file, index) => {
-          const uploadId = crypto.randomUUID();
-          await uploadVehicleFile(uploadId, file, index + 1);
-          return uploadId;
-        })
-      );
+      const uploadIds: string[] = [];
+      for (let i = 0; i < photoFiles.length; i++) {
+        const uploadId = crypto.randomUUID();
+        await uploadVehicleFile(uploadId, photoFiles[i], i + 1);
+        uploadIds.push(uploadId);
+      }
       const year = Number(values.year);
       const mileage = Number(values.mileage);
       const minimumAcceptablePrice = Number(values.minimumAcceptablePrice);
@@ -59,6 +58,13 @@ export default function SubmitVehicle() {
         mechanicalCondition,
         tireCondition,
         interiorCondition: interiorOdor,
+        engine: values.engine,
+        leatherOrCloth: values.leatherCloth,
+        roof: values.roof,
+        drivetrain: values.drivetrain,
+        transmission: values.transmission,
+        accidentHistory: values.accidentHistory,
+        additionalDisclosures: values.notes,
         uploads: uploadIds,
       });
 

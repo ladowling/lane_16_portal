@@ -1,10 +1,10 @@
-import { Divider, Typography } from 'antd';
+import { Divider, Typography, Spin } from 'antd';
 import type { Vehicle } from '../types';
 
 const { Paragraph, Text, Title } = Typography;
 
 type ConditionReportPageProps = {
-  vehicle: Vehicle;
+  vehicle?: Vehicle;
 };
 
 const reportRows = [
@@ -37,16 +37,26 @@ const parseDetailsTitle = (detailsTitle: string) => {
 };
 
 export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
+  if (!vehicle) {
+    return (
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[#050505] pt-20">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   const { year, make, model } = parseTitle(vehicle.title);
   const { trim } = parseDetailsTitle(vehicle.detailsTitle || '');
   const colorSpec = vehicle.specs.find((spec) => spec.includes('/')) || '';
   const [exteriorColor = '-', interiorColor = '-'] = colorSpec ? colorSpec.split('/') : ['-', '-'];
-  const findSpec = (keyword: string) => vehicle.specs.find((spec) => spec.toLowerCase().includes(keyword)) || '-';
-  const leatherCloth = /leather/i.test(vehicle.specs.join(' ')) ? 'Leather' : /cloth/i.test(vehicle.specs.join(' ')) ? 'Cloth' : '-';
-  const drivetrain = findSpec('awd') !== '-' ? findSpec('awd') : findSpec('fwd') !== '-' ? findSpec('fwd') : findSpec('rwd') !== '-' ? findSpec('rwd') : '-';
-  const transmission = findSpec('automatic') !== '-' ? findSpec('automatic') : findSpec('manual') !== '-' ? findSpec('manual') : '-';
-  const engine = findSpec('l ') !== '-' ? findSpec('l ') : '-';
-  const accidentHistory = findSpec('salvage') !== '-' ? findSpec('salvage') : findSpec('damage') !== '-' ? findSpec('damage') : '-';
+  const findSpec = (keyword: string) => vehicle.specs.find((s) => s.toLowerCase().includes(keyword)) || '-';
+  const leatherCloth = vehicle.leatherOrCloth || ( /leather/i.test(vehicle.specs.join(' ')) ? 'Leather' : /cloth/i.test(vehicle.specs.join(' ')) ? 'Cloth' : '-' );
+  const drivetrain = vehicle.drivetrain || ( findSpec('awd') !== '-' ? findSpec('awd') : findSpec('fwd') !== '-' ? findSpec('fwd') : findSpec('rwd') !== '-' ? findSpec('rwd') : '-' );
+  const transmission = vehicle.transmission || ( findSpec('automatic') !== '-' ? findSpec('automatic') : findSpec('manual') !== '-' ? findSpec('manual') : '-' );
+  const engine = vehicle.engine || ( findSpec('l ') !== '-' ? findSpec('l ') : '-' );
+  const accidentHistory = vehicle.accidentHistory || ( findSpec('salvage') !== '-' ? findSpec('salvage') : findSpec('damage') !== '-' ? findSpec('damage') : '-' );
+  const roof = vehicle.roof || ( findSpec('sunroof') !== '-' ? 'Sunroof' : findSpec('hardtop') !== '-' ? 'Hardtop' : findSpec('softtop') !== '-' ? 'Softtop' : '-' );
+  const additionalDisclosures = vehicle.additionalDisclosures || '-';
 
   return (
     <main className="mx-auto w-[min(1280px,calc(100%-112px))] px-0 pb-[170px] pt-[52px] max-[980px]:w-[min(calc(100%-32px),760px)] max-[980px]:pt-10 max-[620px]:w-[min(calc(100%-24px),420px)] max-[620px]:pb-20">
@@ -111,7 +121,7 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
           </div>
           <div>
             <div className="text-sm text-gray-400">Roof</div>
-            <div className="text-lg font-semibold text-white">{findSpec('sunroof') !== '-' ? 'Sunroof' : findSpec('hardtop') !== '-' ? 'Hardtop' : findSpec('softtop') !== '-' ? 'Softtop' : '-'}</div>
+            <div className="text-lg font-semibold text-white">{roof}</div>
           </div>
           <div>
             <div className="text-sm text-gray-400">Drivetrain</div>
@@ -132,6 +142,10 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
           <div>
             <div className="text-sm text-gray-400">Accident History</div>
             <div className="text-lg font-semibold text-white">{accidentHistory}</div>
+          </div>
+          <div>
+            <div className="text-sm text-gray-400">Additional Disclosures</div>
+            <div className="text-lg font-semibold text-white">{additionalDisclosures}</div>
           </div>
         </div>
       </section>

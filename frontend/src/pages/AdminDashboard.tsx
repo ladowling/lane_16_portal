@@ -7,7 +7,7 @@ import { DetailModal } from './adminDashboard/components/DetailModal';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation } from '../api';
+import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -73,6 +73,13 @@ type VehicleRecord = {
   finalTransactionPrice?: number | null;
   reasonNotSold?: string | null;
   adminValuationNotes?: string | null;
+  engine?: string;
+  leatherOrCloth?: string;
+  roof?: string;
+  drivetrain?: string;
+  transmission?: string;
+  accidentHistory?: string;
+  additionalDisclosures?: string;
 };
 
 type BidRecord = {
@@ -508,6 +515,13 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     finalTransactionPrice: getNumberValue(record, ['finalTransactionPrice']) || null,
     reasonNotSold: getStringValue(record, ['reasonNotSold']) || null,
     adminValuationNotes: getStringValue(record, ['adminValuationNotes']) || null,
+    engine: getStringValue(record, ['engine']),
+    leatherOrCloth: getStringValue(record, ['leatherOrCloth', 'leatherCloth']),
+    roof: getStringValue(record, ['roof']),
+    drivetrain: getStringValue(record, ['drivetrain']),
+    transmission: getStringValue(record, ['transmission']),
+    accidentHistory: getStringValue(record, ['accidentHistory']),
+    additionalDisclosures: getStringValue(record, ['additionalDisclosures', 'notes']),
   };
 };
 
@@ -663,6 +677,9 @@ export function AdminDashboard() {
   const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
   const [vehicleValuationForm] = Form.useForm();
   const [isVehicleValuationSaving, setIsVehicleValuationSaving] = useState(false);
+  const [selectedVehicleForBidIncrement, setSelectedVehicleForBidIncrement] = useState<VehicleRecord | null>(null);
+  const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
+  const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
 
   const loadStaff = async () => {
     if (!token || user?.role !== 'admin') {
@@ -885,7 +902,11 @@ export function AdminDashboard() {
 
     setIsVehicleApprovalSaving(true);
     try {
-      await approveVehicle(token, approvalVehicle.id, payload);
+      if (approvalStatus === 'SOLD' || approvalStatus === 'AVAILABLE') {
+        await resolveVehicle(token, approvalVehicle.id, { status: approvalStatus });
+      } else {
+        await approveVehicle(token, approvalVehicle.id, payload as { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string });
+      }
 
       setSelectedVehicle((currentVehicle) => {
         if (!currentVehicle || currentVehicle.id !== approvalVehicle.id) {
@@ -932,6 +953,22 @@ export function AdminDashboard() {
       message.error(error instanceof Error ? error.message : 'Unable to update vehicle valuation.');
     } finally {
       setIsVehicleValuationSaving(false);
+    }
+  };
+
+  const saveBidIncrement = async (values: { bidIncrementNo: number }) => {
+    if (!token || !selectedVehicleForBidIncrement?.id) return;
+    
+    setIsBidIncrementSaving(true);
+    try {
+      await updateBidIncrement(token, selectedVehicleForBidIncrement.id, { bidIncrementNo: Number(values.bidIncrementNo) });
+      message.success('Bid increment updated successfully.');
+      setSelectedVehicleForBidIncrement(null);
+      await loadVehicles();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update bid increment.');
+    } finally {
+      setIsBidIncrementSaving(false);
     }
   };
 
@@ -1110,6 +1147,15 @@ export function AdminDashboard() {
     { title: 'Seller Email', dataIndex: 'sellerEmail' },
     { title: 'Make', dataIndex: 'make' },
     { title: 'Model', dataIndex: 'model' },
+    { title: 'KBB Trade-In', dataIndex: 'kbbTradeInValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'KBB Private Party', dataIndex: 'kbbPrivatePartyValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'MMR Value', dataIndex: 'mmrValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'CarMax Offer', dataIndex: 'carMaxOffer', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Carvana Offer', dataIndex: 'carvanaOffer', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'ACV Wholesale', dataIndex: 'acvWholesaleEstimate', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Final Price', dataIndex: 'finalTransactionPrice', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Reason Not Sold', dataIndex: 'reasonNotSold' },
+    { title: 'Valuation Notes', dataIndex: 'adminValuationNotes' },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -1129,6 +1175,8 @@ export function AdminDashboard() {
       title: 'Actions',
       render: (_, record) => {
         const isPending = record.status === 'PENDING';
+        const isApproved = record.status === 'APPROVED';
+        const isBiddingActive = record.status === 'BIDDING_ACTIVE';
         const isBiddingEnded = record.status === 'BIDDING_ENDED';
         const isAvailable = record.status === 'AVAILABLE';
 
@@ -1138,6 +1186,11 @@ export function AdminDashboard() {
             ? [
                 { key: 'approve', label: 'Approve' },
                 { key: 'reject', label: 'Reject', danger: true },
+              ]
+            : []),
+          ...((isBiddingActive || isPending || isApproved) && record.id
+            ? [
+                { key: 'update_bid_increment', label: 'Update Bid Increment' },
               ]
             : []),
           ...(isBiddingEnded && record.id
@@ -1154,6 +1207,10 @@ export function AdminDashboard() {
           if (key === 'reject') openVehicleApproval(record, 'REJECTED');
           if (key === 'mark_sold') openVehicleApproval(record, 'SOLD');
           if (key === 'mark_available') openVehicleApproval(record, 'AVAILABLE');
+          if (key === 'update_bid_increment') {
+            setSelectedVehicleForBidIncrement(record);
+            bidIncrementForm.setFieldsValue({ bidIncrementNo: Number(record.bidIncrementNo) });
+          }
         };
 
         return (
@@ -1269,6 +1326,13 @@ export function AdminDashboard() {
                 { label: 'Location', value: selectedVehicle.location },
                 { label: 'Exterior Color', value: selectedVehicle.exteriorColor },
                 { label: 'Interior Color', value: selectedVehicle.interiorColor },
+                { label: 'Leather / Cloth', value: selectedVehicle.leatherOrCloth },
+                { label: 'Roof', value: selectedVehicle.roof },
+                { label: 'Drivetrain', value: selectedVehicle.drivetrain },
+                { label: 'Transmission', value: selectedVehicle.transmission },
+                { label: 'Engine', value: selectedVehicle.engine },
+                { label: 'Accident History', value: selectedVehicle.accidentHistory },
+                { label: 'Additional Disclosures', value: selectedVehicle.additionalDisclosures },
                 { label: 'Condition', value: selectedVehicle.condition },
                 { label: 'Minimum Acceptable Price', value: selectedVehicle.minimumAcceptablePrice },
                 { label: 'Smoker Vehicle', value: selectedVehicle.smokerVehicle },
@@ -1399,7 +1463,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} searchable searchPlaceholder="Search vehicles" />
+          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" />
         </div>
       ),
     },
@@ -1700,11 +1764,11 @@ export function AdminDashboard() {
                       layout="vertical"
                       onFinish={saveVehicleValuation}
                       initialValues={selectedVehicle}
-                      className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-number]:!w-full [&_.ant-input-number]:!bg-[#242424] [&_.ant-input-number]:!border-[#575757] [&_.ant-input-number-input]:!text-white [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-[#242424] [&_.ant-input]:!text-white"
+                      className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-number]:!w-full [&_.ant-input-number]:!bg-[#242424] [&_.ant-input-number]:!border-[#575757] [&_.ant-input-number]:!border-4 [&_.ant-input-number-input]:!text-black-900 [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-red [&_.ant-input]:!border-x [&_.ant-input]:!text-black"
                     >
                       <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
                         <Form.Item label="KBB Trade-In Value ($)" name="kbbTradeInValue">
-                          <Input type="number" prefix="$" placeholder="e.g. 25000" />
+                          <Input type="number" prefix="$" placeholder="e.g. 25000" className=''/>
                         </Form.Item>
                         <Form.Item label="KBB Private Party Value ($)" name="kbbPrivatePartyValue">
                           <Input type="number" prefix="$" placeholder="e.g. 28000" />
@@ -1772,7 +1836,7 @@ export function AdminDashboard() {
                 name="auctionStartTime"
                 rules={[{ required: true, message: 'Select auction start time' }]}
               >
-                <DatePicker className="w-full" showTime />
+                <DatePicker className="w-full" getPopupContainer={(trigger) => trigger.parentNode as HTMLElement} showTime />
               </Form.Item>
               <Form.Item
                 className="!text-black"
@@ -1780,10 +1844,36 @@ export function AdminDashboard() {
                 name="auctionEndTime"
                 rules={[{ required: true, message: 'Select auction end time' }]}
               >
-                <DatePicker className="w-full" showTime />
+                <DatePicker className="w-full" getPopupContainer={(trigger) => trigger.parentNode as HTMLElement} showTime />
               </Form.Item>
             </>
           )}
+        </Form>
+      </Modal>
+      <Modal
+        cancelButtonProps={{ className: '!border-[#575757] !bg-[#111111] !text-[#c8c8c8] hover:!border-white hover:!text-white' }}
+        centered
+        confirmLoading={isBidIncrementSaving}
+        okButtonProps={{ className: '!border-none !bg-[#24d725] !text-[#111] hover:!bg-[#1ebf1e]' }}
+        onCancel={() => setSelectedVehicleForBidIncrement(null)}
+        onOk={() => bidIncrementForm.submit()}
+        open={Boolean(selectedVehicleForBidIncrement)}
+        title={<span className="text-white m-3">Update Bid Increment</span>}
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        <Form
+          form={bidIncrementForm}
+          layout="vertical"
+          onFinish={saveBidIncrement}
+          className="[&_.ant-form-item-label>label]:!text-white"
+        >
+          <Form.Item
+            label="Bid Increment ($)"
+            name="bidIncrementNo"
+            rules={[{ required: true, message: 'Please enter a bid increment amount' }]}
+          >
+            <Input type="number" prefix="$" className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
         </Form>
       </Modal>
       <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
