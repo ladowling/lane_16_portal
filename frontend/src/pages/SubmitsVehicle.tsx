@@ -29,11 +29,12 @@ export default function SubmitVehicle() {
       const mileage = Number(values.mileage);
       const minimumAcceptablePrice = Number(values.minimumAcceptablePrice);
       const location = [values.city, values.state].filter(Boolean).join(', ');
-      const exteriorCondition = String(values.exterior ?? '');
-      const mechanicalCondition = String(values.mechanical___warning ?? '');
+      const exteriorCondition = String(values.exterior_condition ?? '');
+      const interiorCondition = String(values.interior_condition ?? '');
+      const mechanicalCondition = String(values.mechanical_condition ?? '');
       const tireCondition = String(values.tires ?? '');
-      const warningLight = String(values.warning_light ?? '');
-      const interiorOdor = String(values.interiorOdor || values['Interior Odor'] || '');
+      const warningLight = String(values.warning_lights___dashboard_lights ?? '');
+      const interiorOdor = String(values.interior_odor ?? '');
 
       await submitVehicleListing({
         vehicleName: `${year || ''} ${values.make || ''} ${values.model || ''}`.trim(),
@@ -55,9 +56,9 @@ export default function SubmitVehicle() {
         interiorColor: values.interiorColor,
         smokerVehicle: interiorOdor.toLowerCase().includes('smoker'),
         exteriorCondition,
+        interiorCondition,
         mechanicalCondition,
         tireCondition,
-        interiorCondition: interiorOdor,
         engine: values.engine,
         leatherOrCloth: values.leatherCloth,
         roof: values.roof,
@@ -91,7 +92,7 @@ export default function SubmitVehicle() {
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Vehicle Information</h2>
               <div className="space-y-4">
-                <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
+                <Form.Item label="Seller Name" name="name" rules={[{ required: true, message: 'Seller Name is required' }]}>
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
 
@@ -195,23 +196,17 @@ export default function SubmitVehicle() {
             <section>
               <h2 className="text-2xl font-bold text-green-500 mb-6">Condition information</h2>
               <div className="space-y-4">
-                {['Exterior', 'Mechanical / Warning', 'Tires', 'Warning light'].map((field) => (
+                {['Exterior Condition', 'Interior Condition', 'Mechanical Condition', 'Tires', 'Warning Lights / Dashboard Lights'].map((field) => (
                   <Form.Item key={field} label={field} name={field.toLowerCase().replace(/\s+/g, '_').replace(/[\/]/g, '_')} rules={[{ required: true, message: `${field} is required` }]}> 
-                    {/* <Select placeholder="Click to select" className="w-full" popupClassName="bg-[#111]">
-                      <Option value="excellent">Excellent</Option>
-                      <Option value="good">Good</Option>
-                      <Option value="fair">Fair</Option>
-                      <Option value="poor">Poor</Option>
-                    </Select> */}
                     <Input.TextArea
                       rows={1}
                       placeholder={
                         {
-                          Exterior: 'Minor scratch on bumper',
-                          'Mechanical / Warning': 'Minor cut on the seat',
+                          'Exterior Condition': 'Minor scratch on bumper',
+                          'Interior Condition': 'Minor tear on the seat',
+                          'Mechanical Condition': 'Engine runs smooth',
                           Tires: '40% thread remaining',
-                          'Smoker vehicle': 'Smoker odor present',
-                          'Warning light': 'Check engine light ',
+                          'Warning Lights / Dashboard Lights': 'Check engine light',
                         }[field]
                       }
                       className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500"
@@ -220,11 +215,11 @@ export default function SubmitVehicle() {
                 ))}
               </div>
               <div>
-                 <Form.Item label="Interior Odor" name="Interior Odor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
+                 <Form.Item label="Interior Odor" name="interior_odor" rules={[{ required: true, message: 'Interior odor is required' }]}> 
                     <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
                       <Option value="smoker">Smoker</Option>
                       <Option value="none">None</Option>
-                      <Option value="option">Other options</Option>
+                      <Option value="other">Other options</Option>
                     </Select>
                   </Form.Item>
               </div>

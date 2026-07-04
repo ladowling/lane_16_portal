@@ -4,10 +4,11 @@ import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
+import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle } from '../api';
+import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -19,6 +20,7 @@ type StaffRecord = {
   lastModifiedBy?: string | null;
   lastModifiedAt?: string | null;
   createdAt?: string | null;
+  isActive?: boolean;
 };
 
 type VehicleUpload = {
@@ -57,6 +59,7 @@ type VehicleRecord = {
   mechanicalCondition: string;
   interiorCondition: string;
   exteriorCondition: string;
+  dealershipName: string;
   lastUpdatedBy: string;
   bidIncrementNo: string;
   trim: string;
@@ -175,6 +178,7 @@ const vehicleSeed: VehicleRecord[] = [
     interiorColor: 'Macchiato Beige',
     smokerVehicle: 'No',
     reserveMet: 'Yes',
+    dealershipName: 'Downtown Motors',
   },
   {
     vehicleName: '2020 Toyota Tacoma TRD Off-Road',
@@ -212,6 +216,7 @@ const vehicleSeed: VehicleRecord[] = [
     interiorColor: 'Black',
     smokerVehicle: 'No',
     reserveMet: 'No',
+    dealershipName: 'Downtown Motors',
   },
   {
     vehicleName: '2019 BMW X5 xDrive40i',
@@ -249,6 +254,7 @@ const vehicleSeed: VehicleRecord[] = [
     interiorColor: 'Cognac',
     smokerVehicle: 'No',
     reserveMet: 'Yes',
+    dealershipName: 'Downtown Motors',
   },
   {
     vehicleName: '2022 Ford F-150 Lariat',
@@ -286,6 +292,7 @@ const vehicleSeed: VehicleRecord[] = [
     interiorColor: 'Black',
     smokerVehicle: 'No',
     reserveMet: 'Yes',
+    dealershipName: 'Downtown Motors',
   },
 ];
 
@@ -318,28 +325,6 @@ const contactSeed: ContactRecord[] = [
   },
 ];
 
-const approvalStatusColor: Record<string, string> = {
-  PENDING: 'gold',
-  APPROVED: 'green',
-  REJECTED: 'red',
-  BIDDING_ACTIVE: 'cyan',
-  BIDDING_ENDED: 'default',
-  SOLD: 'purple',
-  AVAILABLE: 'blue',
-};
-
-const renderApprovalStatusTag = (status: string) => {
-  const normalizedStatus = status.toUpperCase();
-  return <Tag color={approvalStatusColor[normalizedStatus] || 'default'}>{normalizedStatus.replace(/_/g, ' ')}</Tag>;
-};
-
-const bidStatusLabel = (status: string) => {
-  if (!status) return '';
-  const normalized = status.toUpperCase().replace(/_/g, '');
-  if (normalized === 'CURRENTHIGHBID') return 'Current High Bid';
-  return status.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-};
-
 const formatCurrency = (value: string | number) => {
   if (!value) return '';
   const num = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g, '')) : value;
@@ -369,6 +354,23 @@ const formatDateLabel = (dateValue: string) => {
     day: 'numeric',
     year: 'numeric',
   });
+};
+
+const getTimeRemaining = (endTimeIso: string) => {
+  const total = Math.max(0, new Date(endTimeIso).getTime() - Date.now());
+  if (total <= 0) return 'Ended';
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((total / (1000 * 60)) % 60);
+  const seconds = Math.floor((total / 1000) % 60);
+  
+  const parts = [];
+  if (days > 0) parts.push(`${days} days`);
+  if (hours > 0) parts.push(`${hours} hours`);
+  if (minutes > 0 && days === 0) parts.push(`${minutes} mins`);
+  if (seconds > 0 && days === 0 && hours === 0) parts.push(`${seconds} secs`);
+  
+  return parts.join(' ');
 };
 
 const normalizeDateString = (dateString: string | string[] | null) =>
@@ -456,6 +458,7 @@ const mapStaffRecord = (item: unknown): StaffRecord => {
     lastModifiedBy: getStringValue(record, ['lastModifiedBy']),
     lastModifiedAt: getStringValue(record, ['lastModifiedAt']),
     createdAt: getStringValue(record, ['createdAt', 'dateCreated']),
+    isActive: record.isActive !== false && record.status !== 'archived' && record.status !== 'inactive',
   };
 };
 
@@ -499,6 +502,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     mechanicalCondition: getStringValue(record, ['mechanicalCondition']),
     interiorCondition: getStringValue(record, ['interiorCondition']),
     exteriorCondition: getStringValue(record, ['exteriorCondition']),
+    dealershipName: getStringValue(record, ['dealershipName', 'dealership', 'storeName', 'store']),
     lastUpdatedBy: getStringValue(record, ['lastUpdatedBy']),
     bidIncrementNo: getStringValue(record, ['bidIncrementNo']),
     trim: getStringValue(record, ['trim']),
@@ -760,7 +764,14 @@ export function AdminDashboard() {
       Promise.all(validVehicles.map((v) => fetchVehicleBids(token, v.id!).catch(() => [])))
         .then((responses) => {
           const flatResponses = responses.flatMap((r) => getArrayPayload(r));
-          setAllBids(flatResponses.map((b) => mapBidRecord(b, vehicles, dealers)));
+          const mappedBids = flatResponses.map((b) => mapBidRecord(b, vehicles, dealers));
+          // Sort bids from first to last (lowest to highest amount)
+          mappedBids.sort((a, b) => {
+            const amountA = Number(a.bidAmount.replace(/[^0-9.-]+/g, ''));
+            const amountB = Number(b.bidAmount.replace(/[^0-9.-]+/g, ''));
+            return amountA - amountB;
+          });
+          setAllBids(mappedBids);
         })
         .catch((error) => console.error('Failed to load all bids:', error));
     }
@@ -809,6 +820,22 @@ export function AdminDashboard() {
   const startStaffEdit = (record: StaffRecord) => {
     setEditingStaffEmail(record.email);
     form.setFieldsValue(record);
+  };
+
+  const toggleStaffStatus = async (record: StaffRecord) => {
+    if (!token || !record.id) return;
+    try {
+      if (record.isActive) {
+        await deactivateStaff(token, record.id);
+        message.success('Staff deactivated successfully.');
+      } else {
+        await activateStaff(token, record.id);
+        message.success('Staff activated successfully.');
+      }
+      await loadStaff();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update staff status.');
+    }
   };
 
   const startDealerEdit = (record: DealerRecord) => {
@@ -1021,12 +1048,13 @@ export function AdminDashboard() {
 
   const filteredBids = useMemo(
     () =>
-      allBids.filter(
-        (bid) =>
-          (!bidDateFilter || bid.dateCreated === bidDateFilter) &&
-          (!bidVehicleNameFilter || bid.vehicleName.toLowerCase().includes(bidVehicleNameFilter.toLowerCase())) &&
-          (!bidBuyerNameFilter || bid.buyerName.toLowerCase().includes(bidBuyerNameFilter.toLowerCase()))
-      ),
+      allBids
+        .filter(
+          (bid) =>
+            (!bidDateFilter || bid.dateCreated === bidDateFilter) &&
+            (!bidVehicleNameFilter || bid.vehicleName.toLowerCase().includes(bidVehicleNameFilter.toLowerCase())) &&
+            (!bidBuyerNameFilter || bid.buyerName.toLowerCase().includes(bidBuyerNameFilter.toLowerCase()))
+        ),
     [bidDateFilter, bidVehicleNameFilter, bidBuyerNameFilter, allBids]
   );
 
@@ -1097,9 +1125,11 @@ export function AdminDashboard() {
           menu={{
             items: [
               { key: 'edit', label: 'Edit' },
+              { key: 'toggle_status', label: record.isActive ? 'Deactivate' : 'Activate', danger: record.isActive },
             ],
             onClick: ({ key }) => {
               if (key === 'edit') startStaffEdit(record);
+              if (key === 'toggle_status') toggleStaffStatus(record);
             },
           }}
           placement="bottomRight"
@@ -1116,11 +1146,12 @@ export function AdminDashboard() {
       title: 'Vehicle',
       key: 'vehicle',
       width: 360,
+      align: 'center',
       render: (_, vehicle) => {
         const firstUpload = vehicle.uploadItems[0];
 
         return (
-          <div className="flex min-w-[320px] items-center gap-4">
+          <div className="flex min-w-[320px] items-center gap-4 text-left">
             {firstUpload ? (
               <Image
                 alt={firstUpload.name || vehicle.vehicleName}
@@ -1141,24 +1172,12 @@ export function AdminDashboard() {
         );
       },
     },
-    { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
-    { title: 'Seller Name', dataIndex: 'sellerName' },
-    { title: 'Seller Phone', dataIndex: 'sellerPhoneNo' },
-    { title: 'Seller Email', dataIndex: 'sellerEmail' },
-    { title: 'Make', dataIndex: 'make' },
-    { title: 'Model', dataIndex: 'model' },
-    { title: 'KBB Trade-In', dataIndex: 'kbbTradeInValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'KBB Private Party', dataIndex: 'kbbPrivatePartyValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'MMR Value', dataIndex: 'mmrValue', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'CarMax Offer', dataIndex: 'carMaxOffer', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'Carvana Offer', dataIndex: 'carvanaOffer', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'ACV Wholesale', dataIndex: 'acvWholesaleEstimate', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'Final Price', dataIndex: 'finalTransactionPrice', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
-    { title: 'Reason Not Sold', dataIndex: 'reasonNotSold' },
-    { title: 'Valuation Notes', dataIndex: 'adminValuationNotes' },
+    { title: 'Current High Bid', dataIndex: 'highestBid', align: 'center', render: (val: string) => val && val !== '0' ? formatCurrency(val) : 'N/A' },
+    { title: 'Reserve Status', dataIndex: 'reserveMet', align: 'center', render: (val: string) => val || 'N/A' },
     {
       title: 'Status',
       dataIndex: 'status',
+      align: 'center',
       filters: [
         { text: 'Pending', value: 'PENDING' },
         { text: 'Approved', value: 'APPROVED' },
@@ -1169,10 +1188,27 @@ export function AdminDashboard() {
         { text: 'Available', value: 'AVAILABLE' },
       ],
       onFilter: (value, record) => record.status.toUpperCase() === value,
-      render: renderApprovalStatusTag,
+      render: (status: string) => <StatusTag status={status} />,
     },
+    { title: 'Auction End / Time Remaining', dataIndex: 'auctionEndTime', align: 'center', render: (val: string) => val ? `${formatDateLabel(val)} / ${getTimeRemaining(val)}` : 'N/A' },
+    { title: 'Bid Count', dataIndex: 'bidCount', align: 'center' },
+    { title: 'High Bidder', dataIndex: 'winningBidderName', align: 'center', render: (val: string) => val || 'N/A' },
+    { title: 'Dealership / Store', dataIndex: 'dealershipName', align: 'center', render: (val: string) => val || 'N/A' },
+    { title: 'Seller Name', dataIndex: 'sellerName', align: 'center' },
+    { title: 'Seller Phone', dataIndex: 'sellerPhoneNo', align: 'center' },
+    { title: 'Seller Email', dataIndex: 'sellerEmail', align: 'center' },
+    { title: 'KBB ICO', dataIndex: 'kbbTradeInValue', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'MMR Value', dataIndex: 'mmrValue', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'CarMax Offer', dataIndex: 'carMaxOffer', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Carvana Offer', dataIndex: 'carvanaOffer', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'ACV Wholesale', dataIndex: 'acvWholesaleEstimate', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Final Price', dataIndex: 'finalTransactionPrice', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
+    { title: 'Reason Not Sold', dataIndex: 'reasonNotSold', align: 'center' },
+    { title: 'Valuation Notes', dataIndex: 'adminValuationNotes', align: 'center' },
+    { title: 'Auction Status', dataIndex: 'auctionStatus', align: 'center', render: (val: string) => <StatusTag status={val} /> },
     {
       title: 'Actions',
+      align: 'center',
       render: (_, record) => {
         const isPending = record.status === 'PENDING';
         const isApproved = record.status === 'APPROVED';
@@ -1240,11 +1276,12 @@ export function AdminDashboard() {
     { title: 'Vehicle Name', dataIndex: 'vehicleName' },
     { title: 'Buyer Name', dataIndex: 'buyerName' },
     { title: 'Buyer Email', dataIndex: 'buyerEmail' },
+    { title: 'Dealership / Store', dataIndex: 'dealershipName', render: (val: string) => val || 'N/A' },
     { title: 'Bid Amount', dataIndex: 'bidAmount' },
     {
       title: 'Bid Status',
       dataIndex: 'bidStatus',
-      render: (status: string) => <Tag color={status === 'currentHighBid' ? 'green' : 'default'}>{bidStatusLabel(status)}</Tag>,
+      render: (status: string) => <StatusTag status={status} />,
     },
     {
       title: 'Actions',
@@ -1344,7 +1381,7 @@ export function AdminDashboard() {
             {
               heading: 'Auction & Bid Info',
               fields: [
-                { label: 'Approval Status', value: renderApprovalStatusTag(selectedVehicle.status) },
+                { label: 'Approval Status', value: <StatusTag status={selectedVehicle.status} /> },
                 { label: 'Auction Start Time', value: selectedVehicle.auctionStartTime },
                 { label: 'Auction End Time', value: selectedVehicle.auctionEndTime },
                 { label: 'Bid Count', value: selectedVehicle.bidCount },
@@ -1416,7 +1453,28 @@ export function AdminDashboard() {
               Export
             </Button>
           </div>
-          <DataTable columns={staffColumns} dataSource={staff} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search staff" />
+          <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
+            <Tabs
+              defaultActiveKey="active"
+              className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#a8a8a8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+              items={[
+                {
+                  key: 'active',
+                  label: 'Staff (Active)',
+                  children: (
+                    <DataTable columns={staffColumns} dataSource={staff.filter(s => s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search active staff" />
+                  ),
+                },
+                {
+                  key: 'archived',
+                  label: 'Archived Staff',
+                  children: (
+                    <DataTable columns={staffColumns} dataSource={staff.filter(s => !s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search archived staff" />
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
       ),
     },
@@ -1767,11 +1825,8 @@ export function AdminDashboard() {
                       className="[&_.ant-form-item-label>label]:!text-black [&_.ant-input-number]:!w-full [&_.ant-input-number]:!bg-[#242424] [&_.ant-input-number]:!border-[#575757] [&_.ant-input-number]:!border-4 [&_.ant-input-number-input]:!text-black-900 [&_.ant-input]:!border-[#575757] [&_.ant-input]:!bg-red [&_.ant-input]:!border-x [&_.ant-input]:!text-black"
                     >
                       <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
-                        <Form.Item label="KBB Trade-In Value ($)" name="kbbTradeInValue">
+                        <Form.Item label="KBB ICO ($)" name="kbbTradeInValue">
                           <Input type="number" prefix="$" placeholder="e.g. 25000" className=''/>
-                        </Form.Item>
-                        <Form.Item label="KBB Private Party Value ($)" name="kbbPrivatePartyValue">
-                          <Input type="number" prefix="$" placeholder="e.g. 28000" />
                         </Form.Item>
                         <Form.Item label="MMR Value ($)" name="mmrValue">
                           <Input type="number" prefix="$" placeholder="e.g. 26000" />
@@ -1785,13 +1840,14 @@ export function AdminDashboard() {
                         <Form.Item label="Carvana Offer ($)" name="carvanaOffer">
                           <Input type="number" prefix="$" placeholder="e.g. 24500" />
                         </Form.Item>
-                      </div>
-                      <div className="mt-4 grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
-                        <Form.Item label="Final Transaction Price ($)" name="finalTransactionPrice">
+                          <Form.Item label="Final Transaction Price ($)" name="finalTransactionPrice">
                           <Input type="number" prefix="$" placeholder="e.g. 25000" />
                         </Form.Item>
+                      </div>
+                      <div className="mt-4 grid grid-cols-1 gap-4 max-[720px]:grid-cols-1">
+                      
                         <Form.Item label="Reason Not Sold" name="reasonNotSold">
-                          <Input placeholder="e.g. Seller backed out, Reserve not met" />
+                          <Input.TextArea rows={3} placeholder="e.g. Seller backed out, Reserve not met" />
                         </Form.Item>
                       </div>
                       <Form.Item label="Admin Valuation Notes" name="adminValuationNotes" className="mt-4">
@@ -1907,7 +1963,7 @@ export function AdminDashboard() {
                     { label: 'Contact Person', value: selectedBid.contactPerson },
                     { label: 'Contact Phone', value: selectedBid.contactPhone },
                     { label: 'Bid Amount', value: selectedBid.bidAmount },
-                    { label: 'Bid Status', value: <Tag color={selectedBid.bidStatus === 'currentHighBid' ? 'green' : 'default'}>{bidStatusLabel(selectedBid.bidStatus)}</Tag> },
+                    { label: 'Bid Status', value: <StatusTag status={selectedBid.bidStatus} /> },
                     { label: 'Note', value: selectedBid.note },
                     { label: 'Bid Timestamp', value: selectedBid.bidTimestamp },
                   ],

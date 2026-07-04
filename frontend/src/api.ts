@@ -174,6 +174,18 @@ export const updateStaff = (token: string, id: string, payload: { name?: string;
     body: JSON.stringify(payload),
   });
 
+export const deactivateStaff = (token: string, id: string) =>
+  apiRequest<Record<string, unknown>>(`/admin/staff/${id}/deactivate`, {
+    method: 'PATCH',
+    token,
+  });
+
+export const activateStaff = (token: string, id: string) =>
+  apiRequest<Record<string, unknown>>(`/admin/staff/${id}/activate`, {
+    method: 'PATCH',
+    token,
+  });
+
 export const createAdmin = (token: string, payload: { name: string; email: string; password: string }) =>
   apiRequest<Record<string, unknown>>('/admin/register', {
     method: 'POST',
