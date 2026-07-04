@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Tabs, Tag, Tooltip, Typography, message } from 'antd';
+import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, message } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
@@ -684,6 +684,7 @@ export function AdminDashboard() {
   const [selectedVehicleForBidIncrement, setSelectedVehicleForBidIncrement] = useState<VehicleRecord | null>(null);
   const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
+  const [isCompactView, setIsCompactView] = useState(false);
 
   const loadStaff = async () => {
     if (!token || user?.role !== 'admin') {
@@ -1516,12 +1517,16 @@ export function AdminDashboard() {
               >
                 Clear Filters
               </Button>
+              <div className="flex items-center gap-2 px-2">
+                <Switch checked={isCompactView} onChange={setIsCompactView} className="bg-[#575757]" />
+                <Text className="!text-white">Auction View</Text>
+              </div>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('vehicles', filteredVehicles)}>
                 Export
               </Button>
             </Space>
           </section>
-          <DataTable columns={vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" />
+          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" />
         </div>
       ),
     },
