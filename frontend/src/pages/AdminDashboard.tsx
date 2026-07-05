@@ -1042,9 +1042,10 @@ export function AdminDashboard() {
         (vehicle) =>
           (!vehicleMakeFilter || vehicle.make === vehicleMakeFilter) &&
           (!vehicleModelFilter || vehicle.model === vehicleModelFilter) &&
-          (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter)
+          (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter) &&
+          (!isCompactView || vehicle.status === 'APPROVED' || vehicle.status === 'BIDDING_ACTIVE')
       ),
-    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter, vehicles]
+    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter, vehicles, isCompactView]
   );
 
   const filteredBids = useMemo(
