@@ -1520,7 +1520,7 @@ export function AdminDashboard() {
               </Button>
               <div className="flex items-center gap-2 px-2">
                 <Switch checked={isCompactView} onChange={setIsCompactView} className="bg-[#575757]" />
-                <Text className="!text-white">Auction View</Text>
+                <Text className="!text-white">Live Auctions</Text>
               </div>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('vehicles', filteredVehicles)}>
                 Export
