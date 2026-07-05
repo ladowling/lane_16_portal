@@ -42,11 +42,12 @@ export const STATUS_LABELS: Record<string, string> = {
 
 export function StatusTag({ status }: { status: string }) {
   const key = status.toLowerCase().replace(/\s+/g, '_');
+  const isPulsing = key === 'bidding_active';
 
   return (
     <Tag
       color={STATUS_COLORS[key] ?? '#6b7280'}
-      className="!rounded-full !px-3 !font-semibold"
+      className={`!rounded-full !px-3 !font-semibold ${isPulsing ? 'animate-pulse' : ''}`}
     >
       {STATUS_LABELS[key] ?? status}
     </Tag>

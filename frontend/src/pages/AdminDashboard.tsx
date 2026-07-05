@@ -1278,6 +1278,7 @@ export function AdminDashboard() {
     { title: 'Vehicle Name', dataIndex: 'vehicleName' },
     { title: 'Buyer Name', dataIndex: 'buyerName' },
     { title: 'Buyer Email', dataIndex: 'buyerEmail' },
+    { title: 'Buyer Phone', dataIndex: 'buyerPhone' },
     { title: 'Dealership / Store', dataIndex: 'dealershipName', render: (val: string) => val || 'N/A' },
     { title: 'Bid Amount', dataIndex: 'bidAmount' },
     {
