@@ -10,6 +10,7 @@ type DataTableProps<T extends object> = {
   rowKey?: TableProps<T>['rowKey'];
   scroll?: TableProps<T>['scroll'];
   searchPlaceholder?: string;
+  rowClassName?: TableProps<T>['rowClassName'];
 };
 
 const getValueByDataIndex = <T extends object>(record: T, dataIndex: unknown) => {
@@ -61,6 +62,7 @@ export function DataTable<T extends object>({
   rowKey,
   scroll,
   searchPlaceholder = 'Search table',
+  rowClassName,
 }: DataTableProps<T>) {
   const [searchText, setSearchText] = useState('');
 
@@ -93,6 +95,7 @@ export function DataTable<T extends object>({
         loading={loading}
         rowKey={rowKey}
         scroll={scroll || { x: true }}
+        rowClassName={rowClassName}
         className="[&_.ant-empty-description]:!text-[#c8c8c8] [&_.ant-pagination-item-active]:!border-[#3ba321] [&_.ant-pagination-item-active_a]:!text-[#3ba321] [&_.ant-pagination-item_a]:!text-black [&_.ant-pagination-item-link]:!text-white [&_.ant-pagination-item-link_span]:!text-white [&_.ant-pagination-item-ellipsis]:!text-white [&_.ant-table]:!bg-[#0c0c0c] [&_.ant-table-cell]:!border-[#555555] [&_.ant-table-cell]:!bg-[#0c0c0c] [&_.ant-table-cell]:!text-white [&_.ant-table-column-sorter]:!text-[#c8c8c8] [&_.ant-table-filter-trigger]:!text-[#c8c8c8] [&_.ant-table-thead_.ant-table-cell]:!bg-[#111111] [&_.ant-table-thead_.ant-table-cell]:!font-bold [&_.ant-table-thead_.ant-table-cell]:!text-white"
         pagination={{ pageSize: 5, showSizeChanger: false }}
       />

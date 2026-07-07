@@ -35,3 +35,12 @@ select {
 .animate-reserve-pulse {
   animation: reserve-pulse 2s infinite;
 }
+
+@keyframes row-flash {
+  0% { background-color: rgba(36, 215, 37, 0.4) !important; }
+  100% { background-color: transparent !important; }
+}
+
+.animate-row-flash > td {
+  animation: row-flash 3s ease-out forwards;
+}

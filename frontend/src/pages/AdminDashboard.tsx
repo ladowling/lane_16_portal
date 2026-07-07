@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, message } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
@@ -373,6 +373,19 @@ const getTimeRemaining = (endTimeIso: string) => {
   return parts.join(' ');
 };
 
+const LiveCountdown = ({ endTimeIso }: { endTimeIso: string }) => {
+  const [timeLeft, setTimeLeft] = useState(() => getTimeRemaining(endTimeIso));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(getTimeRemaining(endTimeIso));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [endTimeIso]);
+
+  return <>{timeLeft}</>;
+};
+
 const normalizeDateString = (dateString: string | string[] | null) =>
   Array.isArray(dateString) ? dateString[0] ?? '' : dateString ?? '';
 
@@ -685,6 +698,50 @@ export function AdminDashboard() {
   const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
+  const [recentlyBidVehicles, setRecentlyBidVehicles] = useState<Record<string, number>>({});
+  const previousVehiclesRef = useRef<VehicleRecord[]>([]);
+
+  useEffect(() => {
+    if (!previousVehiclesRef.current.length) {
+      previousVehiclesRef.current = vehicles;
+      return;
+    }
+
+    const newRecentlyBid: Record<string, number> = {};
+    const prevMap = new Map(previousVehiclesRef.current.map(v => [v.id, v.bidCount]));
+    let hasChanges = false;
+
+    vehicles.forEach(v => {
+      const prevBidCount = prevMap.get(v.id);
+      if (prevBidCount !== undefined && v.bidCount > prevBidCount) {
+        newRecentlyBid[v.id!] = Date.now();
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setRecentlyBidVehicles(prev => ({ ...prev, ...newRecentlyBid }));
+    }
+    previousVehiclesRef.current = vehicles;
+  }, [vehicles]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now();
+      setRecentlyBidVehicles(prev => {
+        const next = { ...prev };
+        let changed = false;
+        Object.keys(next).forEach(key => {
+          if (now - next[key] > 3000) {
+            delete next[key];
+            changed = true;
+          }
+        });
+        return changed ? next : prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const loadStaff = async () => {
     if (!token || user?.role !== 'admin') {
@@ -1192,7 +1249,7 @@ export function AdminDashboard() {
       onFilter: (value, record) => record.status.toUpperCase() === value,
       render: (status: string) => <StatusTag status={status} />,
     },
-    { title: 'Auction End / Time Remaining', dataIndex: 'auctionEndTime', align: 'center', render: (val: string) => val ? `${formatDateLabel(val)} / ${getTimeRemaining(val)}` : 'N/A' },
+    { title: 'Auction End / Time Remaining', dataIndex: 'auctionEndTime', align: 'center', render: (val: string) => val ? <>{formatDateLabel(val)} / <LiveCountdown endTimeIso={val} /></> : 'N/A' },
     { title: 'Bid Count', dataIndex: 'bidCount', align: 'center' },
     { title: 'High Bidder', dataIndex: 'winningBidderName', align: 'center', render: (val: string) => val || 'N/A' },
     { title: 'Dealership / Store', dataIndex: 'dealershipName', align: 'center', render: (val: string) => val || 'N/A' },
@@ -1528,7 +1585,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" />
+          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" rowClassName={(record: VehicleRecord) => recentlyBidVehicles[record.id!] ? 'animate-row-flash' : ''} />
         </div>
       ),
     },
@@ -1664,6 +1721,11 @@ export function AdminDashboard() {
   const visibleTabs = user?.role === 'staff' ? tabs.filter((tab) => tab.key !== 'staff') : tabs;
   const visibleDashboardMenuItems = user?.role === 'staff' ? dashboardMenuItems.filter((item) => item.key !== 'staff') : dashboardMenuItems;
 
+  const pendingCount = useMemo(() => vehicles.filter(v => v.status === 'PENDING').length, [vehicles]);
+  const approvedCount = useMemo(() => vehicles.filter(v => v.status === 'APPROVED').length, [vehicles]);
+  const activeBiddingCount = useMemo(() => vehicles.filter(v => v.status === 'BIDDING_ACTIVE').length, [vehicles]);
+  const soldCount = useMemo(() => vehicles.filter(v => v.status === 'SOLD').length, [vehicles]);
+
   return (
     <main className="min-h-screen bg-lane-ink text-white">
       <header className="sticky top-0 z-[1000] flex min-h-[92px] items-center justify-between gap-8 bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5">
@@ -1726,6 +1788,27 @@ export function AdminDashboard() {
             Manage staff, submitted vehicles, dealer bids, registered dealers, and inbound contact requests.
           </Paragraph>
         </div>
+
+        {(activeSection === 'staff' || activeSection === 'vehicles') && (
+          <div className="mb-8 grid grid-cols-4 gap-4 max-[980px]:grid-cols-2 max-[620px]:grid-cols-1">
+            <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6 shadow-sm">
+              <Text className="!mb-1 block !text-sm !font-bold !uppercase !text-[#c8c8c8]">Pending</Text>
+              <div className={`text-4xl font-bold ${pendingCount > 0 ? 'text-[#f5a623]' : 'text-white'}`}>{pendingCount}</div>
+            </div>
+            <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6 shadow-sm">
+              <Text className="!mb-1 block !text-sm !font-bold !uppercase !text-[#c8c8c8]">Approved</Text>
+              <div className="text-4xl font-bold text-white">{approvedCount}</div>
+            </div>
+            <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6 shadow-sm">
+              <Text className="!mb-1 block !text-sm !font-bold !uppercase !text-[#c8c8c8]">Bidding Active</Text>
+              <div className="text-4xl font-bold text-[#24d725]">{activeBiddingCount}</div>
+            </div>
+            <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6 shadow-sm">
+              <Text className="!mb-1 block !text-sm !font-bold !uppercase !text-[#c8c8c8]">Sold</Text>
+              <div className="text-4xl font-bold text-white">{soldCount}</div>
+            </div>
+          </div>
+        )}
 
         <Tabs
           activeKey={activeSection}
