@@ -3,7 +3,7 @@ import { Button, Input, Modal, Space, Typography, message } from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, FireOutlined, StopOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
 import { useAuth } from '../Authontext';
-import { placeBid } from '../api';
+import { placeBid, registerForAuction } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -105,7 +105,16 @@ export function BidPanel({ vehicle }: BidPanelProps) {
     if (!token) return;
     setIsSubmitting(true);
     try {
-      await placeBid(token, vehicle.id, parsedBid, dealershipName.trim() || undefined, dealershipAddress.trim() || undefined);
+      if (dealershipName.trim()) {
+        await registerForAuction(token, vehicle.id, {
+          newDealership: {
+            name: dealershipName.trim(),
+            address: dealershipAddress.trim() || undefined,
+          }
+        });
+      }
+
+      await placeBid(token, vehicle.id, parsedBid);
       setIsConfirmOpen(false);
       setIsSuccessOpen(true);
       setBidAmount('');

@@ -231,12 +231,23 @@ export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
 
 // ── Bids ────────────────────────────────────────────────────────────────────
 
+export const registerForAuction = (
+  token: string,
+  vehicleId: string,
+  payload: { dealershipId?: string; newDealership?: { name: string; address?: string } }
+) =>
+  apiRequest<Record<string, unknown>>(`/buyers/auctions/${vehicleId}/register`, {
+    method: 'POST',
+    token,
+    body: JSON.stringify(payload),
+  });
+
 // POST /buyers/bids — { vehicleId, amount }
-export const placeBid = (token: string, vehicleId: string, amount: number, dealershipName?: string, dealershipAddress?: string) =>
+export const placeBid = (token: string, vehicleId: string, amount: number) =>
   apiRequest<Record<string, unknown>>('/buyers/bids', {
     method: 'POST',
     token,
-    body: JSON.stringify({ vehicleId, amount, dealershipName, dealershipAddress }),
+    body: JSON.stringify({ vehicleId, amount }),
   });
 
 // GET /buyers/bids/vehicle/{id} — all bids for a vehicle

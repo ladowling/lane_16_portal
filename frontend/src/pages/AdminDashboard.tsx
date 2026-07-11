@@ -55,6 +55,8 @@ type VehicleRecord = {
   auctionEndTime: string;
   winningBidderName: string;
   winningBidAmount: string;
+  winningDealershipId?: string | null;
+  winningBuyerId?: string | null;
   tireCondition: string;
   mechanicalCondition: string;
   interiorCondition: string;
@@ -485,6 +487,11 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     ? record.uploads.map(mapVehicleUpload).filter((upload): upload is VehicleUpload => Boolean(upload))
     : [];
 
+  const winningBuyerObj = (record.winningBuyer ?? {}) as Record<string, unknown>;
+  const highestBidBuyerObj = (record.highestBidBuyer ?? {}) as Record<string, unknown>;
+  const winningDealershipObj = (record.winningDealership ?? {}) as Record<string, unknown>;
+  const highestBidDealerObj = (record.highestBidDealer ?? {}) as Record<string, unknown>;
+
   return {
     id: getStringValue(record, ['id', '_id']),
     vehicleName,
@@ -509,13 +516,15 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     bidCount: getNumberValue(record, ['bidCount']),
     auctionStartTime: getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt', 'createdAt']),
     auctionEndTime: getStringValue(record, ['auctionEndTime']),
-    winningBidderName: getStringValue(record, ['winningBidderName']),
+    winningBidderName: getStringValue(winningBuyerObj, ['name']) || getStringValue(highestBidBuyerObj, ['name']) || getStringValue(record, ['winningBidderName']),
     winningBidAmount: formatCurrency(getStringValue(record, ['winningBidAmount'])),
+    winningDealershipId: getStringValue(record, ['winningDealershipId']),
+    winningBuyerId: getStringValue(record, ['winningBuyerId']),
     tireCondition: getStringValue(record, ['tireCondition']),
     mechanicalCondition: getStringValue(record, ['mechanicalCondition']),
     interiorCondition: getStringValue(record, ['interiorCondition']),
     exteriorCondition: getStringValue(record, ['exteriorCondition']),
-    dealershipName: getStringValue(record, ['dealershipName', 'dealership', 'storeName', 'store']),
+    dealershipName: getStringValue(winningDealershipObj, ['name']) || getStringValue(highestBidDealerObj, ['name']) || getStringValue(record, ['dealershipName', 'dealership', 'storeName', 'store']),
     lastUpdatedBy: getStringValue(record, ['lastUpdatedBy']),
     bidIncrementNo: getStringValue(record, ['bidIncrementNo']),
     trim: getStringValue(record, ['trim']),
@@ -571,10 +580,13 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
   const dateCreated = getDateValue(record);
   
   const vehicleId = getStringValue(record, ['vehicleId', 'vehicle']);
-  const dealerId = getStringValue(record, ['buyerId', 'dealerId', 'dealer']);
+  const dealerId = getStringValue(record, ['buyerId', 'dealerId', 'dealer', 'dealershipId']);
   
   const matchedVehicle = vehicles.find(v => v.id === vehicleId);
   const matchedDealer = dealers.find(d => d.id === dealerId);
+
+  const dealershipObj = (record.dealership ?? {}) as Record<string, unknown>;
+  const buyerObj = (dealershipObj.buyer ?? record.buyer ?? {}) as Record<string, unknown>;
 
   return {
     bidId: formatShortBidId(getStringValue(record, ['id', 'bidId'])),
@@ -582,17 +594,17 @@ const mapBidRecord = (item: unknown, vehicles: VehicleRecord[] = [], dealers: De
     dealerId,
     dateCreated,
     vehicleName: matchedVehicle?.vehicleName || getStringValue((record.vehicle ?? {}) as Record<string, unknown>, ['vehicleName']) || getStringValue(record, ['vehicleName']),
-    buyerName: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['name']) || matchedDealer?.dealerName || getStringValue(record, ['buyerName', 'dealerName']),
-    buyerEmail: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['email']) || matchedDealer?.dealerEmail || getStringValue(record, ['buyerEmail', 'dealerEmail', 'email']),
-    buyerPhone: getStringValue((record.buyer ?? {}) as Record<string, unknown>, ['phoneNumber', 'phone']) || matchedDealer?.dealerPhone || getStringValue(record, ['buyerPhone', 'dealerPhone', 'phone']),
+    buyerName: getStringValue(buyerObj, ['name']) || matchedDealer?.dealerName || getStringValue(record, ['buyerName', 'dealerName']),
+    buyerEmail: getStringValue(buyerObj, ['email']) || matchedDealer?.dealerEmail || getStringValue(record, ['buyerEmail', 'dealerEmail', 'email']),
+    buyerPhone: getStringValue(buyerObj, ['phoneNumber', 'phone']) || matchedDealer?.dealerPhone || getStringValue(record, ['buyerPhone', 'dealerPhone', 'phone']),
     contactPerson: getStringValue(record, ['contactPerson']),
     contactPhone: getStringValue(record, ['contactPhone']),
     bidAmount: formatCurrency(getStringValue(record, ['bidAmount', 'amount'])),
     bidStatus: getStringValue(record, ['bidStatus', 'status'], 'currentHighBid'),
     note: getStringValue(record, ['note']),
     bidTimestamp: getStringValue(record, ['bidTimestamp', 'createdAt'], dateCreated),
-    dealershipName: getStringValue(record, ['dealershipName']),
-    dealershipAddress: getStringValue(record, ['dealershipAddress']),
+    dealershipName: getStringValue(dealershipObj, ['name']) || getStringValue(record, ['dealershipName']),
+    dealershipAddress: getStringValue(dealershipObj, ['address']) || getStringValue(record, ['dealershipAddress']),
   };
 };
 
@@ -902,6 +914,8 @@ export function AdminDashboard() {
       dealerName: record.dealerName,
       dealerEmail: record.dealerEmail,
       dealerPhone: record.dealerPhone,
+      dealershipName: record.dealershipName === 'N/A' ? '' : record.dealershipName,
+      dealershipAddress: record.dealershipAddress === 'N/A' ? '' : record.dealershipAddress,
     });
   };
 
