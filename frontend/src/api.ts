@@ -242,6 +242,12 @@ export const registerForAuction = (
     body: JSON.stringify(payload),
   });
 
+export const checkBuyerAuctionHasBid = (token: string, vehicleId: string) =>
+  apiRequest<{ registered: boolean; hasBid: boolean }>(`/buyers/auctions/${vehicleId}/has-bid`, {
+    method: 'GET',
+    token,
+  });
+
 // POST /buyers/bids — { vehicleId, amount }
 export const placeBid = (token: string, vehicleId: string, amount: number) =>
   apiRequest<Record<string, unknown>>('/buyers/bids', {
@@ -271,3 +277,4 @@ export const createDealer = (token: string, payload: { name: string; email: stri
 /** @deprecated Use updateBuyer instead */
 export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
   updateBuyer(token, id, payload);
+
