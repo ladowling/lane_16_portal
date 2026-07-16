@@ -1193,6 +1193,7 @@ export function AdminDashboard() {
     },
     {
       title: 'Actions',
+      fixed: 'right',
       render: (_, record) => (
         <Dropdown
           menu={{
@@ -1281,6 +1282,7 @@ export function AdminDashboard() {
     { title: 'Auction Status', dataIndex: 'auctionStatus', align: 'center', render: (val: string) => <StatusTag status={val} /> },
     {
       title: 'Actions',
+      fixed: 'right',
       align: 'center',
       render: (_, record) => {
         const isPending = record.status === 'PENDING';
@@ -1359,6 +1361,7 @@ export function AdminDashboard() {
     },
     {
       title: 'Actions',
+      fixed: 'right',
       render: (_, record) => (
         <Button onClick={() => setSelectedBid(record)} size="small" type="primary">
           View
@@ -1377,6 +1380,7 @@ export function AdminDashboard() {
     { title: 'Last Modified At', dataIndex: 'lastModifiedAt', render: (date: string) => formatDateLabel(date) },
     {
       title: 'Actions',
+      fixed: 'right',
       render: (_, record) => (
         <Dropdown
           menu={{
@@ -1413,6 +1417,7 @@ export function AdminDashboard() {
     },
     {
       title: 'Actions',
+      fixed: 'right',
       render: (_, record) => (
         <Button onClick={() => setSelectedContact(record)} size="small" type="primary">
           View
