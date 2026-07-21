@@ -847,11 +847,11 @@ export function AdminDashboard() {
         .then((responses) => {
           const flatResponses = responses.flatMap((r) => getArrayPayload(r));
           const mappedBids = flatResponses.map((b) => mapBidRecord(b, vehicles, dealers));
-          // Sort bids from first to last (lowest to highest amount)
+          // Sort bids from latest to first (descending by date)
           mappedBids.sort((a, b) => {
-            const amountA = Number(a.bidAmount.replace(/[^0-9.-]+/g, ''));
-            const amountB = Number(b.bidAmount.replace(/[^0-9.-]+/g, ''));
-            return amountA - amountB;
+            const timeA = new Date(a.dateCreated).getTime();
+            const timeB = new Date(b.dateCreated).getTime();
+            return timeB - timeA;
           });
           setAllBids(mappedBids);
         })
