@@ -779,7 +779,13 @@ export function AdminDashboard() {
     setIsVehiclesLoading(true);
     try {
       const response = await fetchVehicles(token);
-      setVehicles(getArrayPayload(response).map(mapVehicleRecord));
+      const freshVehicles = getArrayPayload(response).map(mapVehicleRecord);
+      setVehicles(freshVehicles);
+      // Sync the open detail modal with the fresh data so status updates are reflected instantly
+      setSelectedVehicle((current) => {
+        if (!current?.id) return current;
+        return freshVehicles.find((v) => v.id === current.id) ?? current;
+      });
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to load vehicles.');
     } finally {
@@ -795,7 +801,13 @@ export function AdminDashboard() {
     setIsDealersLoading(true);
     try {
       const response = await fetchBuyers(token);
-      setDealers(getArrayPayload(response).map(mapDealerRecord));
+      const freshDealers = getArrayPayload(response).map(mapDealerRecord);
+      setDealers(freshDealers);
+      // Sync the open buyer detail modal with fresh data
+      setSelectedDealer((current) => {
+        if (!current?.id) return current;
+        return freshDealers.find((d) => d.id === current.id) ?? current;
+      });
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Unable to load dealers.');
     } finally {
@@ -1007,17 +1019,7 @@ export function AdminDashboard() {
         await approveVehicle(token, approvalVehicle.id, payload as { status: 'APPROVED' | 'REJECTED'; auctionStartTime?: string; auctionEndTime?: string });
       }
 
-      setSelectedVehicle((currentVehicle) => {
-        if (!currentVehicle || currentVehicle.id !== approvalVehicle.id) {
-          return currentVehicle;
-        }
-        return { 
-          ...currentVehicle, 
-          status: approvalStatus, 
-          auctionStartTime: payload.auctionStartTime ?? currentVehicle.auctionStartTime, 
-          auctionEndTime: payload.auctionEndTime ?? currentVehicle.auctionEndTime 
-        };
-      });
+      // loadVehicles() will sync selectedVehicle from the fresh list automatically
       await loadVehicles();
       closeVehicleApproval();
       message.success(`Vehicle marked as ${approvalStatus.toLowerCase()} successfully.`);
@@ -1201,7 +1203,8 @@ export function AdminDashboard() {
               { key: 'edit', label: 'Edit' },
               { key: 'toggle_status', label: record.isActive ? 'Deactivate' : 'Activate', danger: record.isActive },
             ],
-            onClick: ({ key }) => {
+            onClick: ({ key, domEvent }) => {
+              domEvent.stopPropagation();
               if (key === 'edit') startStaffEdit(record);
               if (key === 'toggle_status') toggleStaffStatus(record);
             },
@@ -1209,7 +1212,7 @@ export function AdminDashboard() {
           placement="bottomRight"
           trigger={['click']}
         >
-          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+          <Button onClick={(e) => e.stopPropagation()} className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
         </Dropdown>
       ),
     },
@@ -1279,7 +1282,7 @@ export function AdminDashboard() {
     { title: 'Final Price', dataIndex: 'finalTransactionPrice', align: 'center', render: (val: number) => val ? formatCurrency(val) : 'N/A' },
     { title: 'Reason Not Sold', dataIndex: 'reasonNotSold', align: 'center' },
     { title: 'Valuation Notes', dataIndex: 'adminValuationNotes', align: 'center' },
-    { title: 'Auction Status', dataIndex: 'auctionStatus', align: 'center', render: (val: string) => <StatusTag status={val} /> },
+    // { title: 'Auction Status', dataIndex: 'auctionStatus', align: 'center', render: (val: string) => <StatusTag status={val} /> },
     {
       title: 'Actions',
       fixed: 'right',
@@ -1328,12 +1331,16 @@ export function AdminDashboard() {
           <Dropdown
             menu={{
               items,
-              onClick: ({ key }) => handleAction(key),
+              onClick: ({ key, domEvent }) => {
+                domEvent.stopPropagation();
+                handleAction(key);
+              },
             }}
             placement="bottomRight"
             trigger={['click']}
           >
             <Button
+              onClick={(e) => e.stopPropagation()}
               aria-label={`Open actions for ${record.vehicleName}`}
               className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]"
               icon={<RightOutlined />}
@@ -1363,7 +1370,7 @@ export function AdminDashboard() {
       title: 'Actions',
       fixed: 'right',
       render: (_, record) => (
-        <Button onClick={() => setSelectedBid(record)} size="small" type="primary">
+        <Button onClick={(e) => { e.stopPropagation(); setSelectedBid(record); }} size="small" type="primary">
           View
         </Button>
       ),
@@ -1388,7 +1395,8 @@ export function AdminDashboard() {
               { key: 'view', label: 'View' },
               { key: 'edit', label: 'Edit' },
             ],
-            onClick: ({ key }) => {
+            onClick: ({ key, domEvent }) => {
+              domEvent.stopPropagation();
               if (key === 'view') setSelectedDealer(record);
               if (key === 'edit') startDealerEdit(record);
             },
@@ -1396,7 +1404,7 @@ export function AdminDashboard() {
           placement="bottomRight"
           trigger={['click']}
         >
-          <Button className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+          <Button onClick={(e) => e.stopPropagation()} className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
         </Dropdown>
       ),
     },
@@ -1419,7 +1427,7 @@ export function AdminDashboard() {
       title: 'Actions',
       fixed: 'right',
       render: (_, record) => (
-        <Button onClick={() => setSelectedContact(record)} size="small" type="primary">
+        <Button onClick={(e) => { e.stopPropagation(); setSelectedContact(record); }} size="small" type="primary">
           View
         </Button>
       ),
@@ -1522,6 +1530,7 @@ export function AdminDashboard() {
                         Cancel
                       </Button>
                     )}
+                    //tg
                   </Space>
                 </Form.Item>
               </div>
@@ -1541,14 +1550,14 @@ export function AdminDashboard() {
                   key: 'active',
                   label: 'Staff (Active)',
                   children: (
-                    <DataTable columns={staffColumns} dataSource={staff.filter(s => s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search active staff" />
+                    <DataTable columns={staffColumns} dataSource={staff.filter(s => s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search active staff" onRow={(record) => ({ onClick: () => startStaffEdit(record) })} />
                   ),
                 },
                 {
                   key: 'archived',
                   label: 'Archived Staff',
                   children: (
-                    <DataTable columns={staffColumns} dataSource={staff.filter(s => !s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search archived staff" />
+                    <DataTable columns={staffColumns} dataSource={staff.filter(s => !s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search archived staff" onRow={(record) => ({ onClick: () => startStaffEdit(record) })} />
                   ),
                 },
               ]}
@@ -1604,7 +1613,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" rowClassName={(record: VehicleRecord) => recentlyBidVehicles[record.id!] ? 'animate-row-flash' : ''} />
+          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" rowClassName={(record: VehicleRecord) => recentlyBidVehicles[record.id!] ? 'animate-row-flash' : ''} onRow={(record) => ({ onClick: () => setSelectedVehicle(record) })} />
         </div>
       ),
     },
@@ -1643,7 +1652,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={bidColumns} dataSource={filteredBids} rowKey="bidId" searchable searchPlaceholder="Search bids" />
+          <DataTable columns={bidColumns} dataSource={filteredBids} rowKey="bidId" searchable searchPlaceholder="Search bids" onRow={(record) => ({ onClick: () => setSelectedBid(record) })} />
         </div>
       ),
     },
@@ -1710,7 +1719,7 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={dealerColumns} dataSource={filteredDealers} loading={isDealersLoading} rowKey={(record) => record.id || record.dealerEmail} searchable searchPlaceholder="Search dealers" />
+          <DataTable columns={dealerColumns} dataSource={filteredDealers} loading={isDealersLoading} rowKey={(record) => record.id || record.dealerEmail} searchable searchPlaceholder="Search dealers" onRow={(record) => ({ onClick: () => setSelectedDealer(record) })} />
         </div>
       ),
     },
@@ -1724,7 +1733,7 @@ export function AdminDashboard() {
               Export
             </Button>
           </div>
-          <DataTable columns={contactColumns} dataSource={contacts} loading={isContactsLoading} rowKey={(record) => record.id || `${record.email}-${record.phoneNo}`} />
+          <DataTable columns={contactColumns} dataSource={contacts} loading={isContactsLoading} rowKey={(record) => record.id || `${record.email}-${record.phoneNo}`} onRow={(record) => ({ onClick: () => setSelectedContact(record) })} />
         </div>
       ),
     },
@@ -1910,9 +1919,10 @@ export function AdminDashboard() {
                 label: 'Bid History',
                 children: (
                   <DataTable
-                    columns={bidColumns}
+                    columns={bidColumns.filter((c) => c.title !== 'Vehicle Name' && c.title !== 'Dealership / Store' && c.title !== 'Buyer Name' && c.title !== 'Buyer Phone')}
                     dataSource={vehicleBids}
-                    rowKey={(record) => record.bidId || record.dateCreated}
+                    rowKey="bidId"
+                    onRow={(record) => ({ onClick: () => setSelectedBid(record) })}
                     searchable
                     searchPlaceholder="Search vehicle bid history"
                   />
@@ -2053,6 +2063,7 @@ export function AdminDashboard() {
         <Text>{temporaryPasswordMessage}</Text>
       </Modal>
       <DetailModal
+        zIndex={1100}
         open={Boolean(selectedBid)}
         onClose={() => setSelectedBid(null)}
         title={selectedBid?.bidId ?? 'Bid Details'}
@@ -2125,9 +2136,10 @@ export function AdminDashboard() {
                 label: 'Bid History',
                 children: (
                   <DataTable
-                    columns={bidColumns}
+                    columns={bidColumns.filter((c) => c.title !== 'Dealership / Store' && c.title !== 'Buyer Name' && c.title !== 'Buyer Email' && c.title !== 'Buyer Phone')}
                     dataSource={dealerBids}
-                    rowKey={(record) => record.bidId || record.dateCreated}
+                    rowKey="bidId"
+                    onRow={(record) => ({ onClick: () => setSelectedBid(record) })}
                     searchable
                     searchPlaceholder="Search bid history"
                   />

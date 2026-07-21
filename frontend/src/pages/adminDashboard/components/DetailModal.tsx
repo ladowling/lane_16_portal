@@ -18,11 +18,13 @@ type DetailModalProps = {
   onClose: () => void;
   title: string;
   sections: DetailSection[];
+  zIndex?: number;
 };
 
-export function DetailModal({ open, onClose, title, sections }: DetailModalProps) {
+export function DetailModal({ open, onClose, title, sections, zIndex }: DetailModalProps) {
   return (
     <Modal
+      zIndex={zIndex}
       centered
       footer={null}
       onCancel={onClose}
