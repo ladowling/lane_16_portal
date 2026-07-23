@@ -80,6 +80,18 @@ export function DataTable<T extends object>({
     );
   }, [columns, dataSource, searchText]);
 
+  const finalColumns = useMemo(() => {
+    return [
+      {
+        title: 'S/N',
+        key: 'sn',
+        width: 60,
+        render: (_: unknown, __: unknown, index: number) => index + 1,
+      },
+      ...columns,
+    ];
+  }, [columns]);
+
   return (
     <section className="rounded-lg border border-[#555555] bg-[#0c0c0c] p-4">
       {searchable && (
@@ -92,18 +104,18 @@ export function DataTable<T extends object>({
         />
       )}
       <Table
-        columns={columns}
+        columns={finalColumns}
         dataSource={filteredData}
         loading={loading}
         rowKey={rowKey}
-        scroll={scroll || { x: true }}
+        scroll={scroll || { x: true, y: 600 }}
         onRow={onRow}
         rowClassName={(record, index) => {
           const baseClass = typeof rowClassName === 'function' ? rowClassName(record, index, 0) : (rowClassName || '');
           return `${baseClass} ${onRow ? 'cursor-pointer' : ''}`.trim();
         }}
         className="[&_.ant-empty-description]:!text-[#c8c8c8] [&_.ant-pagination-item-active]:!border-[#3ba321] [&_.ant-pagination-item-active_a]:!text-[#3ba321] [&_.ant-pagination-item_a]:!text-black [&_.ant-pagination-item-link]:!text-white [&_.ant-pagination-item-link_span]:!text-white [&_.ant-pagination-item-ellipsis]:!text-white [&_.ant-table]:!bg-[#0c0c0c] [&_.ant-table-cell]:!border-[#555555] [&_.ant-table-cell]:!bg-[#0c0c0c] [&_.ant-table-cell]:!text-white [&_.ant-table-column-sorter]:!text-[#c8c8c8] [&_.ant-table-filter-trigger]:!text-[#c8c8c8] [&_.ant-table-thead_.ant-table-cell]:!bg-[#111111] [&_.ant-table-thead_.ant-table-cell]:!font-bold [&_.ant-table-thead_.ant-table-cell]:!text-white"
-        pagination={{ pageSize: 5, showSizeChanger: false }}
+        pagination={{ pageSizeOptions: ['10', '25', '50', '100'], defaultPageSize: 10, showSizeChanger: true }}
       />
     </section>
   );

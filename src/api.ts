@@ -196,6 +196,7 @@ export const createAdmin = (token: string, payload: { name: string; email: strin
 // ── Buyers (replaces /dealers) ───────────────────────────────────────────────
 
 export type BuyerDealership = {
+  id: string;
   name: string;
   address: string;
 };
@@ -204,10 +205,10 @@ export type BuyerDealership = {
 export const fetchBuyers = (token: string) =>
   apiRequest<unknown[]>('/buyers', { method: 'GET', token });
 
-// POST /buyers — onboard a new buyer with one or more dealerships
+// POST /buyers — onboard a new buyer
 export const createBuyer = (
   token: string,
-  payload: { name: string; email: string; phoneNumber: string; dealerships: BuyerDealership[] }
+  payload: { name: string; email: string; phoneNumber: string }
 ) =>
   apiRequest<Record<string, unknown>>('/buyers', {
     method: 'POST',
@@ -215,11 +216,11 @@ export const createBuyer = (
     body: JSON.stringify(payload),
   });
 
-// PATCH /buyers/{id} — update buyer name, email, phone, or dealership associations
+// PATCH /buyers/{id} — update buyer name, email, phone
 export const updateBuyer = (
   token: string,
   id: string,
-  payload: { name?: string; email?: string; phoneNumber?: string; dealerships?: BuyerDealership[] }
+  payload: { name?: string; email?: string; phoneNumber?: string }
 ) =>
   apiRequest<Record<string, unknown>>(`/buyers/${id}`, {
     method: 'PATCH',
@@ -229,12 +230,31 @@ export const updateBuyer = (
 
 export const getUploadUrl = (id: string) => `${API_BASE_URL}/upload/${id}`;
 
+// GET /buyers/{id} — fetch buyer profile (includes dealerships)
+export const fetchBuyerProfile = (token: string, id: string) =>
+  apiRequest<{ id: string; name: string; email: string; phoneNumber: string; dealerships: BuyerDealership[] }>(`/buyers/${id}`, { method: 'GET', token });
+
+// POST /dealerships — create a new dealership for a buyer
+export const createDealership = (
+  token: string,
+  payload: { name: string; address: string; buyerId: string }
+) =>
+  apiRequest<Record<string, unknown>>('/dealerships', {
+    method: 'POST',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+// GET /dealerships — fetch all dealerships
+export const fetchDealerships = (token: string) =>
+  apiRequest<unknown[]>('/dealerships', { method: 'GET', token });
+
 // ── Bids ────────────────────────────────────────────────────────────────────
 
 export const registerForAuction = (
   token: string,
   vehicleId: string,
-  payload: { dealershipId?: string; newDealership?: { name: string; address?: string } }
+  payload: { dealershipId: string }
 ) =>
   apiRequest<Record<string, unknown>>(`/buyers/auctions/${vehicleId}/register`, {
     method: 'POST',
@@ -273,7 +293,7 @@ export const fetchDealerBids = (token: string, dealerId: string) =>
 export const fetchDealers = fetchBuyers;
 /** @deprecated Use createBuyer instead */
 export const createDealer = (token: string, payload: { name: string; email: string; phoneNumber: string }) =>
-  createBuyer(token, { ...payload, dealerships: [] });
+  createBuyer(token, payload);
 /** @deprecated Use updateBuyer instead */
 export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
   updateBuyer(token, id, payload);

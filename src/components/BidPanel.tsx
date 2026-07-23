@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Input, Modal, Space, Typography, message } from 'antd';
+import { Button, Input, Modal, Space, Typography, message, Select } from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, FireOutlined, StopOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
 import { useAuth } from '../Authontext';
-import { checkBuyerAuctionHasBid, placeBid, registerForAuction } from '../api';
+import { checkBuyerAuctionHasBid, placeBid, registerForAuction, fetchBuyerProfile, type BuyerDealership } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -65,13 +65,13 @@ type BidPanelProps = {
 };
 
 export function BidPanel({ vehicle }: BidPanelProps) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [bidAmount, setBidAmount] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [dealershipName, setDealershipName] = useState('');
-  const [dealershipAddress, setDealershipAddress] = useState('');
+  const [buyerDealerships, setBuyerDealerships] = useState<BuyerDealership[]>([]);
+  const [selectedDealershipId, setSelectedDealershipId] = useState<string>('');
   const [buyerHasBid, setBuyerHasBid] = useState<boolean | null>(null);
 
   const canBid = vehicle.canBid === true;
@@ -79,8 +79,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
 
   useEffect(() => {
     setBuyerHasBid(null);
-    setDealershipName('');
-    setDealershipAddress('');
+    setSelectedDealershipId('');
 
     if (!token || !vehicle.id || !canBid) {
       return;
@@ -88,7 +87,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
 
     let isMounted = true;
 
-    const loadBuyerAuctionState = async () => {
+    const loadBuyerData = async () => {
       try {
         const response = await checkBuyerAuctionHasBid(token, vehicle.id);
         if (isMounted) {
@@ -99,9 +98,23 @@ export function BidPanel({ vehicle }: BidPanelProps) {
           setBuyerHasBid(false);
         }
       }
+
+      if (user?.id && user.role === 'dealer') {
+        try {
+          const profile = await fetchBuyerProfile(token, user.id);
+          if (isMounted && profile.dealerships) {
+            setBuyerDealerships(profile.dealerships);
+            if (profile.dealerships.length === 1) {
+              setSelectedDealershipId(profile.dealerships[0].id);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to fetch buyer profile:', e);
+        }
+      }
     };
 
-    void loadBuyerAuctionState();
+    void loadBuyerData();
 
     return () => {
       isMounted = false;
@@ -137,12 +150,9 @@ export function BidPanel({ vehicle }: BidPanelProps) {
     if (!token) return;
     setIsSubmitting(true);
     try {
-      if (showDealershipInputs && dealershipName.trim()) {
+      if (showDealershipInputs && selectedDealershipId) {
         await registerForAuction(token, vehicle.id, {
-          newDealership: {
-            name: dealershipName.trim(),
-            address: dealershipAddress.trim() || undefined,
-          }
+          dealershipId: selectedDealershipId
         });
       }
 
@@ -150,8 +160,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
       setIsConfirmOpen(false);
       setIsSuccessOpen(true);
       setBidAmount('');
-      setDealershipName('');
-      setDealershipAddress('');
+      setSelectedDealershipId('');
       setBuyerHasBid(true);
     } catch (err) {
       message.error(err instanceof Error ? err.message : 'Failed to place bid. Please try again.');
@@ -242,22 +251,17 @@ export function BidPanel({ vehicle }: BidPanelProps) {
               type="number"
               min={nextMin}
             />
-            {showDealershipInputs && (
+            {showDealershipInputs && buyerDealerships.length > 0 && (
               <div className="mb-4 space-y-3">
                 <Text className="block !text-sm !text-[#c8c8c8]">
-                  Bidding on behalf of another dealership? Provide details below to override your default dealership.
+                  Select the dealership to place this bid under.
                 </Text>
-                <Input
-                  className="!h-10 !rounded-lg !border-white !bg-[#242424] !text-base !text-white placeholder:!text-[#888]"
-                  placeholder="Dealership Name (Optional)"
-                  value={dealershipName}
-                  onChange={(e) => setDealershipName(e.target.value)}
-                />
-                <Input
-                  className="!h-10 !rounded-lg !border-white !bg-[#242424] !text-base !text-white placeholder:!text-[#888]"
-                  placeholder="Dealership Address (Optional)"
-                  value={dealershipAddress}
-                  onChange={(e) => setDealershipAddress(e.target.value)}
+                <Select
+                  className="w-full !h-10 [&_.ant-select-selector]:!rounded-lg [&_.ant-select-selector]:!border-white [&_.ant-select-selector]:!bg-[#242424] [&_.ant-select-selection-item]:!text-white [&_.ant-select-selection-placeholder]:!text-gray-700"
+                  placeholder="Select a dealership"
+                  value={selectedDealershipId || undefined}
+                  onChange={(val) => setSelectedDealershipId(val)}
+                  options={buyerDealerships.map((d) => ({ label: d.name, value: d.id }))}
                 />
               </div>
             )}
@@ -298,11 +302,10 @@ export function BidPanel({ vehicle }: BidPanelProps) {
           <Title className="!mt-1 !text-[#111]" level={3}>
             {displayBid}
           </Title>
-          {showDealershipInputs && (dealershipName.trim() || dealershipAddress.trim()) && (
-            <div className="mt-4 rounded-lg bg-[#f9f9f9] p-3 text-left border border-[#eee]">
-              <Text className="!text-xs !font-bold !uppercase !tracking-widest !text-[#888] block mb-1">Dealership Override</Text>
-              {dealershipName.trim() && <div className="text-sm"><strong>Name:</strong> {dealershipName}</div>}
-              {dealershipAddress.trim() && <div className="text-sm"><strong>Address:</strong> {dealershipAddress}</div>}
+          {showDealershipInputs && selectedDealershipId && (
+            <div className="mt-4 rounded-lg bg-[#f9f9f9] p-3 text-left border border-[#eee] w-full">
+              <Text className="!text-xs !font-bold !uppercase !tracking-widest !text-[#888] block mb-1">Bidding Dealership</Text>
+              <div className="text-sm text-center"><strong>{buyerDealerships.find(d => d.id === selectedDealershipId)?.name || 'Selected Dealership'}</strong></div>
             </div>
           )}
           <Paragraph className="mt-4 !text-base !text-[#555]">

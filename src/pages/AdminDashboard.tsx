@@ -8,7 +8,7 @@ import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '../assets/cars/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff } from '../api';
+import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -113,11 +113,22 @@ type DealerRecord = {
   dealerPhone: string;      // buyer's phone
   dealershipName: string;   // default dealership name
   dealershipAddress: string; // default dealership address
+  dealerships: Array<{ id: string; name: string; address: string }>;
   dateCreated: string;
   vehiclesBidUpon: string;
   bidAmount: string;
   bidStatus: string;
   dealerNote: string;
+  lastModifiedBy: string;
+  lastModifiedAt: string;
+};
+
+type DealershipRecord = {
+  id?: string;
+  name: string;
+  address: string;
+  buyer?: { id: string; name: string; email: string };
+  dateCreated: string;
   lastModifiedBy: string;
   lastModifiedAt: string;
 };
@@ -565,11 +576,35 @@ const mapDealerRecord = (item: unknown): DealerRecord => {
     dealerPhone: getStringValue(record, ['dealerPhone', 'phoneNumber', 'phone']),
     dealershipName: getStringValue(defaultDealership as Record<string, unknown>, ['name'], 'N/A'),
     dealershipAddress: getStringValue(defaultDealership as Record<string, unknown>, ['address'], 'N/A'),
+    dealerships: dealerships.map(d => ({
+      id: getStringValue(d, ['id', '_id']),
+      name: getStringValue(d, ['name']),
+      address: getStringValue(d, ['address']),
+    })),
     dateCreated,
     vehiclesBidUpon: getStringValue(record, ['vehiclesBidUpon'], 'None yet'),
     bidAmount: formatCurrency(getStringValue(record, ['bidAmount'])),
     bidStatus: getStringValue(record, ['bidStatus']),
     dealerNote: getStringValue(record, ['dealerNote', 'note']),
+    lastModifiedBy: getStringValue(record, ['lastModifiedBy'], '-'),
+    lastModifiedAt: getStringValue(record, ['lastModifiedAt']),
+  };
+};
+
+const mapDealershipRecord = (item: unknown): DealershipRecord => {
+  const record = (item ?? {}) as Record<string, unknown>;
+  const dateCreated = getDateValue(record);
+  const buyer = (record.buyer ?? {}) as Record<string, unknown>;
+  return {
+    id: getStringValue(record, ['id', '_id']),
+    name: getStringValue(record, ['name']),
+    address: getStringValue(record, ['address']),
+    buyer: record.buyer ? {
+      id: getStringValue(buyer, ['id', '_id']),
+      name: getStringValue(buyer, ['name']),
+      email: getStringValue(buyer, ['email']),
+    } : undefined,
+    dateCreated,
     lastModifiedBy: getStringValue(record, ['lastModifiedBy'], '-'),
     lastModifiedAt: getStringValue(record, ['lastModifiedAt']),
   };
@@ -702,15 +737,20 @@ export function AdminDashboard() {
   const [temporaryPasswordMessage, setTemporaryPasswordMessage] = useState('');
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [form] = Form.useForm<StaffRecord>();
-  const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone' | 'dealershipName' | 'dealershipAddress'>>();
+  const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
+  const [dealershipForm] = Form.useForm<{ name: string; address: string }>();
   const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
   const [vehicleValuationForm] = Form.useForm();
   const [isVehicleValuationSaving, setIsVehicleValuationSaving] = useState(false);
   const [selectedVehicleForBidIncrement, setSelectedVehicleForBidIncrement] = useState<VehicleRecord | null>(null);
   const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
+  const [selectedBuyerForDealership, setSelectedBuyerForDealership] = useState<DealerRecord | null>(null);
+  const [isDealershipSaving, setIsDealershipSaving] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
   const [recentlyBidVehicles, setRecentlyBidVehicles] = useState<Record<string, number>>({});
+  const [allDealerships, setAllDealerships] = useState<DealershipRecord[]>([]);
+  const [isDealershipsLoading, setIsDealershipsLoading] = useState(false);
   const previousVehiclesRef = useRef<VehicleRecord[]>([]);
 
   useEffect(() => {
@@ -794,24 +834,37 @@ export function AdminDashboard() {
   };
 
   const loadDealers = async () => {
-    if (!token) {
-      return;
-    }
-
+    if (!token) return;
     setIsDealersLoading(true);
     try {
       const response = await fetchBuyers(token);
       const freshDealers = getArrayPayload(response).map(mapDealerRecord);
       setDealers(freshDealers);
-      // Sync the open buyer detail modal with fresh data
-      setSelectedDealer((current) => {
-        if (!current?.id) return current;
-        return freshDealers.find((d) => d.id === current.id) ?? current;
-      });
+      // Sync detailed selectedDealer so dealerships are updated
+      if (selectedDealer) {
+        const updated = freshDealers.find((d) => d.id === selectedDealer.id);
+        if (updated) setSelectedDealer(updated);
+      }
     } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Unable to load dealers.');
+      console.error('Failed to load buyers:', error);
+      message.error('Failed to load buyers');
     } finally {
       setIsDealersLoading(false);
+    }
+  };
+
+  const loadDealerships = async () => {
+    if (!token) return;
+    setIsDealershipsLoading(true);
+    try {
+      const response = await fetchDealerships(token);
+      const freshDealerships = getArrayPayload(response).map(mapDealershipRecord);
+      setAllDealerships(freshDealerships);
+    } catch (error) {
+      console.error('Failed to load dealerships:', error);
+      // Optional: message.error('Failed to load dealerships');
+    } finally {
+      setIsDealershipsLoading(false);
     }
   };
 
@@ -832,9 +885,10 @@ export function AdminDashboard() {
   };
 
   useEffect(() => {
-    void loadStaff();
     void loadVehicles();
     void loadDealers();
+    void loadDealerships();
+    void loadStaff();
     void loadContacts();
   }, [token, user?.role]);
 
@@ -926,12 +980,10 @@ export function AdminDashboard() {
       dealerName: record.dealerName,
       dealerEmail: record.dealerEmail,
       dealerPhone: record.dealerPhone,
-      dealershipName: record.dealershipName === 'N/A' ? '' : record.dealershipName,
-      dealershipAddress: record.dealershipAddress === 'N/A' ? '' : record.dealershipAddress,
     });
   };
 
-  const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone' | 'dealershipName' | 'dealershipAddress'>) => {
+  const saveDealer = async (values: Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>) => {
     if (!token) {
       message.error('You must be logged in to onboard buyers.');
       return;
@@ -946,7 +998,6 @@ export function AdminDashboard() {
             name: values.dealerName,
             email: values.dealerEmail,
             phoneNumber: values.dealerPhone,
-            dealerships: [{ name: values.dealershipName, address: values.dealershipAddress }],
           });
           message.success('Buyer updated successfully.');
         } else {
@@ -958,7 +1009,6 @@ export function AdminDashboard() {
           name: values.dealerName,
           email: values.dealerEmail,
           phoneNumber: values.dealerPhone,
-          dealerships: [{ name: values.dealershipName, address: values.dealershipAddress }],
         });
         setTemporaryPasswordMessage('Buyer created successfully.');
         message.success('Buyer onboarded successfully.');
@@ -969,6 +1019,26 @@ export function AdminDashboard() {
       message.error(error instanceof Error ? error.message : 'Unable to onboard buyer.');
     } finally {
       setIsDealerSaving(false);
+    }
+  };
+
+  const saveDealership = async (values: { name: string; address: string }) => {
+    if (!token || !selectedBuyerForDealership?.id) return;
+    setIsDealershipSaving(true);
+    try {
+      await createDealership(token, {
+        name: values.name,
+        address: values.address,
+        buyerId: selectedBuyerForDealership.id,
+      });
+      message.success('Dealership created successfully.');
+      setSelectedBuyerForDealership(null);
+      dealershipForm.resetFields();
+      await loadDealers();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to create dealership.');
+    } finally {
+      setIsDealershipSaving(false);
     }
   };
 
@@ -1381,7 +1451,6 @@ export function AdminDashboard() {
     { title: 'Buyer Name', dataIndex: 'dealerName' },
     { title: 'Buyer Email', dataIndex: 'dealerEmail' },
     { title: 'Buyer Phone', dataIndex: 'dealerPhone' },
-    { title: 'Dealership Name', dataIndex: 'dealershipName' },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
     { title: 'Last Modified By', dataIndex: 'lastModifiedBy' },
     { title: 'Last Modified At', dataIndex: 'lastModifiedAt', render: (date: string) => formatDateLabel(date) },
@@ -1394,11 +1463,13 @@ export function AdminDashboard() {
             items: [
               { key: 'view', label: 'View' },
               { key: 'edit', label: 'Edit' },
+              { key: 'add-dealership', label: 'Add Dealership' },
             ],
             onClick: ({ key, domEvent }) => {
               domEvent.stopPropagation();
               if (key === 'view') setSelectedDealer(record);
               if (key === 'edit') startDealerEdit(record);
+              if (key === 'add-dealership') setSelectedBuyerForDealership(record);
             },
           }}
           placement="bottomRight"
@@ -1408,6 +1479,12 @@ export function AdminDashboard() {
         </Dropdown>
       ),
     },
+  ];
+
+  const dealershipColumns: TableColumnsType<DealershipRecord> = [
+    { title: 'Dealership Name', dataIndex: 'name' },
+    { title: 'Address', dataIndex: 'address' },
+    { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
   ];
 
   const contactColumns: TableColumnsType<ContactRecord> = [
@@ -1676,12 +1753,7 @@ export function AdminDashboard() {
                 <Form.Item label="Buyer Phone" name="dealerPhone" rules={[{ required: true, message: 'Enter phone number' }]}>
                   <Input placeholder="(555) 555-0123" />
                 </Form.Item>
-                <Form.Item label="Dealership Name" name="dealershipName" rules={[{ required: true, message: 'Enter dealership name' }]}>
-                  <Input placeholder="e.g. Metro Auto Group" />
-                </Form.Item>
-                <Form.Item label="Dealership Address" name="dealershipAddress" rules={[{ required: true, message: 'Enter dealership address' }]}>
-                  <Input placeholder="e.g. 123 Main St, Louisville, KY" />
-                </Form.Item>
+
                 <Form.Item label=" " className="max-[620px]:!mb-0 flex items-end">
                   <Space>
                     <Button htmlType="submit" loading={isDealerSaving} type="primary">
@@ -1719,7 +1791,26 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={dealerColumns} dataSource={filteredDealers} loading={isDealersLoading} rowKey={(record) => record.id || record.dealerEmail} searchable searchPlaceholder="Search dealers" onRow={(record) => ({ onClick: () => setSelectedDealer(record) })} />
+          <Tabs
+            defaultActiveKey="buyers-list"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-white [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            items={[
+              {
+                key: 'buyers-list',
+                label: 'Buyers',
+                children: (
+                  <DataTable columns={dealerColumns} dataSource={filteredDealers} loading={isDealersLoading} rowKey={(record) => record.id || record.dealerEmail} searchable searchPlaceholder="Search buyers" onRow={(record) => ({ onClick: () => setSelectedDealer(record) })} />
+                )
+              },
+              {
+                key: 'dealerships-list',
+                label: 'Dealerships',
+                children: (
+                  <DataTable columns={dealershipColumns} dataSource={allDealerships} loading={isDealershipsLoading} rowKey="id" searchable searchPlaceholder="Search dealerships" />
+                )
+              }
+            ]}
+          />
         </div>
       ),
     },
@@ -2051,6 +2142,39 @@ export function AdminDashboard() {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+        cancelButtonProps={{ className: '!border-[#575757] !bg-[#111111] !text-[#c8c8c8] hover:!border-white hover:!text-white' }}
+        centered
+        confirmLoading={isDealershipSaving}
+        okButtonProps={{ className: '!border-none !bg-[#24d725] !text-[#111] hover:!bg-[#1ebf1e]' }}
+        onCancel={() => { setSelectedBuyerForDealership(null); dealershipForm.resetFields(); }}
+        onOk={() => dealershipForm.submit()}
+        open={Boolean(selectedBuyerForDealership)}
+        title={<span className="text-white m-3">Add Dealership</span>}
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        <Form
+          form={dealershipForm}
+          layout="vertical"
+          onFinish={saveDealership}
+          className="[&_.ant-form-item-label>label]:!text-black"
+        >
+          <Form.Item
+            label="Dealership Name"
+            name="name"
+            rules={[{ required: true, message: 'Please enter a dealership name' }]}
+          >
+            <Input className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
+          <Form.Item
+            label="Dealership Address"
+            name="address"
+            rules={[{ required: true, message: 'Please enter a dealership address' }]}
+          >
+            <Input className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
+        </Form>
+      </Modal>
       <ChangePasswordModal open={isChangePasswordOpen} onClose={() => setIsChangePasswordOpen(false)} token={token} />
       <Modal
         centered
@@ -2115,8 +2239,6 @@ export function AdminDashboard() {
                             { label: 'Buyer Name', value: selectedDealer.dealerName },
                             { label: 'Buyer Email', value: selectedDealer.dealerEmail },
                             { label: 'Buyer Phone', value: selectedDealer.dealerPhone },
-                            { label: 'Dealership Name', value: selectedDealer.dealershipName },
-                            { label: 'Dealership Address', value: selectedDealer.dealershipAddress },
                             { label: 'Date Created', value: formatDateLabel(selectedDealer.dateCreated) },
                             { label: 'Last Modified At', value: formatDateLabel(selectedDealer.lastModifiedAt) },
                             { label: 'Last Modified By', value: selectedDealer.lastModifiedBy },
@@ -2145,6 +2267,26 @@ export function AdminDashboard() {
                   />
                 ),
               },
+              {
+                key: 'buyer-dealerships',
+                label: 'Dealers',
+                children: (
+                  <div className="grid grid-cols-2 gap-4 max-[720px]:grid-cols-1">
+                    {selectedDealer.dealerships.length > 0 ? (
+                      selectedDealer.dealerships.map((d) => (
+                        <div className="rounded-lg border border-[#575757] bg-[#111111] p-4" key={d.id}>
+                          <Text className="block !text-xs !font-extrabold !uppercase !text-white">Dealership Name</Text>
+                          <div className="mt-2 mb-4 break-words text-base text-[#24d725] font-bold">{d.name}</div>
+                          <Text className="block !text-xs !font-extrabold !uppercase !text-white">Address</Text>
+                          <div className="mt-2 break-words text-base text-[#c8c8c8]">{d.address}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center text-white p-4">No dealerships found for this buyer.</div>
+                    )}
+                  </div>
+                )
+              }
             ]}
           />
         )}
