@@ -1,19 +1,26 @@
 {
-  "name": "inventory-lane",
+  "name": "inventory-lane-frontend",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "dev:frontend": "npm --workspace frontend run dev",
-    "dev:backend": "npm --workspace backend run dev",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-react": "^1.17.0"
+    "@ant-design/icons": "^6.2.3",
+    "antd": "^6.4.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.1"
   }
 }
