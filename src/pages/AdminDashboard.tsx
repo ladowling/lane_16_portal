@@ -1632,7 +1632,7 @@ export function AdminDashboard() {
                 },
                 {
                   key: 'archived',
-                  label: 'Archived Staffs',
+                  label: 'Archived',
                   children: (
                     <DataTable columns={staffColumns} dataSource={staff.filter(s => !s.isActive)} loading={isStaffLoading} rowKey={(record) => record.id || record.email} searchable searchPlaceholder="Search archived staff" onRow={(record) => ({ onClick: () => startStaffEdit(record) })} />
                   ),
