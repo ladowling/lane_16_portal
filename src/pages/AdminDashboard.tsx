@@ -6,7 +6,7 @@ import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
 import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
-import logo from '../assets/cars/lane16Logo.png';
+import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
 import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships } from '../api';
 

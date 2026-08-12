@@ -1,7 +1,7 @@
 import { Button, Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-import logo from '../assets/cars/lane16Logo.png';
+import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
 import { ChangePasswordModal } from './ChangePasswordModal';
 
