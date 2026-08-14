@@ -1319,7 +1319,7 @@ export function AdminDashboard() {
         );
       },
     },
-    { title: 'Current High Bids', dataIndex: 'highestBid', align: 'center', render: (val: string) => val && val !== '0' ? formatCurrency(val) : 'N/A' },
+    { title: 'Current High Bidss', dataIndex: 'highestBid', align: 'center', render: (val: string) => val && val !== '0' ? formatCurrency(val) : 'N/A' },
     { title: 'Reserve Status', dataIndex: 'reserveMet', align: 'center', render: (val: string) => val || 'N/A' },
     {
       title: 'Status',

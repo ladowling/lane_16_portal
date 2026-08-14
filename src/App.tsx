@@ -40,6 +40,9 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   dashboard: '/dashboard',
 };
 
+const AUTH_STORAGE_KEY = 'lane16_auth';
+const LAST_ROUTE_STORAGE_KEY = 'lane16_last_route';
+
 const getRouteState = (pathname: string) => {
   const [, firstSegment, secondSegment, thirdSegment] = pathname.split('/');
 
@@ -70,6 +73,40 @@ const getPagePath = (page: Page, vehicleId: string) => {
   if (page === 'details') return `/vehicle/${vehicleId}`;
   if (page === 'report') return `/vehicle/${vehicleId}/report`;
   return pagePaths[page];
+};
+
+const getPersistablePath = (page: Page, vehicleId: string) => {
+  const path = getPagePath(page, vehicleId);
+  return path === '/login' ? null : path;
+};
+
+const persistRoutePath = (path: string | null) => {
+  if (!path) return;
+  localStorage.setItem(LAST_ROUTE_STORAGE_KEY, path);
+};
+
+const hasStoredAuth = () => {
+  try {
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!stored) return false;
+    const parsed = JSON.parse(stored) as { token?: unknown; user?: unknown };
+    return Boolean(parsed.token && parsed.user);
+  } catch {
+    return false;
+  }
+};
+
+const getInitialPath = (pathname: string) => {
+  if (pathname !== '/') return pathname;
+
+  if (!hasStoredAuth()) return pathname;
+
+  const storedPath = localStorage.getItem(LAST_ROUTE_STORAGE_KEY);
+  if (!storedPath || !storedPath.startsWith('/') || storedPath === '/home' || storedPath === '/login') {
+    return pathname;
+  }
+
+  return getRouteState(storedPath).shouldReplace ? pathname : storedPath;
 };
 
 const dealerVisibleStatuses = new Set(['APPROVED', 'BIDDING_ACTIVE']);
@@ -210,7 +247,8 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
 function AppInner() {
   const { user, token, logout } = useAuth();
 
-  const initialRoute = getRouteState(window.location.pathname);
+  const initialPath = getInitialPath(window.location.pathname);
+  const initialRoute = getRouteState(initialPath);
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
   const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>(staticVehicles);
@@ -253,14 +291,21 @@ function AppInner() {
     void loadDealerInventory();
   }, [loadDealerInventory, token, user?.role]);
   useEffect(() => {
+    if (initialPath !== window.location.pathname) {
+      window.history.replaceState(null, '', initialPath);
+    }
+
     if (initialRoute.shouldReplace) {
       window.history.replaceState(null, '', getPagePath(initialRoute.page, initialRoute.vehicleId));
     }
+
+    persistRoutePath(getPersistablePath(initialRoute.page, initialRoute.vehicleId));
 
     const handlePopState = () => {
       const nextRoute = getRouteState(window.location.pathname);
       setPage(nextRoute.page);
       setSelectedVehicleId(nextRoute.vehicleId);
+      persistRoutePath(getPersistablePath(nextRoute.page, nextRoute.vehicleId));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -275,6 +320,7 @@ function AppInner() {
     }
     setPage(nextPage);
     setSelectedVehicleId(vehicleId);
+    persistRoutePath(getPersistablePath(nextPage, vehicleId));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -373,4 +419,3 @@ function App() {
 }
 
 export default App;
-
