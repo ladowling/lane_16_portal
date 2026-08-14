@@ -43,8 +43,23 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
 const AUTH_STORAGE_KEY = 'lane16_auth';
 const LAST_ROUTE_STORAGE_KEY = 'lane16_last_route';
 
+const normalizeRoutePath = (path: string) => {
+  const [pathWithoutQuery] = path.split(/[?#]/);
+  const pathWithSlash = pathWithoutQuery.startsWith('/') ? pathWithoutQuery : `/${pathWithoutQuery}`;
+  return pathWithSlash.length > 1 ? pathWithSlash.replace(/\/+$/, '') : pathWithSlash;
+};
+
+const getHashRoutePath = () => {
+  const hashPath = window.location.hash.replace(/^#/, '');
+  return hashPath.startsWith('/') ? normalizeRoutePath(hashPath) : '';
+};
+
+const getCurrentRoutePath = () => getHashRoutePath() || normalizeRoutePath(window.location.pathname);
+
+const getRouteUrl = (path: string) => `/#${normalizeRoutePath(path)}`;
+
 const getRouteState = (pathname: string) => {
-  const [, firstSegment, secondSegment, thirdSegment] = pathname.split('/');
+  const [, firstSegment, secondSegment, thirdSegment] = normalizeRoutePath(pathname).split('/');
 
   if (!firstSegment) {
     return { page: 'home' as Page, vehicleId: staticVehicles[0].id, shouldReplace: true };
@@ -77,12 +92,16 @@ const getPagePath = (page: Page, vehicleId: string) => {
 
 const getPersistablePath = (page: Page, vehicleId: string) => {
   const path = getPagePath(page, vehicleId);
-  return path === '/login' ? null : path;
+  return path === '/home' || path === '/login' ? null : path;
 };
 
 const persistRoutePath = (path: string | null) => {
   if (!path) return;
   localStorage.setItem(LAST_ROUTE_STORAGE_KEY, path);
+};
+
+const clearPersistedRoutePath = () => {
+  localStorage.removeItem(LAST_ROUTE_STORAGE_KEY);
 };
 
 const hasStoredAuth = () => {
@@ -97,7 +116,9 @@ const hasStoredAuth = () => {
 };
 
 const getInitialPath = (pathname: string) => {
-  if (pathname !== '/') return pathname;
+  const routePath = normalizeRoutePath(pathname);
+
+  if (routePath !== '/') return routePath;
 
   if (!hasStoredAuth()) return pathname;
 
@@ -247,7 +268,7 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
 function AppInner() {
   const { user, token, logout } = useAuth();
 
-  const initialPath = getInitialPath(window.location.pathname);
+  const initialPath = getInitialPath(getCurrentRoutePath());
   const initialRoute = getRouteState(initialPath);
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
@@ -291,18 +312,18 @@ function AppInner() {
     void loadDealerInventory();
   }, [loadDealerInventory, token, user?.role]);
   useEffect(() => {
-    if (initialPath !== window.location.pathname) {
-      window.history.replaceState(null, '', initialPath);
-    }
+    const routePath = initialRoute.shouldReplace
+      ? getPagePath(initialRoute.page, initialRoute.vehicleId)
+      : initialPath;
 
-    if (initialRoute.shouldReplace) {
-      window.history.replaceState(null, '', getPagePath(initialRoute.page, initialRoute.vehicleId));
+    if (window.location.pathname + window.location.hash !== getRouteUrl(routePath)) {
+      window.history.replaceState(null, '', getRouteUrl(routePath));
     }
 
     persistRoutePath(getPersistablePath(initialRoute.page, initialRoute.vehicleId));
 
     const handlePopState = () => {
-      const nextRoute = getRouteState(window.location.pathname);
+      const nextRoute = getRouteState(getCurrentRoutePath());
       setPage(nextRoute.page);
       setSelectedVehicleId(nextRoute.vehicleId);
       persistRoutePath(getPersistablePath(nextRoute.page, nextRoute.vehicleId));
@@ -315,8 +336,9 @@ function AppInner() {
 
   const navigateTo = (nextPage: Page, vehicleId = selectedVehicleId) => {
     const nextPath = getPagePath(nextPage, vehicleId);
-    if (window.location.pathname !== nextPath) {
-      window.history.pushState(null, '', nextPath);
+    const nextUrl = getRouteUrl(nextPath);
+    if (window.location.pathname + window.location.hash !== nextUrl) {
+      window.history.pushState(null, '', nextUrl);
     }
     setPage(nextPage);
     setSelectedVehicleId(vehicleId);
@@ -328,6 +350,7 @@ function AppInner() {
   const openPage = (nextPage: Page) => navigateTo(nextPage);
 
   const handleLogout = () => {
+    clearPersistedRoutePath();
     logout();
     navigateTo('home');
   };
