@@ -1,6 +1,6 @@
 import type { AuthUser } from './Authontext';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://lane-16-api.fly.dev';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://www.api.lane16.com';
 
 type ApiOptions = RequestInit & {
   token?: string | null;

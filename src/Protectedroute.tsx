@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useAuth, UserRole } from './Authontext';
 
 
@@ -18,10 +18,15 @@ type ProtectedRouteProps = {
 export function ProtectedRoute({ allowedRole, onRedirectToLogin, children }: ProtectedRouteProps) {
   const { user, token } = useAuth();
   const allowedRoles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
+  const isAllowed = Boolean(token && user && allowedRoles.includes(user.role));
 
-  if (!token || !user || !allowedRoles.includes(user.role)) {
-    // Schedule the redirect after render to avoid setState-during-render
-    setTimeout(onRedirectToLogin, 0);
+  useEffect(() => {
+    if (!isAllowed) {
+      onRedirectToLogin();
+    }
+  }, [isAllowed, onRedirectToLogin]);
+
+  if (!isAllowed) {
     return null;
   }
 
