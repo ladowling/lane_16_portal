@@ -97,6 +97,9 @@ export const uploadVehicleFile = (id: string, file: File, order: number) => {
 export const fetchVehicles = (token: string) =>
   apiRequest<unknown[]>('/sellers/vehicles', { method: 'GET', token });
 
+export const fetchArchivedVehicles = (token: string) =>
+  apiRequest<unknown[]>('/sellers/vehicles/archived', { method: 'GET', token });
+
 export const approveVehicle = (
   token: string,
   id: string,
@@ -117,6 +120,12 @@ export const resolveVehicle = (
     method: 'PATCH',
     token,
     body: JSON.stringify(payload),
+  });
+
+export const archiveVehicle = (token: string, id: string) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}/archive`, {
+    method: 'PATCH',
+    token,
   });
 
 export const updateBidIncrement = (token: string, id: string, payload: { bidIncrementNo: number }) =>
@@ -297,4 +306,3 @@ export const createDealer = (token: string, payload: { name: string; email: stri
 /** @deprecated Use updateBuyer instead */
 export const updateDealer = (token: string, id: string, payload: { name?: string; email?: string; phoneNumber?: string }) =>
   updateBuyer(token, id, payload);
-

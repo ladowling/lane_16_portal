@@ -8,7 +8,7 @@ import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, createAdmin, createBuyer, createStaff, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships } from '../api';
+import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships } from '../api';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -402,6 +402,9 @@ const LiveCountdown = ({ endTimeIso }: { endTimeIso: string }) => {
 const normalizeDateString = (dateString: string | string[] | null) =>
   Array.isArray(dateString) ? dateString[0] ?? '' : dateString ?? '';
 
+const normalizeStatus = (status: string) =>
+  status.trim().toUpperCase().replace(/[\s-]+/g, '_');
+
 const getRecordValue = (record: Record<string, unknown>, keys: string[]) =>
   keys.map((key) => record[key]).find((value) => value !== undefined && value !== null);
 
@@ -704,10 +707,12 @@ export function AdminDashboard() {
   const { logout, token, user } = useAuth();
   const [staff, setStaff] = useState<StaffRecord[]>(staffSeed);
   const [vehicles, setVehicles] = useState<VehicleRecord[]>(vehicleSeed);
+  const [archivedVehicles, setArchivedVehicles] = useState<VehicleRecord[]>([]);
   const [dealers, setDealers] = useState<DealerRecord[]>([]);
   const [contacts, setContacts] = useState<ContactRecord[]>(contactSeed);
   const [isStaffLoading, setIsStaffLoading] = useState(false);
   const [isVehiclesLoading, setIsVehiclesLoading] = useState(false);
+  const [isArchivedVehiclesLoading, setIsArchivedVehiclesLoading] = useState(false);
   const [isDealersLoading, setIsDealersLoading] = useState(false);
   const [isContactsLoading, setIsContactsLoading] = useState(false);
   const [isStaffSaving, setIsStaffSaving] = useState(false);
@@ -752,6 +757,7 @@ export function AdminDashboard() {
   const [allDealerships, setAllDealerships] = useState<DealershipRecord[]>([]);
   const [isDealershipsLoading, setIsDealershipsLoading] = useState(false);
   const previousVehiclesRef = useRef<VehicleRecord[]>([]);
+  const canArchiveVehicles = user?.role === 'admin' || user?.role === 'staff';
 
   useEffect(() => {
     if (!previousVehiclesRef.current.length) {
@@ -833,6 +839,22 @@ export function AdminDashboard() {
     }
   };
 
+  const loadArchivedVehicles = async () => {
+    if (!token || !canArchiveVehicles) {
+      return;
+    }
+
+    setIsArchivedVehiclesLoading(true);
+    try {
+      const response = await fetchArchivedVehicles(token);
+      setArchivedVehicles(getArrayPayload(response).map(mapVehicleRecord));
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to load archived vehicles.');
+    } finally {
+      setIsArchivedVehiclesLoading(false);
+    }
+  };
+
   const loadDealers = async () => {
     if (!token) return;
     setIsDealersLoading(true);
@@ -886,6 +908,7 @@ export function AdminDashboard() {
 
   useEffect(() => {
     void loadVehicles();
+    void loadArchivedVehicles();
     void loadDealers();
     void loadDealerships();
     void loadStaff();
@@ -1143,14 +1166,67 @@ export function AdminDashboard() {
     }
   };
 
+  const archiveVehicleRecord = async (record: VehicleRecord) => {
+    if (!token || !record.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    if (normalizeStatus(record.status) === 'BIDDING_ACTIVE') {
+      message.warning('A vehicle cannot be archived while bidding is active.');
+      return;
+    }
+
+    try {
+      await archiveVehicle(token, record.id);
+      message.success('Vehicle archived successfully.');
+      setSelectedVehicle((current) => (current?.id === record.id ? null : current));
+      await Promise.all([loadVehicles(), loadArchivedVehicles()]);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to archive vehicle.');
+    }
+  };
+
+  const confirmArchiveVehicle = (record: VehicleRecord) => {
+    Modal.confirm({
+      title: 'Archive vehicle?',
+      content: `${record.vehicleName || 'This vehicle'} will move out of the active vehicle list.`,
+      okText: 'Archive',
+      okButtonProps: { danger: true },
+      cancelText: 'Cancel',
+      centered: true,
+      onOk: () => archiveVehicleRecord(record),
+    });
+  };
+
+  const allVehicleRecords = useMemo(
+    () => [...vehicles, ...archivedVehicles],
+    [archivedVehicles, vehicles]
+  );
+
   const vehicleMakeOptions = useMemo(
-    () => Array.from(new Set(vehicles.map((vehicle) => vehicle.make).filter(Boolean))).map((make) => ({ label: make, value: make })),
-    [vehicles]
+    () => Array.from(new Set(allVehicleRecords.map((vehicle) => vehicle.make).filter(Boolean))).map((make) => ({ label: make, value: make })),
+    [allVehicleRecords]
   );
 
   const vehicleModelOptions = useMemo(
-    () => Array.from(new Set(vehicles.map((vehicle) => vehicle.model).filter(Boolean))).map((model) => ({ label: model, value: model })),
-    [vehicles]
+    () => Array.from(new Set(allVehicleRecords.map((vehicle) => vehicle.model).filter(Boolean))).map((model) => ({ label: model, value: model })),
+    [allVehicleRecords]
+  );
+
+  const archivedVehicleIds = useMemo(
+    () => new Set(archivedVehicles.map((vehicle) => vehicle.id).filter(Boolean)),
+    [archivedVehicles]
+  );
+
+  const activeVehicles = useMemo(
+    () =>
+      vehicles.filter(
+        (vehicle) =>
+          normalizeStatus(vehicle.status) !== 'ARCHIVED' &&
+          (!vehicle.id || !archivedVehicleIds.has(vehicle.id))
+      ),
+    [archivedVehicleIds, vehicles]
   );
 
   const bidVehicleNameOptions = useMemo(
@@ -1181,14 +1257,25 @@ export function AdminDashboard() {
 
   const filteredVehicles = useMemo(
     () =>
-      vehicles.filter(
+      activeVehicles.filter(
         (vehicle) =>
           (!vehicleMakeFilter || vehicle.make === vehicleMakeFilter) &&
           (!vehicleModelFilter || vehicle.model === vehicleModelFilter) &&
           (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter) &&
-          (!isCompactView || vehicle.status === 'APPROVED' || vehicle.status === 'BIDDING_ACTIVE')
+          (!isCompactView || normalizeStatus(vehicle.status) === 'APPROVED' || normalizeStatus(vehicle.status) === 'BIDDING_ACTIVE')
       ),
-    [vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter, vehicles, isCompactView]
+    [activeVehicles, vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter, isCompactView]
+  );
+
+  const filteredArchivedVehicles = useMemo(
+    () =>
+      archivedVehicles.filter(
+        (vehicle) =>
+          (!vehicleMakeFilter || vehicle.make === vehicleMakeFilter) &&
+          (!vehicleModelFilter || vehicle.model === vehicleModelFilter) &&
+          (!vehicleDateFilter || vehicle.dateCreated === vehicleDateFilter)
+      ),
+    [archivedVehicles, vehicleDateFilter, vehicleMakeFilter, vehicleModelFilter]
   );
 
   const filteredBids = useMemo(
@@ -1333,8 +1420,9 @@ export function AdminDashboard() {
         { text: 'Bidding Ended', value: 'BIDDING_ENDED' },
         { text: 'Sold', value: 'SOLD' },
         { text: 'Available', value: 'AVAILABLE' },
+        { text: 'Archived', value: 'ARCHIVED' },
       ],
-      onFilter: (value, record) => record.status.toUpperCase() === value,
+      onFilter: (value, record) => normalizeStatus(record.status) === value,
       render: (status: string) => <StatusTag status={status} />,
     },
     { title: 'Auction End / Time Remaining', dataIndex: 'auctionEndTime', align: 'center', render: (val: string) => val ? <>{formatDateLabel(val)} / <LiveCountdown endTimeIso={val} /></> : 'N/A' },
@@ -1358,11 +1446,13 @@ export function AdminDashboard() {
       fixed: 'right',
       align: 'center',
       render: (_, record) => {
-        const isPending = record.status === 'PENDING';
-        const isApproved = record.status === 'APPROVED';
-        const isBiddingActive = record.status === 'BIDDING_ACTIVE';
-        const isBiddingEnded = record.status === 'BIDDING_ENDED';
-        const isAvailable = record.status === 'AVAILABLE';
+        const status = normalizeStatus(record.status);
+        const isPending = status === 'PENDING';
+        const isApproved = status === 'APPROVED';
+        const isBiddingActive = status === 'BIDDING_ACTIVE';
+        const isBiddingEnded = status === 'BIDDING_ENDED';
+        const isAvailable = status === 'AVAILABLE';
+        const isArchived = status === 'ARCHIVED';
 
         const items = [
           { key: 'view', label: 'View' },
@@ -1383,6 +1473,11 @@ export function AdminDashboard() {
                 { key: 'mark_available', label: 'Mark as Available' },
               ]
             : []),
+          ...(canArchiveVehicles && !isArchived && !isBiddingActive && record.id
+            ? [
+                { key: 'archive', label: 'Archive', danger: true },
+              ]
+            : []),
         ];
 
         const handleAction = (key: string) => {
@@ -1391,6 +1486,7 @@ export function AdminDashboard() {
           if (key === 'reject') openVehicleApproval(record, 'REJECTED');
           if (key === 'mark_sold') openVehicleApproval(record, 'SOLD');
           if (key === 'mark_available') openVehicleApproval(record, 'AVAILABLE');
+          if (key === 'archive') confirmArchiveVehicle(record);
           if (key === 'update_bid_increment') {
             setSelectedVehicleForBidIncrement(record);
             bidIncrementForm.setFieldsValue({ bidIncrementNo: Number(record.bidIncrementNo) });
@@ -1421,6 +1517,21 @@ export function AdminDashboard() {
       },
     },
   ];
+
+  const archivedVehicleColumns: TableColumnsType<VehicleRecord> = vehicleColumns.map((column) =>
+    String(column.title) === 'Actions'
+      ? {
+          title: 'Actions',
+          fixed: 'right',
+          align: 'center',
+          render: (_, record) => (
+            <Button onClick={(event) => { event.stopPropagation(); setSelectedVehicle(record); }} size="small" type="primary">
+              View
+            </Button>
+          ),
+        }
+      : column
+  );
 
   const bidColumns: TableColumnsType<BidRecord> = [
     { title: 'Bid ID', dataIndex: 'bidId' },
@@ -1690,7 +1801,26 @@ export function AdminDashboard() {
               </Button>
             </Space>
           </section>
-          <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search vehicles" rowClassName={(record: VehicleRecord) => recentlyBidVehicles[record.id!] ? 'animate-row-flash' : ''} onRow={(record) => ({ onClick: () => setSelectedVehicle(record) })} />
+          <Tabs
+            defaultActiveKey="active"
+            className="[&_.ant-tabs-nav]:!before:border-[#575757] [&_.ant-tabs-tab]:!text-[#a8a8a8] [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:!text-[#24d725]"
+            items={[
+              {
+                key: 'active',
+                label: 'Active Vehicles',
+                children: (
+                  <DataTable columns={isCompactView ? vehicleColumns.filter(c => ['Vehicle', 'Current High Bid', 'Reserve Status', 'Status', 'Auction End / Time Remaining', 'Bid Count', 'High Bidder', 'Dealership / Store', 'Actions'].includes(String(c.title))) : vehicleColumns} dataSource={filteredVehicles} loading={isVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search active vehicles" rowClassName={(record: VehicleRecord) => recentlyBidVehicles[record.id!] ? 'animate-row-flash' : ''} onRow={(record) => ({ onClick: () => setSelectedVehicle(record) })} />
+                ),
+              },
+              {
+                key: 'archived',
+                label: 'Archived Vehicles',
+                children: (
+                  <DataTable columns={archivedVehicleColumns} dataSource={filteredArchivedVehicles} loading={isArchivedVehiclesLoading} rowKey={(record) => record.id || record.vin} scroll={{ x: 'max-content' }} searchable searchPlaceholder="Search archived vehicles" onRow={(record) => ({ onClick: () => setSelectedVehicle(record) })} />
+                ),
+              },
+            ]}
+          />
         </div>
       ),
     },
@@ -1840,10 +1970,10 @@ export function AdminDashboard() {
   const visibleTabs = user?.role === 'staff' ? tabs.filter((tab) => tab.key !== 'staff') : tabs;
   const visibleDashboardMenuItems = user?.role === 'staff' ? dashboardMenuItems.filter((item) => item.key !== 'staff') : dashboardMenuItems;
 
-  const pendingCount = useMemo(() => vehicles.filter(v => v.status === 'PENDING').length, [vehicles]);
-  const approvedCount = useMemo(() => vehicles.filter(v => v.status === 'APPROVED').length, [vehicles]);
-  const activeBiddingCount = useMemo(() => vehicles.filter(v => v.status === 'BIDDING_ACTIVE').length, [vehicles]);
-  const soldCount = useMemo(() => vehicles.filter(v => v.status === 'SOLD').length, [vehicles]);
+  const pendingCount = useMemo(() => activeVehicles.filter(v => normalizeStatus(v.status) === 'PENDING').length, [activeVehicles]);
+  const approvedCount = useMemo(() => activeVehicles.filter(v => normalizeStatus(v.status) === 'APPROVED').length, [activeVehicles]);
+  const activeBiddingCount = useMemo(() => activeVehicles.filter(v => normalizeStatus(v.status) === 'BIDDING_ACTIVE').length, [activeVehicles]);
+  const soldCount = useMemo(() => activeVehicles.filter(v => normalizeStatus(v.status) === 'SOLD').length, [activeVehicles]);
 
   return (
     <main className="min-h-screen bg-lane-ink text-white">
@@ -2314,4 +2444,3 @@ export function AdminDashboard() {
     </main>
   );
 }
-
