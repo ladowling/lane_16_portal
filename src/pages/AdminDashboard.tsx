@@ -1199,6 +1199,33 @@ export function AdminDashboard() {
     });
   };
 
+  const restoreVehicleRecord = async (record: VehicleRecord) => {
+    if (!token || !record.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    try {
+      await archiveVehicle(token, record.id);
+      message.success('Vehicle restored successfully.');
+      setSelectedVehicle((current) => (current?.id === record.id ? null : current));
+      await Promise.all([loadVehicles(), loadArchivedVehicles()]);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to restore vehicle.');
+    }
+  };
+
+  const confirmRestoreVehicle = (record: VehicleRecord) => {
+    Modal.confirm({
+      title: 'Restore vehicle?',
+      content: `${record.vehicleName || 'This vehicle'} will move back to the active vehicle list.`,
+      okText: 'Restore',
+      cancelText: 'Cancel',
+      centered: true,
+      onOk: () => restoreVehicleRecord(record),
+    });
+  };
+
   const allVehicleRecords = useMemo(
     () => [...vehicles, ...archivedVehicles],
     [archivedVehicles, vehicles]
@@ -1525,9 +1552,29 @@ export function AdminDashboard() {
           fixed: 'right',
           align: 'center',
           render: (_, record) => (
-            <Button onClick={(event) => { event.stopPropagation(); setSelectedVehicle(record); }} size="small" type="primary">
-              View
-            </Button>
+            <Dropdown
+              menu={{
+                items: [
+                  { key: 'view', label: 'View' },
+                  { key: 'restore', label: 'Restore' },
+                ],
+                onClick: ({ key, domEvent }) => {
+                  domEvent.stopPropagation();
+                  if (key === 'view') setSelectedVehicle(record);
+                  if (key === 'restore') confirmRestoreVehicle(record);
+                },
+              }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <Button
+                onClick={(event) => event.stopPropagation()}
+                aria-label={`Open actions for ${record.vehicleName}`}
+                className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]"
+                icon={<RightOutlined />}
+                size="small"
+              />
+            </Dropdown>
           ),
         }
       : column
