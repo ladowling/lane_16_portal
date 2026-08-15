@@ -178,7 +178,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
 
         {/* Current High Bid */}
         <div className="mb-5 flex items-center justify-between gap-6 border-b border-[#1f1f1f] pb-5 max-[620px]:flex-col max-[620px]:items-start">
-          <Text className="!text-[20px] !text-[#acff9e]">Current High Bids</Text>
+          <Text className="!text-[20px] !text-[#acff9e]">Current High Bid</Text>
           <strong className="text-[28px] text-[#27d82e]">
             {vehicle.currentHighBid || '$0'}
           </strong>

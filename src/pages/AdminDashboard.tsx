@@ -143,6 +143,57 @@ type ContactRecord = {
 
 type DashboardTabKey = 'staff' | 'vehicles' | 'bids' | 'dealers' | 'contacts';
 
+const DASHBOARD_SECTION_STORAGE_KEY = 'lane16_dashboard_section';
+const dashboardSectionKeys: DashboardTabKey[] = ['staff', 'vehicles', 'bids', 'dealers', 'contacts'];
+
+const isDashboardTabKey = (value: string | null | undefined): value is DashboardTabKey =>
+  Boolean(value && dashboardSectionKeys.includes(value as DashboardTabKey));
+
+const normalizeDashboardSection = (section: DashboardTabKey, role?: string) =>
+  role === 'staff' && section === 'staff' ? 'vehicles' : section;
+
+const getDashboardRoutePath = () => {
+  const hashPath = window.location.hash.replace(/^#/, '');
+  const routePath = hashPath.startsWith('/') ? hashPath : window.location.pathname;
+  return routePath.split(/[?#]/)[0];
+};
+
+const getDashboardSectionFromLocation = () => {
+  const [, firstSegment, secondSegment] = getDashboardRoutePath().split('/');
+  return firstSegment === 'dashboard' && isDashboardTabKey(secondSegment) ? secondSegment : null;
+};
+
+const getStoredDashboardSection = () => {
+  try {
+    const storedSection = localStorage.getItem(DASHBOARD_SECTION_STORAGE_KEY);
+    return isDashboardTabKey(storedSection) ? storedSection : null;
+  } catch {
+    return null;
+  }
+};
+
+const persistDashboardSection = (section: DashboardTabKey) => {
+  localStorage.setItem(DASHBOARD_SECTION_STORAGE_KEY, section);
+};
+
+const getDashboardSectionUrl = (section: DashboardTabKey) => `/#/dashboard/${section}`;
+
+const updateDashboardSectionUrl = (section: DashboardTabKey, mode: 'push' | 'replace' = 'push') => {
+  const nextUrl = getDashboardSectionUrl(section);
+  if (window.location.pathname + window.location.hash === nextUrl) return;
+  if (mode === 'replace') {
+    window.history.replaceState(null, '', nextUrl);
+    return;
+  }
+  window.history.pushState(null, '', nextUrl);
+};
+
+const getInitialDashboardSection = (role?: string): DashboardTabKey =>
+  normalizeDashboardSection(
+    getDashboardSectionFromLocation() ?? getStoredDashboardSection() ?? (role === 'staff' ? 'vehicles' : 'staff'),
+    role
+  );
+
 type VehicleApprovalForm = {
   auctionStartTime: { toISOString: () => string };
   auctionEndTime: { toISOString: () => string };
@@ -718,7 +769,7 @@ export function AdminDashboard() {
   const [isStaffSaving, setIsStaffSaving] = useState(false);
   const [isDealerSaving, setIsDealerSaving] = useState(false);
   const [isVehicleApprovalSaving, setIsVehicleApprovalSaving] = useState(false);
-  const [activeSection, setActiveSection] = useState<DashboardTabKey>('staff');
+  const [activeSection, setActiveSection] = useState<DashboardTabKey>(() => getInitialDashboardSection(user?.role));
   const [vehicleMakeFilter, setVehicleMakeFilter] = useState<string>();
   const [vehicleModelFilter, setVehicleModelFilter] = useState<string>();
   const [vehicleDateFilter, setVehicleDateFilter] = useState('');
@@ -1335,6 +1386,13 @@ export function AdminDashboard() {
     setIsChangePasswordOpen(true);
   };
 
+  const handleDashboardSectionChange = (section: DashboardTabKey) => {
+    const nextSection = normalizeDashboardSection(section, user?.role);
+    setActiveSection(nextSection);
+    persistDashboardSection(nextSection);
+    updateDashboardSectionUrl(nextSection);
+  };
+
   const accountName =
     user?.name ||
     staff.find((member) => member.email === user?.email)?.name ||
@@ -1349,10 +1407,33 @@ export function AdminDashboard() {
     .join('');
 
   useEffect(() => {
-    if (user?.role === 'staff' && activeSection === 'staff') {
-      setActiveSection('vehicles');
+    const normalizedSection = normalizeDashboardSection(activeSection, user?.role);
+
+    if (normalizedSection !== activeSection) {
+      setActiveSection(normalizedSection);
+      persistDashboardSection(normalizedSection);
+      updateDashboardSectionUrl(normalizedSection, 'replace');
+      return;
     }
+
+    persistDashboardSection(normalizedSection);
+    updateDashboardSectionUrl(normalizedSection, 'replace');
   }, [activeSection, user?.role]);
+
+  useEffect(() => {
+    const syncSectionFromUrl = () => {
+      const section = getDashboardSectionFromLocation();
+      if (!section) return;
+      setActiveSection(normalizeDashboardSection(section, user?.role));
+    };
+
+    window.addEventListener('popstate', syncSectionFromUrl);
+    window.addEventListener('hashchange', syncSectionFromUrl);
+    return () => {
+      window.removeEventListener('popstate', syncSectionFromUrl);
+      window.removeEventListener('hashchange', syncSectionFromUrl);
+    };
+  }, [user?.role]);
 
   const staffColumns: TableColumnsType<StaffRecord> = [
     { title: 'Name', dataIndex: 'name' },
@@ -2038,7 +2119,7 @@ export function AdminDashboard() {
                       isActive ? '!text-[#24d725]' : '!text-white hover:!text-[#24d725]'
                     }`}
                     key={item.key}
-                    onClick={() => setActiveSection(item.key)}
+                    onClick={() => handleDashboardSectionChange(item.key)}
                     type="text"
                   >
                     {item.label}
@@ -2109,7 +2190,7 @@ export function AdminDashboard() {
         <Tabs
           activeKey={activeSection}
           items={visibleTabs}
-          onChange={(key) => setActiveSection(key as DashboardTabKey)}
+          onChange={(key) => handleDashboardSectionChange(key as DashboardTabKey)}
           renderTabBar={() => <></>}
         />
       </div>
