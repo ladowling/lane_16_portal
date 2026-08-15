@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, message } from 'antd';
-import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { DownOutlined, ReloadOutlined, RightOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
@@ -764,6 +764,7 @@ export function AdminDashboard() {
   const [isStaffLoading, setIsStaffLoading] = useState(false);
   const [isVehiclesLoading, setIsVehiclesLoading] = useState(false);
   const [isArchivedVehiclesLoading, setIsArchivedVehiclesLoading] = useState(false);
+  const [isBidsLoading, setIsBidsLoading] = useState(false);
   const [isDealersLoading, setIsDealersLoading] = useState(false);
   const [isContactsLoading, setIsContactsLoading] = useState(false);
   const [isStaffSaving, setIsStaffSaving] = useState(false);
@@ -957,6 +958,33 @@ export function AdminDashboard() {
     }
   };
 
+  const loadBids = async () => {
+    if (!token || vehicles.length === 0 || dealers.length === 0) {
+      setAllBids([]);
+      return;
+    }
+
+    const validVehicles = vehicles.filter((vehicle) => Boolean(vehicle.id));
+    if (validVehicles.length === 0) {
+      setAllBids([]);
+      return;
+    }
+
+    setIsBidsLoading(true);
+    try {
+      const responses = await Promise.all(validVehicles.map((vehicle) => fetchVehicleBids(token, vehicle.id!).catch(() => [])));
+      const flatResponses = responses.flatMap((response) => getArrayPayload(response));
+      const mappedBids = flatResponses.map((bid) => mapBidRecord(bid, vehicles, dealers));
+      mappedBids.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+      setAllBids(mappedBids);
+    } catch (error) {
+      console.error('Failed to load all bids:', error);
+      message.error('Unable to load bids.');
+    } finally {
+      setIsBidsLoading(false);
+    }
+  };
+
   useEffect(() => {
     void loadVehicles();
     void loadArchivedVehicles();
@@ -967,25 +995,8 @@ export function AdminDashboard() {
   }, [token, user?.role]);
 
   useEffect(() => {
-    if (token && vehicles.length > 0 && dealers.length > 0) {
-      const validVehicles = vehicles.filter((v) => !!v.id);
-      if (validVehicles.length === 0) return;
-      
-      Promise.all(validVehicles.map((v) => fetchVehicleBids(token, v.id!).catch(() => [])))
-        .then((responses) => {
-          const flatResponses = responses.flatMap((r) => getArrayPayload(r));
-          const mappedBids = flatResponses.map((b) => mapBidRecord(b, vehicles, dealers));
-          // Sort bids from latest to first (descending by date)
-          mappedBids.sort((a, b) => {
-            const timeA = new Date(a.dateCreated).getTime();
-            const timeB = new Date(b.dateCreated).getTime();
-            return timeB - timeA;
-          });
-          setAllBids(mappedBids);
-        })
-        .catch((error) => console.error('Failed to load all bids:', error));
-    }
-  }, [token, vehicles, dealers]);
+    void loadBids();
+  }, [token, vehicles, dealers]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Vehicle & dealer bid history are derived from allBids (no extra API calls needed)
 
@@ -1853,9 +1864,14 @@ export function AdminDashboard() {
             </Form>
           </section>
           <div className="flex justify-end">
-            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('staff', staff)}>
-              Export
-            </Button>
+            <Space>
+              <Button icon={<ReloadOutlined />} loading={isStaffLoading} onClick={loadStaff}>
+                Refresh
+              </Button>
+              <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('staff', staff)}>
+                Export
+              </Button>
+            </Space>
           </div>
           <div className="rounded-lg border border-[#575757] bg-[#0b0b0b] p-6">
             <Tabs
@@ -1924,6 +1940,9 @@ export function AdminDashboard() {
                 <Switch checked={isCompactView} onChange={setIsCompactView} className="bg-[#575757]" />
                 <Text className="!text-white">Live Auctions</Text>
               </div>
+              <Button icon={<ReloadOutlined />} loading={isVehiclesLoading || isArchivedVehiclesLoading} onClick={() => { void Promise.all([loadVehicles(), loadArchivedVehicles()]); }}>
+                Refresh
+              </Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('vehicles', filteredVehicles)}>
                 Export
               </Button>
@@ -1982,12 +2001,15 @@ export function AdminDashboard() {
                 placeholder="Filter by date created"
               />
               <Button onClick={() => { setBidDateFilter(''); setBidVehicleNameFilter(''); setBidBuyerNameFilter(''); }}>Clear Filters</Button>
+              <Button icon={<ReloadOutlined />} loading={isBidsLoading} onClick={loadBids}>
+                Refresh
+              </Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('bids', filteredBids)}>
                 Export
               </Button>
             </Space>
           </section>
-          <DataTable columns={bidColumns} dataSource={filteredBids} rowKey="bidId" searchable searchPlaceholder="Search bids" onRow={(record) => ({ onClick: () => setSelectedBid(record) })} />
+          <DataTable columns={bidColumns} dataSource={filteredBids} loading={isBidsLoading} rowKey="bidId" searchable searchPlaceholder="Search bids" onRow={(record) => ({ onClick: () => setSelectedBid(record) })} />
         </div>
       ),
     },
@@ -2044,6 +2066,9 @@ export function AdminDashboard() {
                 placeholder="Filter by date created"
               />
               <Button onClick={() => { setDealerDateFilter(''); setDealerNameFilter(''); }}>Clear Filters</Button>
+              <Button icon={<ReloadOutlined />} loading={isDealersLoading || isDealershipsLoading} onClick={() => { void Promise.all([loadDealers(), loadDealerships()]); }}>
+                Refresh
+              </Button>
               <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('dealers', filteredDealers)}>
                 Export
               </Button>
@@ -2078,9 +2103,14 @@ export function AdminDashboard() {
       children: (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('contacts', contacts)}>
-              Export
-            </Button>
+            <Space>
+              <Button icon={<ReloadOutlined />} loading={isContactsLoading} onClick={loadContacts}>
+                Refresh
+              </Button>
+              <Button className="!border-[#24d725] !bg-[#24d725] !font-bold !text-black hover:!border-[#24d725] hover:!bg-transparent hover:!text-[#24d725]" onClick={() => exportRowsToExcel('contacts', contacts)}>
+                Export
+              </Button>
+            </Space>
           </div>
           <DataTable columns={contactColumns} dataSource={contacts} loading={isContactsLoading} rowKey={(record) => record.id || `${record.email}-${record.phoneNo}`} onRow={(record) => ({ onClick: () => setSelectedContact(record) })} />
         </div>
