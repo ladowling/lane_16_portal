@@ -102,6 +102,12 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
           >
             Forgot password?
           </Button>
+          <p className="mt-6 text-center text-xs text-gray-500 leading-relaxed">
+            By signing in, you agree to Lane16's{' '}
+            <a href="/#/terms" target="_blank" rel="noopener noreferrer" className="text-[#24d725] hover:underline">Terms of Use</a>
+            {' '}and acknowledge the{' '}
+            <a href="/#/privacy" target="_blank" rel="noopener noreferrer" className="text-[#24d725] hover:underline">Privacy Policy</a>.
+          </p>
         </Form>
       </div>
       <ForgotPasswordModal open={isForgotPasswordOpen} onClose={() => setIsForgotPasswordOpen(false)} />

@@ -258,6 +258,25 @@ export const createDealership = (
 export const fetchDealerships = (token: string) =>
   apiRequest<unknown[]>('/dealerships', { method: 'GET', token });
 
+// PATCH /dealerships/{id} — update a dealership's name/address. Staff only.
+export const updateDealership = (
+  token: string,
+  id: string,
+  payload: { name?: string; address?: string }
+) =>
+  apiRequest<Record<string, unknown>>(`/dealerships/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
+  });
+
+// DELETE /dealerships/{id} — delete a dealership. Staff only.
+export const deleteDealership = (token: string, id: string) =>
+  apiRequest<Record<string, unknown>>(`/dealerships/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+
 // ── Bids ────────────────────────────────────────────────────────────────────
 
 export const registerForAuction = (

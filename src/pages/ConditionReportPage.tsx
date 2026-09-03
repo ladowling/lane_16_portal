@@ -1,5 +1,5 @@
 import { Divider, Typography, Spin } from 'antd';
-import type { Vehicle } from '../types';
+import { formatTitleStatus, type Vehicle } from '../types';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -108,6 +108,10 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
             <div className="text-lg font-semibold text-white">{vehicle.mileage || '-'}</div>
           </div>
           <div>
+            <div className="text-sm text-gray-400">Title Status</div>
+            <div className="text-lg font-semibold text-white">{formatTitleStatus(vehicle.titleStatus)}</div>
+          </div>
+          <div>
             <div className="text-sm text-gray-400">Exterior Color</div>
             <div className="text-lg font-semibold text-white">{exteriorColor || '-'}</div>
           </div>
@@ -135,10 +139,6 @@ export function ConditionReportPage({ vehicle }: ConditionReportPageProps) {
             <div className="text-sm text-gray-400">Engine</div>
             <div className="text-lg font-semibold text-white">{engine}</div>
           </div>
-          {/* <div>
-            <div className="text-sm text-gray-400">Title Status</div>
-            <div className="text-lg font-semibold text-white">{vehicle.status || '-'}</div>
-          </div> */}
           <div>
             <div className="text-sm text-gray-400">Accident History</div>
             <div className="text-lg font-semibold text-white">{accidentHistory}</div>

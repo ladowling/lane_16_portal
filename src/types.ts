@@ -2,6 +2,16 @@ export type TitleStatus = '4S' | 'Turbo' | 'xDrive' | '4MATIC' | 'F Sport' | 'XS
 
 export type VehiclePhotoVariant = 'road' | 'garage' | 'silver' | 'detail' | 'engine' | 'interior' | 'spring';
 
+export type VehicleTitleStatus = 'IN_HAND' | 'LIEN';
+
+export const TITLE_STATUS_LABELS: Record<VehicleTitleStatus, string> = {
+  IN_HAND: 'In Hand',
+  LIEN: 'Lien',
+};
+
+export const formatTitleStatus = (status?: string | null): string =>
+  (status && TITLE_STATUS_LABELS[status as VehicleTitleStatus]) || '-';
+
 export type Vehicle = {
   id: string;
   title: string;
@@ -37,5 +47,9 @@ export type Vehicle = {
   transmission?: string;
   accidentHistory?: string;
   additionalDisclosures?: string;
+  titleStatus?: VehicleTitleStatus;
+  vin?: string;
+  fuelType?: string;
+  bodyStyle?: string;
 };
 

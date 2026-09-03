@@ -50,6 +50,7 @@ export default function SubmitVehicle() {
         condition: [exteriorCondition, mechanicalCondition, tireCondition, warningLight, interiorOdor]
           .filter(Boolean)
           .join(' | '),
+        titleStatus: values.titleStatus,
         minimumAcceptablePrice,
         trim: values.trim,
         exteriorColor: values.exteriorColor,
@@ -180,9 +181,12 @@ export default function SubmitVehicle() {
                 <Form.Item label="Mileage" name="mileage" rules={[{ required: true, message: 'Mileage is required' }]}> 
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
-                {/* <Form.Item label="Title status" name="titleStatus">
-                  <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
-                </Form.Item> */}
+                <Form.Item label="Title Status" name="titleStatus" rules={[{ required: true, message: 'Title status is required' }]}>
+                  <Select className="w-full border-gray-700 bg-[#111] text-white" popupClassName="bg-[#111]">
+                    <Option value="IN_HAND">In Hand</Option>
+                    <Option value="LIEN">Lien</Option>
+                  </Select>
+                </Form.Item>
                 <Form.Item label="Minimum Acceptable Price" name="minimumAcceptablePrice" rules={[{ required: true, message: 'Minimum acceptable price is required' }]}> 
                   <Input className="border-gray-700 hover:border-green-500 focus:border-green-500" />
                 </Form.Item>
@@ -272,11 +276,17 @@ export default function SubmitVehicle() {
                 <Input.TextArea rows={6} className="border-gray-700 bg-[#111] text-white hover:border-green-500 focus:border-green-500" />
               </Form.Item>
 
-              <Form.Item className="text-right">
+              <Form.Item className="text-right mb-2">
                 <Button htmlType="submit" type="primary" size="large" loading={isSubmitting} className="bg-green-600 border-green-600 hover:bg-green-500">
                   Submit
                 </Button>
               </Form.Item>
+              <div className="text-right text-xs text-gray-400 mt-2">
+                By submitting your information, you agree to Lane16's{' '}
+                <a href="/#/terms" target="_blank" rel="noopener noreferrer" className="text-lane-green hover:underline">Terms of Use</a>
+                {' '}and acknowledge the{' '}
+                <a href="/#/privacy" target="_blank" rel="noopener noreferrer" className="text-lane-green hover:underline">Privacy Policy</a>.
+              </div>
             </section>
 
           </Form>

@@ -12,10 +12,13 @@ import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import HowItWorksSeller from './pages/HowItWorksSeller';
 import SubmitVehicle from './pages/SubmitsVehicle';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 import { ProtectedRoute } from './Protectedroute';
 import { AuthProvider, useAuth } from './Authontext';
 import { fetchVehicles, getUploadUrl } from './api';
 import type { Vehicle } from './types';
+import { SiteFooter } from './components/SiteFooter';
 
 type Page =
   | 'home'
@@ -27,7 +30,9 @@ type Page =
   | 'howItWorksSeller'
   | 'submitVehicle'
   | 'login'
-  | 'dashboard';
+  | 'dashboard'
+  | 'privacy'
+  | 'terms';
 
 const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   home: '/home',
@@ -38,6 +43,8 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   submitVehicle: '/submit-vehicle',
   login: '/login',
   dashboard: '/dashboard',
+  privacy: '/privacy',
+  terms: '/terms',
 };
 
 const AUTH_STORAGE_KEY = 'lane16_auth';
@@ -260,6 +267,7 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
     transmission: getStringValue(record, ['transmission']),
     accidentHistory: getStringValue(record, ['accidentHistory']),
     additionalDisclosures: getStringValue(record, ['additionalDisclosures', 'notes']),
+    titleStatus: (getStringValue(record, ['titleStatus']) || undefined) as Vehicle['titleStatus'],
   };
 };
 // ---------------------------------------------------------------------------
@@ -356,7 +364,7 @@ function AppInner() {
   };
 
   return (
-    <div className="min-h-screen bg-lane-ink font-sans text-white">
+    <div className="flex min-h-screen flex-col bg-lane-ink font-sans text-white">
       {page !== 'dashboard' && (
           <SiteHeader
             onHomeClick={() => openPage('home')}
@@ -374,7 +382,8 @@ function AppInner() {
         />
       )}
 
-      {/* ── Public pages ────────────────────────────────────────────── */}
+      <main className="flex flex-1 flex-col">
+        {/* ── Public pages ────────────────────────────────────────────── */}
       {page === 'home' && (
         <Home
           onSellVehicleClick={() => openPage('submitVehicle')}
@@ -392,6 +401,8 @@ function AppInner() {
       {page === 'howItWorks' && <HowItWorks />}
       {page === 'howItWorksSeller' && <HowItWorksSeller />}
       {page === 'submitVehicle' && <SubmitVehicle />}
+      {page === 'privacy' && <PrivacyPage />}
+      {page === 'terms' && <TermsPage />}
 
       {/* ── Dealer-only pages ────────────────────────────────────────── */}
       {page === 'inventory' && (
@@ -420,6 +431,9 @@ function AppInner() {
           <AdminDashboard />
         </ProtectedRoute>
       )}
+      </main>
+      
+      {page !== 'dashboard' && <SiteFooter />}
     </div>
   );
 }

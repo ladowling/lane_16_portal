@@ -8,7 +8,8 @@ import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships } from '../api';
+import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships, updateDealership, deleteDealership } from '../api';
+import { formatTitleStatus } from '../types';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -65,6 +66,7 @@ type VehicleRecord = {
   lastUpdatedBy: string;
   bidIncrementNo: string;
   trim: string;
+  titleStatus: string;
   exteriorColor: string;
   interiorColor: string;
   smokerVehicle: string;
@@ -238,6 +240,7 @@ const vehicleSeed: VehicleRecord[] = [
     lastUpdatedBy: 'Daniel Cho',
     bidIncrementNo: '$250',
     trim: '4MATIC',
+    titleStatus: 'IN_HAND',
     exteriorColor: 'Polar White',
     interiorColor: 'Macchiato Beige',
     smokerVehicle: 'No',
@@ -276,6 +279,7 @@ const vehicleSeed: VehicleRecord[] = [
     lastUpdatedBy: 'Priya Nelson',
     bidIncrementNo: '$200',
     trim: 'TRD Off-Road',
+    titleStatus: 'LIEN',
     exteriorColor: 'Cement Gray',
     interiorColor: 'Black',
     smokerVehicle: 'No',
@@ -314,6 +318,7 @@ const vehicleSeed: VehicleRecord[] = [
     lastUpdatedBy: 'Maya Brooks',
     bidIncrementNo: '$250',
     trim: 'xDrive40i',
+    titleStatus: 'IN_HAND',
     exteriorColor: 'Carbon Black',
     interiorColor: 'Cognac',
     smokerVehicle: 'No',
@@ -352,6 +357,7 @@ const vehicleSeed: VehicleRecord[] = [
     lastUpdatedBy: 'Daniel Cho',
     bidIncrementNo: '$250',
     trim: 'Lariat',
+    titleStatus: 'IN_HAND',
     exteriorColor: 'Atlas Blue',
     interiorColor: 'Black',
     smokerVehicle: 'No',
@@ -593,6 +599,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     lastUpdatedBy: getStringValue(record, ['lastUpdatedBy']),
     bidIncrementNo: getStringValue(record, ['bidIncrementNo']),
     trim: getStringValue(record, ['trim']),
+    titleStatus: getStringValue(record, ['titleStatus']),
     exteriorColor: getStringValue(record, ['exteriorColor']),
     interiorColor: getStringValue(record, ['interiorColor']),
     smokerVehicle: getBooleanLabel(record.smokerVehicle),
@@ -796,6 +803,7 @@ export function AdminDashboard() {
   const [form] = Form.useForm<StaffRecord>();
   const [dealerForm] = Form.useForm<Pick<DealerRecord, 'dealerName' | 'dealerEmail' | 'dealerPhone'>>();
   const [dealershipForm] = Form.useForm<{ name: string; address: string }>();
+  const [editDealershipForm] = Form.useForm<{ name: string; address: string }>();
   const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
   const [vehicleValuationForm] = Form.useForm();
   const [isVehicleValuationSaving, setIsVehicleValuationSaving] = useState(false);
@@ -804,6 +812,8 @@ export function AdminDashboard() {
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
   const [selectedBuyerForDealership, setSelectedBuyerForDealership] = useState<DealerRecord | null>(null);
   const [isDealershipSaving, setIsDealershipSaving] = useState(false);
+  const [editingDealership, setEditingDealership] = useState<DealershipRecord | null>(null);
+  const [isDealershipUpdating, setIsDealershipUpdating] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
   const [recentlyBidVehicles, setRecentlyBidVehicles] = useState<Record<string, number>>({});
   const [allDealerships, setAllDealerships] = useState<DealershipRecord[]>([]);
@@ -1125,6 +1135,54 @@ export function AdminDashboard() {
     } finally {
       setIsDealershipSaving(false);
     }
+  };
+
+  const startDealershipEdit = (record: DealershipRecord) => {
+    setEditingDealership(record);
+    editDealershipForm.setFieldsValue({ name: record.name, address: record.address });
+  };
+
+  const saveDealershipEdit = async (values: { name: string; address: string }) => {
+    if (!token || !editingDealership?.id) return;
+    setIsDealershipUpdating(true);
+    try {
+      await updateDealership(token, editingDealership.id, values);
+      message.success('Dealership updated successfully.');
+      setEditingDealership(null);
+      editDealershipForm.resetFields();
+      await Promise.all([loadDealerships(), loadDealers()]);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update dealership.');
+    } finally {
+      setIsDealershipUpdating(false);
+    }
+  };
+
+  const deleteDealershipRecord = async (record: DealershipRecord) => {
+    if (!token || !record.id) {
+      message.error('Dealership ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    try {
+      await deleteDealership(token, record.id);
+      message.success('Dealership deleted successfully.');
+      await Promise.all([loadDealerships(), loadDealers()]);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to delete dealership.');
+    }
+  };
+
+  const confirmDeleteDealership = (record: DealershipRecord) => {
+    Modal.confirm({
+      title: 'Delete dealership?',
+      content: `${record.name || 'This dealership'} will be permanently removed.`,
+      okText: 'Delete',
+      okButtonProps: { danger: true },
+      cancelText: 'Cancel',
+      centered: true,
+      onOk: () => deleteDealershipRecord(record),
+    });
   };
 
   const openVehicleApproval = (record: VehicleRecord, status: 'APPROVED' | 'REJECTED' | 'SOLD' | 'AVAILABLE') => {
@@ -1528,6 +1586,17 @@ export function AdminDashboard() {
     { title: 'Current High Bid', dataIndex: 'highestBid', align: 'center', render: (val: string) => val && val !== '0' ? formatCurrency(val) : 'N/A' },
     { title: 'Reserve Status', dataIndex: 'reserveMet', align: 'center', render: (val: string) => val || 'N/A' },
     {
+      title: 'Title Status',
+      dataIndex: 'titleStatus',
+      align: 'center',
+      filters: [
+        { text: 'In Hand', value: 'IN_HAND' },
+        { text: 'Lien', value: 'LIEN' },
+      ],
+      onFilter: (value, record) => record.titleStatus === value,
+      render: (val: string) => formatTitleStatus(val),
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       align: 'center',
@@ -1735,6 +1804,29 @@ export function AdminDashboard() {
     { title: 'Dealership Name', dataIndex: 'name' },
     { title: 'Address', dataIndex: 'address' },
     { title: 'Date Created', dataIndex: 'dateCreated', render: (dateCreated: string) => formatDateLabel(dateCreated) },
+    {
+      title: 'Actions',
+      fixed: 'right',
+      render: (_, record) => (
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'edit', label: 'Edit' },
+              { key: 'delete', label: 'Delete', danger: true },
+            ],
+            onClick: ({ key, domEvent }) => {
+              domEvent.stopPropagation();
+              if (key === 'edit') startDealershipEdit(record);
+              if (key === 'delete') confirmDeleteDealership(record);
+            },
+          }}
+          placement="bottomRight"
+          trigger={['click']}
+        >
+          <Button onClick={(e) => e.stopPropagation()} className="!border-[#575757] !bg-[#111111] !text-[#24d725] hover:!border-[#24d725] hover:!bg-[#151515]" icon={<RightOutlined />} size="small" />
+        </Dropdown>
+      ),
+    },
   ];
 
   const contactColumns: TableColumnsType<ContactRecord> = [
@@ -1773,6 +1865,7 @@ export function AdminDashboard() {
                 { label: 'Make', value: selectedVehicle.make },
                 { label: 'Model', value: selectedVehicle.model },
                 { label: 'Trim', value: selectedVehicle.trim },
+                { label: 'Title Status', value: formatTitleStatus(selectedVehicle.titleStatus) },
                 { label: 'Mileage', value: selectedVehicle.mileage },
                 { label: 'Location', value: selectedVehicle.location },
                 { label: 'Exterior Color', value: selectedVehicle.exteriorColor },
@@ -1784,11 +1877,14 @@ export function AdminDashboard() {
                 { label: 'Engine', value: selectedVehicle.engine },
                 { label: 'Accident History', value: selectedVehicle.accidentHistory },
                 { label: 'Additional Disclosures', value: selectedVehicle.additionalDisclosures },
-                { label: 'Condition', value: selectedVehicle.condition },
                 { label: 'Minimum Acceptable Price', value: selectedVehicle.minimumAcceptablePrice },
                 { label: 'Smoker Vehicle', value: selectedVehicle.smokerVehicle },
                 { label: 'Reserve Met', value: selectedVehicle.reserveMet },
                 { label: 'Bid Increment', value: selectedVehicle.bidIncrementNo },
+                { label: 'Tire Condition', value: selectedVehicle.tireCondition },
+                { label: 'Mechanical Condition', value: selectedVehicle.mechanicalCondition },
+                { label: 'Interior Condition', value: selectedVehicle.interiorCondition },
+                { label: 'Exterior Condition', value: selectedVehicle.exteriorCondition },
                 { label: 'Uploads', value: selectedVehicle.uploads },
               ],
             },
@@ -1803,10 +1899,6 @@ export function AdminDashboard() {
                 { label: 'Highest Bid', value: selectedVehicle.highestBid },
                 { label: 'Winning Bidder Name', value: selectedVehicle.winningBidderName },
                 { label: 'Winning Bid Amount', value: selectedVehicle.winningBidAmount },
-                { label: 'Tire Condition', value: selectedVehicle.tireCondition },
-                { label: 'Mechanical Condition', value: selectedVehicle.mechanicalCondition },
-                { label: 'Interior Condition', value: selectedVehicle.interiorCondition },
-                { label: 'Exterior Condition', value: selectedVehicle.exteriorCondition },
                 { label: 'Last Updated By', value: selectedVehicle.lastUpdatedBy },
               ],
             },
@@ -2136,7 +2228,9 @@ export function AdminDashboard() {
   return (
     <main className="min-h-screen bg-lane-ink text-white">
       <header className="sticky top-0 z-[1000] flex min-h-[92px] items-center justify-between gap-8 bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5">
-        <img className="h-[120px] w-auto max-[980px]:h-16" src={logo} alt="Lane16 logo" />
+        <a href="/#/home" aria-label="Go to homepage">
+          <img className="h-[120px] w-auto max-[980px]:h-16" src={logo} alt="Lane16 logo" />
+        </a>
         <div className="flex items-center gap-8 max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-4">
           <nav aria-label="Admin dashboard navigation">
             <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
@@ -2445,6 +2539,39 @@ export function AdminDashboard() {
           form={dealershipForm}
           layout="vertical"
           onFinish={saveDealership}
+          className="[&_.ant-form-item-label>label]:!text-black"
+        >
+          <Form.Item
+            label="Dealership Name"
+            name="name"
+            rules={[{ required: true, message: 'Please enter a dealership name' }]}
+          >
+            <Input className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
+          <Form.Item
+            label="Dealership Address"
+            name="address"
+            rules={[{ required: true, message: 'Please enter a dealership address' }]}
+          >
+            <Input className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        cancelButtonProps={{ className: '!border-[#575757] !bg-[#111111] !text-[#c8c8c8] hover:!border-white hover:!text-white' }}
+        centered
+        confirmLoading={isDealershipUpdating}
+        okButtonProps={{ className: '!border-none !bg-[#24d725] !text-[#111] hover:!bg-[#1ebf1e]' }}
+        onCancel={() => { setEditingDealership(null); editDealershipForm.resetFields(); }}
+        onOk={() => editDealershipForm.submit()}
+        open={Boolean(editingDealership)}
+        title={<span className="text-white m-3">Edit Dealership</span>}
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        <Form
+          form={editDealershipForm}
+          layout="vertical"
+          onFinish={saveDealershipEdit}
           className="[&_.ant-form-item-label>label]:!text-black"
         >
           <Form.Item

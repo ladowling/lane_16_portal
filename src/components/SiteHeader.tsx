@@ -61,7 +61,14 @@ export function SiteHeader({
           showLogo ? 'justify-between' : 'justify-end'
         } bg-black px-16 text-white max-[980px]:items-start max-[980px]:flex-col max-[980px]:gap-2 max-[980px]:px-6 max-[980px]:py-3.5`}
       >
-        {showLogo && <img className="h-[150px] w-auto max-[980px]:h-16" src={logo} alt="Logo" />}
+        {showLogo && (
+          <img
+            className="h-[150px] w-auto max-[980px]:h-16 cursor-pointer"
+            src={logo}
+            alt="Logo"
+            onClick={onHomeClick}
+          />
+        )}
 
       <nav aria-label="Primary navigation">
         <Space size={28} className="max-[980px]:flex-wrap max-[620px]:!gap-3.5">
@@ -69,6 +76,13 @@ export function SiteHeader({
           <Button className={getNavClass('home')} type="text" onClick={onHomeClick}>
             HOME
           </Button>
+
+          {/* Dealer-only link */}
+          {user?.role === 'dealer' && (
+            <Button className={getNavClass('inventory')} type="text" onClick={onInventoryClick}>
+              INVENTORY
+            </Button>
+          )}
 
           <Button className={getNavClass('submitVehicle')} type="text" onClick={onVehicleClick}>
             VEHICLE
@@ -90,13 +104,6 @@ export function SiteHeader({
           <Button className={getNavClass('contact')} type="text" onClick={onContactClick}>
             CONTACT
           </Button>
-
-          {/* Dealer-only link */}
-          {user?.role === 'dealer' && (
-            <Button className={getNavClass('inventory')} type="text" onClick={onInventoryClick}>
-              INVENTORY
-            </Button>
-          )}
 
           {/* Admin-only link */}
           {(user?.role === 'admin' || user?.role === 'staff') && (

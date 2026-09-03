@@ -36,7 +36,7 @@ export default function Home({ onSellVehicleClick, onContactClick, onLoginClick 
 
   return (
     <div
-      className="min-h-screen bg-[#111] bg-contain bg-center bg-no-repeat text-white"
+      className="flex flex-1 flex-col bg-[#111] bg-cover bg-center bg-no-repeat text-white"
       style={{ backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.88), rgba(0,0,0,0.68), rgba(0,0,0,0.38)), url(${homeBgImage})` }}
     >
       {/* Hero Section */}
@@ -77,22 +77,13 @@ export default function Home({ onSellVehicleClick, onContactClick, onLoginClick 
           </div>
         ))}
       </div>
-      <div className="bg-black py-16 text-center border-t border-gray-900/50">
+      <div className="mt-auto bg-black py-12 text-center border-t border-gray-900/50">
         <h3 className="text-green-500 text-2xl font-bold tracking-wide mb-2">HAVE QUESTIONS?</h3>
         <p className="text-gray-300 text-lg mb-8">We're here to help you</p>
         
         <button onClick={onContactClick} className="border border-green-600/80 text-green-500 font-semibold px-14 py-3 bg-transparent hover:bg-green-950/30 transition-all tracking-wide mb-6">
           CONTACT US
         </button>
-        
-        <div className="flex items-center justify-center space-x-2 text-base text-white font-medium mb-12">
-          <Mail size={20} className="text-green-500" />
-          <a className="text-white transition-colors hover:text-green-500" href="mailto:support@lane16.com">support@lane16.com.</a>
-        </div>
-        
-        <p className="text-gray-600 text-base tracking-widest font-semibold">
-          ©2026 LANE16. ALL RIGHTS RESERVED
-        </p>
       </div>
     </div>
   );
