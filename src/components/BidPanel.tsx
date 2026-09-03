@@ -4,6 +4,7 @@ import { CheckCircleOutlined, ClockCircleOutlined, FireOutlined, StopOutlined } 
 import type { Vehicle } from '../types';
 import { useAuth } from '../Authontext';
 import { checkBuyerAuctionHasBid, placeBid, registerForAuction, fetchBuyerProfile, type BuyerDealership } from '../api';
+import { trackEvent } from '../analytics';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -157,6 +158,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
       }
 
       await placeBid(token, vehicle.id, parsedBid);
+      trackEvent('place_bid', { vehicle_id: vehicle.id, value: parsedBid, currency: 'USD' });
       setIsConfirmOpen(false);
       setIsSuccessOpen(true);
       setBidAmount('');

@@ -3,6 +3,7 @@ import { Button, Col, Divider, Form, Input, Row, Typography, message } from 'ant
 import { useState } from 'react';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { submitContact } from '../api';
+import { trackEvent } from '../analytics';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -27,6 +28,7 @@ export function ContactPage() {
         email: values.email,
         message: values.message,
       });
+      trackEvent('generate_lead', { lead_type: 'contact_form' });
       setIsSubmitted(true);
       form.resetFields();
     } catch (err) {

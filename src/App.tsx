@@ -19,6 +19,7 @@ import { AuthProvider, useAuth } from './Authontext';
 import { fetchVehicles, getUploadUrl } from './api';
 import type { Vehicle } from './types';
 import { SiteFooter } from './components/SiteFooter';
+import { trackPageview } from './analytics';
 
 type Page =
   | 'home'
@@ -45,6 +46,21 @@ const pagePaths: Record<Exclude<Page, 'details' | 'report'>, string> = {
   dashboard: '/dashboard',
   privacy: '/privacy',
   terms: '/terms',
+};
+
+const pageTitles: Record<Page, string> = {
+  home: 'Home',
+  inventory: 'Inventory',
+  details: 'Vehicle Details',
+  report: 'Condition Report',
+  contact: 'Contact',
+  howItWorks: 'How It Works — Dealers',
+  howItWorksSeller: 'How It Works — Sellers',
+  submitVehicle: 'Submit Vehicle',
+  login: 'Login',
+  dashboard: 'Admin Dashboard',
+  privacy: 'Privacy Policy',
+  terms: 'Terms of Use',
 };
 
 const AUTH_STORAGE_KEY = 'lane16_auth';
@@ -100,6 +116,10 @@ const getPagePath = (page: Page, vehicleId: string) => {
 const getPersistablePath = (page: Page, vehicleId: string) => {
   const path = getPagePath(page, vehicleId);
   return path === '/home' || path === '/login' ? null : path;
+};
+
+const reportPageview = (page: Page, vehicleId: string) => {
+  trackPageview(getPagePath(page, vehicleId), pageTitles[page]);
 };
 
 const persistRoutePath = (path: string | null) => {
@@ -329,12 +349,14 @@ function AppInner() {
     }
 
     persistRoutePath(getPersistablePath(initialRoute.page, initialRoute.vehicleId));
+    reportPageview(initialRoute.page, initialRoute.vehicleId);
 
     const handlePopState = () => {
       const nextRoute = getRouteState(getCurrentRoutePath());
       setPage(nextRoute.page);
       setSelectedVehicleId(nextRoute.vehicleId);
       persistRoutePath(getPersistablePath(nextRoute.page, nextRoute.vehicleId));
+      reportPageview(nextRoute.page, nextRoute.vehicleId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -351,6 +373,7 @@ function AppInner() {
     setPage(nextPage);
     setSelectedVehicleId(vehicleId);
     persistRoutePath(getPersistablePath(nextPage, vehicleId));
+    reportPageview(nextPage, vehicleId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

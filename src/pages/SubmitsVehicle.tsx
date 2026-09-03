@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message } from 'antd';
 import { Upload as UploadIcon } from 'lucide-react';
 import { submitVehicleListing, uploadVehicleFile } from '../api';
+import { trackEvent } from '../analytics';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -70,6 +71,7 @@ export default function SubmitVehicle() {
         uploads: uploadIds,
       });
 
+      trackEvent('generate_lead', { lead_type: 'vehicle_submission' });
       message.success('Vehicle submitted successfully. It will appear in the admin vehicle table after review.');
       form.resetFields();
     } catch (error) {

@@ -3,6 +3,7 @@ import { Button, Form, Input, Typography } from 'antd';
 import { useAuth } from '../Authontext';
 import * as authService from '../AuthService';
 import { ForgotPasswordModal } from '../components/ForgotPasswordModal';
+import { trackEvent } from '../analytics';
 
 
 const { Text, Title } = Typography;
@@ -30,6 +31,7 @@ export function LoginPage({ onDealerLogin, onAdminLogin }: LoginPageProps) {
     try {
       const { token, user } = await authService.login(values.email, values.password);
       login(token, user);
+      trackEvent('login', { method: 'password', role: user.role });
 
       if (user.role === 'admin' || user.role === 'staff') {
         onAdminLogin();
