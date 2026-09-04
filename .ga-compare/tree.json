@@ -1,0 +1,5075 @@
+{
+  "sha": "cd3873c74aab4818b91eb3c4be20d22c0b67d7dc",
+  "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/cd3873c74aab4818b91eb3c4be20d22c0b67d7dc",
+  "tree": [
+    {
+      "path": ".env",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bca48f4090e78ead8af05b828c9a0354745f618",
+      "size": 96,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2bca48f4090e78ead8af05b828c9a0354745f618"
+    },
+    {
+      "path": ".eslintrc.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6c953795300e4256c76542d6bb0fe06f08b5ad6",
+      "size": 436,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d6c953795300e4256c76542d6bb0fe06f08b5ad6"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a547bf36d8d11a4f89c59c144f24795749086dd1",
+      "size": 253,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a547bf36d8d11a4f89c59c144f24795749086dd1"
+    },
+    {
+      "path": ".next",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f06425f21ca34c477a624c9eb005c6ce3d6060c0",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/f06425f21ca34c477a624c9eb005c6ce3d6060c0"
+    },
+    {
+      "path": ".next/cache",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a9164879a858ff0288e82398111ee2bc194b15d5",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/a9164879a858ff0288e82398111ee2bc194b15d5"
+    },
+    {
+      "path": ".next/cache/.rscinfo",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14e284748e18d0ed409208b20743b6e0621634c2",
+      "size": 102,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/14e284748e18d0ed409208b20743b6e0621634c2"
+    },
+    {
+      "path": ".next/cache/.tsbuildinfo",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "464edb46911bcdc5a28218cf760dceb9f58a341b",
+      "size": 298577,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/464edb46911bcdc5a28218cf760dceb9f58a341b"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1cdc89db11c9d48362a5ea7a7fff439c3601e1e",
+      "size": 1323,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e1cdc89db11c9d48362a5ea7a7fff439c3601e1e"
+    },
+    {
+      "path": "index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc6d4945486a428a95b0ed8af73ae3297a934c65",
+      "size": 961,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bc6d4945486a428a95b0ed8af73ae3297a934c65"
+    },
+    {
+      "path": "next-env.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52e831b43424828d38887dee6a5fb73d955d308f",
+      "size": 213,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/52e831b43424828d38887dee6a5fb73d955d308f"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0911fae87962c69b32a2354a2d0be097f992215",
+      "size": 242498,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c0911fae87962c69b32a2354a2d0be097f992215"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad85bf87c238ab7adb202b121e4de269a716371c",
+      "size": 1977,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ad85bf87c238ab7adb202b121e4de269a716371c"
+    },
+    {
+      "path": "postcss.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e7af2b7f1a6f391da1631d93968a9d487ba977d",
+      "size": 80,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2e7af2b7f1a6f391da1631d93968a9d487ba977d"
+    },
+    {
+      "path": "public",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eeb864de34fc729144fde166575d5ce4c9393bb8",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/eeb864de34fc729144fde166575d5ce4c9393bb8"
+    },
+    {
+      "path": "public/AWSlogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a7ab8433eba11d89059fbc47519672974a9232c",
+      "size": 47688,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3a7ab8433eba11d89059fbc47519672974a9232c"
+    },
+    {
+      "path": "public/AdewalePics.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e84e7cd4e311d67bd523de0541df23b50ae49fca",
+      "size": 3474,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e84e7cd4e311d67bd523de0541df23b50ae49fca"
+    },
+    {
+      "path": "public/Baicells.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29748d6f3720485b4ac4f9e9ad3e7d3c7fac04d6",
+      "size": 26078,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/29748d6f3720485b4ac4f9e9ad3e7d3c7fac04d6"
+    },
+    {
+      "path": "public/BatterySwitch",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dcdd90967c07050418585d5500e2235f2b256540",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/dcdd90967c07050418585d5500e2235f2b256540"
+    },
+    {
+      "path": "public/BatterySwitch/lampOn.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6d2d8102ded69dd452e6d09cc24a8f4283df59c",
+      "size": 5505,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d6d2d8102ded69dd452e6d09cc24a8f4283df59c"
+    },
+    {
+      "path": "public/BatterySwitch/offSwitch.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cbb42fc66a345e5ef50817d54a42725d1955b2e",
+      "size": 11297,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7cbb42fc66a345e5ef50817d54a42725d1955b2e"
+    },
+    {
+      "path": "public/BatterySwitch/onSwitch.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3198a38ad92b36cb8731fc82f8e97f049bef9d82",
+      "size": 11297,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3198a38ad92b36cb8731fc82f8e97f049bef9d82"
+    },
+    {
+      "path": "public/BatterySwitch/routerOn.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6f01e682bb8bba7cb45ece17175b13328736e69",
+      "size": 13968,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a6f01e682bb8bba7cb45ece17175b13328736e69"
+    },
+    {
+      "path": "public/BatterySwitch/thermo1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40e2ab4ebbc788e2ef3f357ca7d884841d770afc",
+      "size": 41537,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/40e2ab4ebbc788e2ef3f357ca7d884841d770afc"
+    },
+    {
+      "path": "public/BatterySwitch/thermo2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a11e198281f9f1d2d5e7c14d26939cf125ac2b7",
+      "size": 41928,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3a11e198281f9f1d2d5e7c14d26939cf125ac2b7"
+    },
+    {
+      "path": "public/BatterySwitch/thermo2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a165ad872544970532ebde35af38534d9275d50e",
+      "size": 31824,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a165ad872544970532ebde35af38534d9275d50e"
+    },
+    {
+      "path": "public/BatterySwitch/thermo3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c52952e533f6306ceea9b5d8ca3b383ad329e8c8",
+      "size": 43335,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c52952e533f6306ceea9b5d8ca3b383ad329e8c8"
+    },
+    {
+      "path": "public/BatterySwitch/thermo3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a027a343afa77248cca186b11727e58dc7cb6836",
+      "size": 31869,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a027a343afa77248cca186b11727e58dc7cb6836"
+    },
+    {
+      "path": "public/Frame (4).svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4541ea07bb4cd1af52dc9acab1d417c0644fe14",
+      "size": 6824,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a4541ea07bb4cd1af52dc9acab1d417c0644fe14"
+    },
+    {
+      "path": "public/Frame 1216401531 (1).png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b51dcbe8f666c965db46e280a38cb25279fc1ee1",
+      "size": 75406,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b51dcbe8f666c965db46e280a38cb25279fc1ee1"
+    },
+    {
+      "path": "public/Group 39920.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a7ba8418f5f3bc5cb1d2fcf5f84b06f8fd97e71",
+      "size": 503,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8a7ba8418f5f3bc5cb1d2fcf5f84b06f8fd97e71"
+    },
+    {
+      "path": "public/Highlight14.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a7ba8418f5f3bc5cb1d2fcf5f84b06f8fd97e71",
+      "size": 503,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8a7ba8418f5f3bc5cb1d2fcf5f84b06f8fd97e71"
+    },
+    {
+      "path": "public/IAFcert.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0fcd2b9443ffa9f897fd459e008ac23e72cc898",
+      "size": 351128,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b0fcd2b9443ffa9f897fd459e008ac23e72cc898"
+    },
+    {
+      "path": "public/IAScert.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d631c0957dd9e9a0012febcd4ddcac27c419546",
+      "size": 87676,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8d631c0957dd9e9a0012febcd4ddcac27c419546"
+    },
+    {
+      "path": "public/Lamp.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cf9b37075597ef88bd460a1bf5213610d5fbe49",
+      "size": 14762,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7cf9b37075597ef88bd460a1bf5213610d5fbe49"
+    },
+    {
+      "path": "public/MTNlogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e90294583231a27776971401e7527b3893b143aa",
+      "size": 53684,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e90294583231a27776971401e7527b3893b143aa"
+    },
+    {
+      "path": "public/Miro",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ffbf41d1f58ac3f6966b60585286cce18ada10d5",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/ffbf41d1f58ac3f6966b60585286cce18ada10d5"
+    },
+    {
+      "path": "public/Miro/arrow.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "171b3a7a59dfe15ecb43c1bd81fa2c631a7e4d25",
+      "size": 2226,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/171b3a7a59dfe15ecb43c1bd81fa2c631a7e4d25"
+    },
+    {
+      "path": "public/Miro/averageRound.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6b43aa59fc885c24aee6af52d4007272642b760",
+      "size": 44568,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e6b43aa59fc885c24aee6af52d4007272642b760"
+    },
+    {
+      "path": "public/Miro/tripleArrow.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b38525b2a9d16dd09ba7dc698c5902516a6a2e36",
+      "size": 997,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b38525b2a9d16dd09ba7dc698c5902516a6a2e36"
+    },
+    {
+      "path": "public/NDPRcert.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ce0be508a9a8a9196e115c0ed472cc6c3c60c58",
+      "size": 167119,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7ce0be508a9a8a9196e115c0ed472cc6c3c60c58"
+    },
+    {
+      "path": "public/NSOCLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fe6207b76b3981b18946a889ffc7363ab6c8082",
+      "size": 3197,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8fe6207b76b3981b18946a889ffc7363ab6c8082"
+    },
+    {
+      "path": "public/Right.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "174051b02aaae6161b29989b99d38fcd098324d9",
+      "size": 170604,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/174051b02aaae6161b29989b99d38fcd098324d9"
+    },
+    {
+      "path": "public/StableNetLog.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e23db10ebc1ad2fc65bdceed75db548aa94399c3",
+      "size": 75810,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e23db10ebc1ad2fc65bdceed75db548aa94399c3"
+    },
+    {
+      "path": "public/ZmartGraph.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6318c4ae50fc4a0826cdd0fac3cc69d00b3bc06a",
+      "size": 551121,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6318c4ae50fc4a0826cdd0fac3cc69d00b3bc06a"
+    },
+    {
+      "path": "public/about",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "80241680821a7e613d80ea98c3f2564d0ddcee22",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/80241680821a7e613d80ea98c3f2564d0ddcee22"
+    },
+    {
+      "path": "public/about/career_decor.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5f67e96434015713424f8f240fa111c5c623863",
+      "size": 92231,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c5f67e96434015713424f8f240fa111c5c623863"
+    },
+    {
+      "path": "public/about/dot1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e012e0c70b2e501c051f5143d1bf24e71e18692e",
+      "size": 669,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e012e0c70b2e501c051f5143d1bf24e71e18692e"
+    },
+    {
+      "path": "public/about/mission.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85e44749c247dee9374e387d818dbd2934a92320",
+      "size": 2756,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/85e44749c247dee9374e387d818dbd2934a92320"
+    },
+    {
+      "path": "public/about/mission2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4301b4c29e906ee4a2a0d21a986b28c234bcbf2a",
+      "size": 653377,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4301b4c29e906ee4a2a0d21a986b28c234bcbf2a"
+    },
+    {
+      "path": "public/about/mission3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "113de1eb913950df0e96bf9dc1d11a5eb24772a1",
+      "size": 375716,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/113de1eb913950df0e96bf9dc1d11a5eb24772a1"
+    },
+    {
+      "path": "public/about/mission_img.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c617277eaee6b98934a6883fa85546811bbb2c4f",
+      "size": 476830,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c617277eaee6b98934a6883fa85546811bbb2c4f"
+    },
+    {
+      "path": "public/about/news.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ffb201f6c059add9aa6f471beb30819b768069a",
+      "size": 11847,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3ffb201f6c059add9aa6f471beb30819b768069a"
+    },
+    {
+      "path": "public/about/our_approach.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3658caca29b852f98d1ac7493983029eaf3e5d3",
+      "size": 427275,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c3658caca29b852f98d1ac7493983029eaf3e5d3"
+    },
+    {
+      "path": "public/about/slide1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79649662c74ece698ab3d22720074cdfac4dca92",
+      "size": 249317,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/79649662c74ece698ab3d22720074cdfac4dca92"
+    },
+    {
+      "path": "public/about/slide2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7bf8678672d7e49b298ef3f31ea5be8854c527c",
+      "size": 276630,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f7bf8678672d7e49b298ef3f31ea5be8854c527c"
+    },
+    {
+      "path": "public/about/slide3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2ce14eea95c2e0c32e7e26c6eb18e628e309985",
+      "size": 216445,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f2ce14eea95c2e0c32e7e26c6eb18e628e309985"
+    },
+    {
+      "path": "public/about/slide4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ef70450f3ca88dcbf1327ad1f31ab09877e593f",
+      "size": 205051,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1ef70450f3ca88dcbf1327ad1f31ab09877e593f"
+    },
+    {
+      "path": "public/about/slide5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8cc09dc54f9cc3344292f521028cf000d63dc7ee",
+      "size": 212628,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8cc09dc54f9cc3344292f521028cf000d63dc7ee"
+    },
+    {
+      "path": "public/about/slide_1.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cfccd192a0698ca169e84065785d22247082fec5",
+      "size": 8848155,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/cfccd192a0698ca169e84065785d22247082fec5"
+    },
+    {
+      "path": "public/about/slide_2.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d404c2b9a673ac8e890f8a39da46ad7d83777b99",
+      "size": 6527904,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d404c2b9a673ac8e890f8a39da46ad7d83777b99"
+    },
+    {
+      "path": "public/about/slide_3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1cd6880b171c922fdd2d9a78b9cfe26b1e16807",
+      "size": 249574,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e1cd6880b171c922fdd2d9a78b9cfe26b1e16807"
+    },
+    {
+      "path": "public/about/slide_4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47b3c8a68853e836ce8da6265ac478362b7e0e98",
+      "size": 276674,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/47b3c8a68853e836ce8da6265ac478362b7e0e98"
+    },
+    {
+      "path": "public/about/slide_5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f217696223bf5ce58bb48fe90e16b46ac47afec",
+      "size": 216755,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8f217696223bf5ce58bb48fe90e16b46ac47afec"
+    },
+    {
+      "path": "public/about/transparent.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "public/about/vision.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7049be836ea2e14d2e1aaf56823527556f5c5a68",
+      "size": 2123,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7049be836ea2e14d2e1aaf56823527556f5c5a68"
+    },
+    {
+      "path": "public/about/vision_img.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "949cfd88e3c87cdafd6d6aa6d187c13b1cdd9cbd",
+      "size": 412989,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/949cfd88e3c87cdafd6d6aa6d187c13b1cdd9cbd"
+    },
+    {
+      "path": "public/about_us_new.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9ba8300e522f097a9da90d4538f11df25a49d69",
+      "size": 569459,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a9ba8300e522f097a9da90d4538f11df25a49d69"
+    },
+    {
+      "path": "public/amerinode.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78d602feae11d9afacfaca2f6d39a1147bcdbc94",
+      "size": 61426,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/78d602feae11d9afacfaca2f6d39a1147bcdbc94"
+    },
+    {
+      "path": "public/arrowBottom.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd0cc45597f26c5e48065faf6cdb17c02c64d268",
+      "size": 5457,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/cd0cc45597f26c5e48065faf6cdb17c02c64d268"
+    },
+    {
+      "path": "public/arrowDown.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c4a4f176707fac9104bfea08c9e4005686eaef8",
+      "size": 758,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8c4a4f176707fac9104bfea08c9e4005686eaef8"
+    },
+    {
+      "path": "public/arrowFornite.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a413b0e5b9889a27ba937327ee8983cd893006c",
+      "size": 1759,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0a413b0e5b9889a27ba937327ee8983cd893006c"
+    },
+    {
+      "path": "public/arrowRight1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fac1280bf5bda5ac4e9e875bb8a5dbafae62c57e",
+      "size": 562,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fac1280bf5bda5ac4e9e875bb8a5dbafae62c57e"
+    },
+    {
+      "path": "public/arrowTop.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a90a54f44a7db44f76d3801766de2a247927081c",
+      "size": 6956,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a90a54f44a7db44f76d3801766de2a247927081c"
+    },
+    {
+      "path": "public/avgRoundTripTime.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9cd3ab620eba2e800772bf61261a71f9abb3062b",
+      "size": 87031,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9cd3ab620eba2e800772bf61261a71f9abb3062b"
+    },
+    {
+      "path": "public/bgBook.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c09630d29ca59fbf47860bbcade82654006977f7",
+      "size": 1137,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c09630d29ca59fbf47860bbcade82654006977f7"
+    },
+    {
+      "path": "public/bgBook2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c96c7d0ce28b9b2f0d054fdccf313681804612b",
+      "size": 1112,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8c96c7d0ce28b9b2f0d054fdccf313681804612b"
+    },
+    {
+      "path": "public/bintec.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5d97f6e2f3c76d3f9af1e7a399a81fcf66d5af9",
+      "size": 66226,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e5d97f6e2f3c76d3f9af1e7a399a81fcf66d5af9"
+    },
+    {
+      "path": "public/career.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec844ee76c0e68da0811367ceffe1b535a38d40b",
+      "size": 356,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ec844ee76c0e68da0811367ceffe1b535a38d40b"
+    },
+    {
+      "path": "public/chidimmaPics.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09df39c833a73310535148c106210e029c776b07",
+      "size": 3668,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/09df39c833a73310535148c106210e029c776b07"
+    },
+    {
+      "path": "public/chip.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "938a472635cce9ad5575c6f0477548d3257f9455",
+      "size": 183453,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/938a472635cce9ad5575c6f0477548d3257f9455"
+    },
+    {
+      "path": "public/colorPic.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6384c2d267bf8a9bb6b136203783262bfbccc8f",
+      "size": 141436,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a6384c2d267bf8a9bb6b136203783262bfbccc8f"
+    },
+    {
+      "path": "public/colorPrice.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "adef6ec71e79324dd062bb79bf9091774697727a",
+      "size": 340,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/adef6ec71e79324dd062bb79bf9091774697727a"
+    },
+    {
+      "path": "public/computerPics.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "096f1374a441091b2b86c5f570f9b00ba208d790",
+      "size": 172595,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/096f1374a441091b2b86c5f570f9b00ba208d790"
+    },
+    {
+      "path": "public/computerScreen.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0b8ee3c2513bc2fad100ff508475b02949be9a1",
+      "size": 135304,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f0b8ee3c2513bc2fad100ff508475b02949be9a1"
+    },
+    {
+      "path": "public/conversionRate.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "735f885f682fd92505c83bebbd605da47ab4ded8",
+      "size": 31769,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/735f885f682fd92505c83bebbd605da47ab4ded8"
+    },
+    {
+      "path": "public/cyber.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e50bf3bdbf61544279b1b8c58d9722a59ec6eb8f",
+      "size": 3488,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e50bf3bdbf61544279b1b8c58d9722a59ec6eb8f"
+    },
+    {
+      "path": "public/cybersecurity.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "33e96dedb0abaa6c1b940e6ee8fa27d73e86d592",
+      "size": 3578,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/33e96dedb0abaa6c1b940e6ee8fa27d73e86d592"
+    },
+    {
+      "path": "public/demoImage.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20397c17a36405bb283470bf7bb4da5b2300c8b2",
+      "size": 15614,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/20397c17a36405bb283470bf7bb4da5b2300c8b2"
+    },
+    {
+      "path": "public/eltex.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00a7b8427fcef3448cec619901edde09a9d8722e",
+      "size": 28483,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/00a7b8427fcef3448cec619901edde09a9d8722e"
+    },
+    {
+      "path": "public/facebook.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49a4e17841e492c038b70ad12731a1926cc1b279",
+      "size": 322,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/49a4e17841e492c038b70ad12731a1926cc1b279"
+    },
+    {
+      "path": "public/facebookI.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6b80ec17f2b26cd40e03d678f6886c0ca0469ed",
+      "size": 414,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b6b80ec17f2b26cd40e03d678f6886c0ca0469ed"
+    },
+    {
+      "path": "public/facebookLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee9b576d2898f4bf41a70d802dadecc737271590",
+      "size": 466,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ee9b576d2898f4bf41a70d802dadecc737271590"
+    },
+    {
+      "path": "public/favicon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7234c27b6a450725e8b91463da54ea47d8a61906",
+      "size": 22322,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7234c27b6a450725e8b91463da54ea47d8a61906"
+    },
+    {
+      "path": "public/featureGreen.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4b94cf91695b0d73677af2c4f81eaff0c77fff5",
+      "size": 642,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f4b94cf91695b0d73677af2c4f81eaff0c77fff5"
+    },
+    {
+      "path": "public/featureMiro.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d0f5f2972298d11e9cd16691138feaa7c44d4f8",
+      "size": 899,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8d0f5f2972298d11e9cd16691138feaa7c44d4f8"
+    },
+    {
+      "path": "public/flowerFortrex.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0150c61bedd5836fb07d66fd1fb9614cf9ff6824",
+      "size": 6919,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0150c61bedd5836fb07d66fd1fb9614cf9ff6824"
+    },
+    {
+      "path": "public/flowerFortrex1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b19a0729ad96fb4f5f1e511724d692bf6733ee6",
+      "size": 6954,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1b19a0729ad96fb4f5f1e511724d692bf6733ee6"
+    },
+    {
+      "path": "public/flowerTopZmart.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41d5db7083c4cd9a98012bf0e4e8574edf140203",
+      "size": 9427,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/41d5db7083c4cd9a98012bf0e4e8574edf140203"
+    },
+    {
+      "path": "public/flowerZmart.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1e804ea8f42902600c87d585cac8b9f3eb90dfa",
+      "size": 6919,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d1e804ea8f42902600c87d585cac8b9f3eb90dfa"
+    },
+    {
+      "path": "public/flowerZmart1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "310888c4685d43c47c78caa9fe87c1d5a979d256",
+      "size": 6954,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/310888c4685d43c47c78caa9fe87c1d5a979d256"
+    },
+    {
+      "path": "public/footer_one.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebbab4ffe58109159b055aa659ea8958b2ba7c4a",
+      "size": 12532,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ebbab4ffe58109159b055aa659ea8958b2ba7c4a"
+    },
+    {
+      "path": "public/footer_three.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3317fe4eeb3a72ec5b8d0e800cd7c4668adc848",
+      "size": 6970,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c3317fe4eeb3a72ec5b8d0e800cd7c4668adc848"
+    },
+    {
+      "path": "public/footer_two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67555efb9fb02b8199c403158cb2d441061f3162",
+      "size": 6663,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/67555efb9fb02b8199c403158cb2d441061f3162"
+    },
+    {
+      "path": "public/fortexLogo1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7717c9a20a382cd08f950cc84ad5d6b3c5ef730f",
+      "size": 48482,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7717c9a20a382cd08f950cc84ad5d6b3c5ef730f"
+    },
+    {
+      "path": "public/fortnite.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efec916fb9b98ab22d8f7434212d6972f56f66cd",
+      "size": 70455,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/efec916fb9b98ab22d8f7434212d6972f56f66cd"
+    },
+    {
+      "path": "public/fortrex.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bdc57d02c893e931df27070c22da3161c6554d18",
+      "size": 3713,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bdc57d02c893e931df27070c22da3161c6554d18"
+    },
+    {
+      "path": "public/fortrexGraph.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45ab80e3121a82efa60f852b175703f40622585f",
+      "size": 390606,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/45ab80e3121a82efa60f852b175703f40622585f"
+    },
+    {
+      "path": "public/fortrexLog.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce0911cbb81b2dee89b9799d6777c8b36beb3f20",
+      "size": 58687,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ce0911cbb81b2dee89b9799d6777c8b36beb3f20"
+    },
+    {
+      "path": "public/fortrexLogo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "021096486c54dd0cf66b2578ff7df1dc412854d0",
+      "size": 54870,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/021096486c54dd0cf66b2578ff7df1dc412854d0"
+    },
+    {
+      "path": "public/fortrexLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fe6207b76b3981b18946a889ffc7363ab6c8082",
+      "size": 3197,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8fe6207b76b3981b18946a889ffc7363ab6c8082"
+    },
+    {
+      "path": "public/fortrexPrice.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac6d89e80497e090b60c3a04558364e740e4c82a",
+      "size": 462,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ac6d89e80497e090b60c3a04558364e740e4c82a"
+    },
+    {
+      "path": "public/frontend.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba43af9dedc6bdc7d04700e3d0460c5d11c6a259",
+      "size": 8952160,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ba43af9dedc6bdc7d04700e3d0460c5d11c6a259"
+    },
+    {
+      "path": "public/frontendPics.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd82d642c68c2c69176beaa36c1806bc71a3445f",
+      "size": 173296,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fd82d642c68c2c69176beaa36c1806bc71a3445f"
+    },
+    {
+      "path": "public/google.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d4d2d56c956ac800eb151af4429790de34bdacb",
+      "size": 15756,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8d4d2d56c956ac800eb151af4429790de34bdacb"
+    },
+    {
+      "path": "public/hero-blur.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28bd1aa42871e98ef2d1571d1fc9ee402b9d8106",
+      "size": 1004268,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/28bd1aa42871e98ef2d1571d1fc9ee402b9d8106"
+    },
+    {
+      "path": "public/inLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0e96d34c75e75a5d263d2e6173b24eaa29fadde",
+      "size": 1146,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f0e96d34c75e75a5d263d2e6173b24eaa29fadde"
+    },
+    {
+      "path": "public/infosim.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f4e42aa18d8a525e14c70f7fffd0ae49ae475b2",
+      "size": 235164,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6f4e42aa18d8a525e14c70f7fffd0ae49ae475b2"
+    },
+    {
+      "path": "public/infras.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4541ea07bb4cd1af52dc9acab1d417c0644fe14",
+      "size": 6824,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a4541ea07bb4cd1af52dc9acab1d417c0644fe14"
+    },
+    {
+      "path": "public/infrastructure.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e457be5d0693d5064e41e12e84d06d02a6d5757",
+      "size": 6877,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2e457be5d0693d5064e41e12e84d06d02a6d5757"
+    },
+    {
+      "path": "public/ini.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5042b8358c0fdef75c8c61fdd9a48167673aaa7",
+      "size": 448,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c5042b8358c0fdef75c8c61fdd9a48167673aaa7"
+    },
+    {
+      "path": "public/intel.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ec65b56a474870201c52cc4d5d6c9920611c51b",
+      "size": 18310,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0ec65b56a474870201c52cc4d5d6c9920611c51b"
+    },
+    {
+      "path": "public/iso.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d14eb25970b4d1562fb8f8f1f76f1ab25668f72b",
+      "size": 7512,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d14eb25970b4d1562fb8f8f1f76f1ab25668f72b"
+    },
+    {
+      "path": "public/iso1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "494e619335762b724297cf2513ac0633aa084a70",
+      "size": 123258,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/494e619335762b724297cf2513ac0633aa084a70"
+    },
+    {
+      "path": "public/iso2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96e2b6e3031a420d0ac526e39c3fa33179465e36",
+      "size": 36566,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/96e2b6e3031a420d0ac526e39c3fa33179465e36"
+    },
+    {
+      "path": "public/iso2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "103238f280524d3f2fb0bde241de433791203095",
+      "size": 351128,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/103238f280524d3f2fb0bde241de433791203095"
+    },
+    {
+      "path": "public/iso2015.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6209fc074178fe5b5456d49987d20e8c77ac18fe",
+      "size": 89893,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6209fc074178fe5b5456d49987d20e8c77ac18fe"
+    },
+    {
+      "path": "public/iso2022.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68f2b8032905d81cdf37c612852932c4b451d66c",
+      "size": 111213,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/68f2b8032905d81cdf37c612852932c4b451d66c"
+    },
+    {
+      "path": "public/iso3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "933f25bcb0fd50b1394f61822cd336281f20d961",
+      "size": 523059,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/933f25bcb0fd50b1394f61822cd336281f20d961"
+    },
+    {
+      "path": "public/iso4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30d24fb9ae184548cdcee7a6eb0d84abc5bcfa12",
+      "size": 142228,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/30d24fb9ae184548cdcee7a6eb0d84abc5bcfa12"
+    },
+    {
+      "path": "public/kaspersky.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c130155b6255f8d168c0d0492c7de1459099ce81",
+      "size": 14567,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c130155b6255f8d168c0d0492c7de1459099ce81"
+    },
+    {
+      "path": "public/lenovo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ecf09ddb907d6a796842d28e60e85109976b1cef",
+      "size": 12336,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ecf09ddb907d6a796842d28e60e85109976b1cef"
+    },
+    {
+      "path": "public/levelDistribution.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1aa8f08044c55c94482b1d8bb3eb17d5474209d",
+      "size": 20567,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f1aa8f08044c55c94482b1d8bb3eb17d5474209d"
+    },
+    {
+      "path": "public/lindaPics.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "205b14daa4a624ea7f65c57f0cf9121c85e9affe",
+      "size": 3579,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/205b14daa4a624ea7f65c57f0cf9121c85e9affe"
+    },
+    {
+      "path": "public/linkedin.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5c04943006ce85c6ad74f342e8af7599f224604",
+      "size": 401,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b5c04943006ce85c6ad74f342e8af7599f224604"
+    },
+    {
+      "path": "public/list_arrow.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5743fa7b8b9a814671009149225eede35cc89e36",
+      "size": 700,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5743fa7b8b9a814671009149225eede35cc89e36"
+    },
+    {
+      "path": "public/locateRisk.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24a567746e77545d031b67c37f1f65bf2f2a8cc1",
+      "size": 27494,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/24a567746e77545d031b67c37f1f65bf2f2a8cc1"
+    },
+    {
+      "path": "public/logo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca7f8c4b2844a5e092b4f60b9582fc0ae7e4a4c4",
+      "size": 163587,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ca7f8c4b2844a5e092b4f60b9582fc0ae7e4a4c4"
+    },
+    {
+      "path": "public/logo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5df0f3ef046ec77ebea098661ecb85675dea0ac",
+      "size": 38074,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e5df0f3ef046ec77ebea098661ecb85675dea0ac"
+    },
+    {
+      "path": "public/menu",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c58bbb616edea96d7d252419954f9bb1bff94fb8",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/c58bbb616edea96d7d252419954f9bb1bff94fb8"
+    },
+    {
+      "path": "public/menu/about.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78d5d2eb03190b5205cdfb79f863ca18c4d918dc",
+      "size": 1333,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/78d5d2eb03190b5205cdfb79f863ca18c4d918dc"
+    },
+    {
+      "path": "public/menu/aboutUs1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "817eaee73727926a8d6fa3607961c44c96baaa24",
+      "size": 1010,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/817eaee73727926a8d6fa3607961c44c96baaa24"
+    },
+    {
+      "path": "public/menu/billingSystem.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d13302a3928fd78a1dbc0a6e797389ea65a1c6a",
+      "size": 1029,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1d13302a3928fd78a1dbc0a6e797389ea65a1c6a"
+    },
+    {
+      "path": "public/menu/blog.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03ca993389843cb864a41414ec497d125a60cb46",
+      "size": 704,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/03ca993389843cb864a41414ec497d125a60cb46"
+    },
+    {
+      "path": "public/menu/blogs.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c9bcc408b257d8543283e7fae9e06dadd0ffa03",
+      "size": 1095,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8c9bcc408b257d8543283e7fae9e06dadd0ffa03"
+    },
+    {
+      "path": "public/menu/career.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "964d26feefc6fdf616b3c245d38ebd4d7321bbec",
+      "size": 775,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/964d26feefc6fdf616b3c245d38ebd4d7321bbec"
+    },
+    {
+      "path": "public/menu/career.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "158ba01d9569923a132fce5d89d2b7dcd9390d65",
+      "size": 2015,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/158ba01d9569923a132fce5d89d2b7dcd9390d65"
+    },
+    {
+      "path": "public/menu/field.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac72b9a5d5554946cf20f0a0ec332028f639ac90",
+      "size": 947,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ac72b9a5d5554946cf20f0a0ec332028f639ac90"
+    },
+    {
+      "path": "public/menu/field.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70f6baf9cf5c7c341e2021dc658629648956794a",
+      "size": 16639,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/70f6baf9cf5c7c341e2021dc658629648956794a"
+    },
+    {
+      "path": "public/menu/field1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94d81e3cee1b8185ae85463f772da8a2affae70c",
+      "size": 948,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/94d81e3cee1b8185ae85463f772da8a2affae70c"
+    },
+    {
+      "path": "public/menu/fortrex.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56d3db608f8f063315a64bb6787e311bf06bd5b5",
+      "size": 1657,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/56d3db608f8f063315a64bb6787e311bf06bd5b5"
+    },
+    {
+      "path": "public/menu/fttx.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "598398c58599479269ab59968f236e2a12010f81",
+      "size": 3121,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/598398c58599479269ab59968f236e2a12010f81"
+    },
+    {
+      "path": "public/menu/incidentManagement.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6aeb1a3ed168cbe2e98e8a7b16fab9131f785da7",
+      "size": 1314,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6aeb1a3ed168cbe2e98e8a7b16fab9131f785da7"
+    },
+    {
+      "path": "public/menu/inventorySystem.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c45edfe3c747eafeafd1bb97077beea5caec5841",
+      "size": 1729,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c45edfe3c747eafeafd1bb97077beea5caec5841"
+    },
+    {
+      "path": "public/menu/miro.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a65b92a91f59b60be0053f4843a98f51ac471ba",
+      "size": 1227,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7a65b92a91f59b60be0053f4843a98f51ac471ba"
+    },
+    {
+      "path": "public/menu/networkMonitoring.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bebe24eef4b9b3e11f4b9011c6ebaa2c1d2d49de",
+      "size": 686,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bebe24eef4b9b3e11f4b9011c6ebaa2c1d2d49de"
+    },
+    {
+      "path": "public/menu/nsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a14ea9ed176e8dd2302cfd22707bd4f3844aee75",
+      "size": 1556,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a14ea9ed176e8dd2302cfd22707bd4f3844aee75"
+    },
+    {
+      "path": "public/menu/nsoc.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b350594796fe514da1bf5e5ad67e8fe16a9a8310",
+      "size": 6054,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b350594796fe514da1bf5e5ad67e8fe16a9a8310"
+    },
+    {
+      "path": "public/menu/observability.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a65b92a91f59b60be0053f4843a98f51ac471ba",
+      "size": 1227,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7a65b92a91f59b60be0053f4843a98f51ac471ba"
+    },
+    {
+      "path": "public/menu/operationsManagement.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7a1b06b20ad0f99f867dfb36f1c66fd9517c45d",
+      "size": 643,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a7a1b06b20ad0f99f867dfb36f1c66fd9517c45d"
+    },
+    {
+      "path": "public/menu/posSystem.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c372634bef9dfe79e9fc0f0834d6e4dfb70b395",
+      "size": 1102,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1c372634bef9dfe79e9fc0f0834d6e4dfb70b395"
+    },
+    {
+      "path": "public/menu/projectManagement.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2811691f36496468598bdbb0f93bec3de1dbdf79",
+      "size": 931,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2811691f36496468598bdbb0f93bec3de1dbdf79"
+    },
+    {
+      "path": "public/menu/renew.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf0e47df04f8424b0ed29945645c4f565333eee7",
+      "size": 5891,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/cf0e47df04f8424b0ed29945645c4f565333eee7"
+    },
+    {
+      "path": "public/menu/renew.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8208eb984e983ff047d9df41fdabe49535076cbb",
+      "size": 28130,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8208eb984e983ff047d9df41fdabe49535076cbb"
+    },
+    {
+      "path": "public/menu/renew1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e0ca182896bdb7dc2ef8941403ffae810da13e6",
+      "size": 1248,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7e0ca182896bdb7dc2ef8941403ffae810da13e6"
+    },
+    {
+      "path": "public/menu/x.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a83ad3ffc215c03d6ef408086b6a86a716d6a482",
+      "size": 93744,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a83ad3ffc215c03d6ef408086b6a86a716d6a482"
+    },
+    {
+      "path": "public/menu/zmart.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4cfee37dafe4d21eb0935bc62fff58b0ad44fbe0",
+      "size": 766,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4cfee37dafe4d21eb0935bc62fff58b0ad44fbe0"
+    },
+    {
+      "path": "public/microSoft.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0dd0fd000966d840eefc269dd7c82fb2e773fe34",
+      "size": 5966,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0dd0fd000966d840eefc269dd7c82fb2e773fe34"
+    },
+    {
+      "path": "public/miro.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "461c9346c64d7c7c88da8196813dde94ae51f22d",
+      "size": 13166,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/461c9346c64d7c7c88da8196813dde94ae51f22d"
+    },
+    {
+      "path": "public/miroFeature.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05d62b98181bfd04a95092da10d38ba3f1b36074",
+      "size": 242,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/05d62b98181bfd04a95092da10d38ba3f1b36074"
+    },
+    {
+      "path": "public/miroGraph.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85428cf357208e05741d547609dbf85787e61a8c",
+      "size": 445597,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/85428cf357208e05741d547609dbf85787e61a8c"
+    },
+    {
+      "path": "public/miroLog.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "839b31a047460bd93849b44d47dbdac47c6c01bc",
+      "size": 3468,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/839b31a047460bd93849b44d47dbdac47c6c01bc"
+    },
+    {
+      "path": "public/miroLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "edccbc9fd1cefc8aadfa7ed8ccf8ec873e179abb",
+      "size": 55874,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/edccbc9fd1cefc8aadfa7ed8ccf8ec873e179abb"
+    },
+    {
+      "path": "public/miroLogo1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18f64686f31ea125d13b01de06164f340d804243",
+      "size": 55859,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/18f64686f31ea125d13b01de06164f340d804243"
+    },
+    {
+      "path": "public/miroObservability.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26fe12a29c95b2c118645eef92f9909fb6d99a74",
+      "size": 8951,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/26fe12a29c95b2c118645eef92f9909fb6d99a74"
+    },
+    {
+      "path": "public/miroObservability1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "494741b36c21588d3b50c7aa06717348e62fbd21",
+      "size": 4989,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/494741b36c21588d3b50c7aa06717348e62fbd21"
+    },
+    {
+      "path": "public/miroObserve.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "344ea8a5ccd0b29e282156d54371100032e96629",
+      "size": 411613,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/344ea8a5ccd0b29e282156d54371100032e96629"
+    },
+    {
+      "path": "public/miroService.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6a21831ce3aca320ec0141da70c9c86cfaedb94",
+      "size": 4435,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d6a21831ce3aca320ec0141da70c9c86cfaedb94"
+    },
+    {
+      "path": "public/miroServiceManagement.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50ae3e47c90702996d01d0eaa36665dc196e840f",
+      "size": 18662,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/50ae3e47c90702996d01d0eaa36665dc196e840f"
+    },
+    {
+      "path": "public/music.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24ec33f1e961287eea397be4586331035806c32b",
+      "size": 24616,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/24ec33f1e961287eea397be4586331035806c32b"
+    },
+    {
+      "path": "public/ncc.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d600282a288bcce35d07bc767d82070910bab43d",
+      "size": 43734,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d600282a288bcce35d07bc767d82070910bab43d"
+    },
+    {
+      "path": "public/ndpr.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8beb69682bd12d07328844374179d24d64ec2c06",
+      "size": 50550,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8beb69682bd12d07328844374179d24d64ec2c06"
+    },
+    {
+      "path": "public/network_status.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f18bc87f114ea02f39d3b262c07e9d8d58849e93",
+      "size": 198462,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f18bc87f114ea02f39d3b262c07e9d8d58849e93"
+    },
+    {
+      "path": "public/newsletter_decor.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44aae870603eadca751c3674fd5f357b5f5987be",
+      "size": 6348,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/44aae870603eadca751c3674fd5f357b5f5987be"
+    },
+    {
+      "path": "public/newsletter_decor_two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94cfb08d90e3cdcba973160159cba25faa3e9047",
+      "size": 6540,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/94cfb08d90e3cdcba973160159cba25faa3e9047"
+    },
+    {
+      "path": "public/newspaper.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "888befc781300db5296ce22b1b36d971f859052e",
+      "size": 260683,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/888befc781300db5296ce22b1b36d971f859052e"
+    },
+    {
+      "path": "public/noResult.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef66f2ab101babd215944c5410e4157e08868d61",
+      "size": 8072,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ef66f2ab101babd215944c5410e4157e08868d61"
+    },
+    {
+      "path": "public/nsoc.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6842fd4cbd533d381dfc92b9ae1bb07457a0c4e",
+      "size": 3421,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c6842fd4cbd533d381dfc92b9ae1bb07457a0c4e"
+    },
+    {
+      "path": "public/nsocPics.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6734b4aada61e4d3407318f1eb929449e8f077da",
+      "size": 11771619,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6734b4aada61e4d3407318f1eb929449e8f077da"
+    },
+    {
+      "path": "public/nsocPics1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65739759984e3e1d1ee01614529817231abfa229",
+      "size": 1188547,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/65739759984e3e1d1ee01614529817231abfa229"
+    },
+    {
+      "path": "public/observability.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7546462339726fb9f336b74443071ed40c78d2c",
+      "size": 7001,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f7546462339726fb9f336b74443071ed40c78d2c"
+    },
+    {
+      "path": "public/observe.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dad2d3d59cb48f33d4ad8ff1b5802296806a1920",
+      "size": 6967,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/dad2d3d59cb48f33d4ad8ff1b5802296806a1920"
+    },
+    {
+      "path": "public/priceLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa282da8d27dca6adeddbff33f37bcb447f86fac",
+      "size": 35814,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/aa282da8d27dca6adeddbff33f37bcb447f86fac"
+    },
+    {
+      "path": "public/priceTag.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "795f3346f5acf56b8edd5e71c7a8b8883dfc2a84",
+      "size": 1306,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/795f3346f5acf56b8edd5e71c7a8b8883dfc2a84"
+    },
+    {
+      "path": "public/pricingZmart.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f30f69921c37bb8cd471c8792228a800213900c1",
+      "size": 1317,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f30f69921c37bb8cd471c8792228a800213900c1"
+    },
+    {
+      "path": "public/resource",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7dee8c9208cd78069b82088073b3f68d27897950",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/7dee8c9208cd78069b82088073b3f68d27897950"
+    },
+    {
+      "path": "public/resource/decorIma2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1deb2d9321bf2e79a7452c901e92f655df63b15b",
+      "size": 7733,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1deb2d9321bf2e79a7452c901e92f655df63b15b"
+    },
+    {
+      "path": "public/resource/decorImg1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f2462c8c563ff36b82fa4330a5db81180ea9f2d",
+      "size": 5606,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0f2462c8c563ff36b82fa4330a5db81180ea9f2d"
+    },
+    {
+      "path": "public/roomTemperature.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0daf04cb0b7b8fb1fabefded2bb3d16b53d425c",
+      "size": 45132,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c0daf04cb0b7b8fb1fabefded2bb3d16b53d425c"
+    },
+    {
+      "path": "public/roomTemptPics.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4824fe68dfe3ba2a0569615f59eff03c347f544",
+      "size": 107435,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c4824fe68dfe3ba2a0569615f59eff03c347f544"
+    },
+    {
+      "path": "public/router.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb93518970ee374ef890fd83f7015266d6d6380c",
+      "size": 23401,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fb93518970ee374ef890fd83f7015266d6d6380c"
+    },
+    {
+      "path": "public/samuelPics.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72f7169762487bbce777e3c54406e3f4fa4e5b97",
+      "size": 4031,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/72f7169762487bbce777e3c54406e3f4fa4e5b97"
+    },
+    {
+      "path": "public/securedPics.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e638fc8efc98c82d525d0b8e1346828a3326f81a",
+      "size": 47789,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e638fc8efc98c82d525d0b8e1346828a3326f81a"
+    },
+    {
+      "path": "public/securedProduct.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5c9502be9aaa07bd915d9a77f24d41ac58f2e27",
+      "size": 33149,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c5c9502be9aaa07bd915d9a77f24d41ac58f2e27"
+    },
+    {
+      "path": "public/serviceImage.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7b1a6f53881dd20db4d4c746afdd2d757e29afd",
+      "size": 43378,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f7b1a6f53881dd20db4d4c746afdd2d757e29afd"
+    },
+    {
+      "path": "public/serviceX.jpeg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbd5742e2822951cd37e095ad3f6d6c7f2d0d86f",
+      "size": 29614,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fbd5742e2822951cd37e095ad3f6d6c7f2d0d86f"
+    },
+    {
+      "path": "public/serviceX1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3efa6c317a07815c66f5429bb0a7389d056fcb99",
+      "size": 150228,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3efa6c317a07815c66f5429bb0a7389d056fcb99"
+    },
+    {
+      "path": "public/serviceX2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7e7321b7f9b17c837f44e916d00f06116a5095b",
+      "size": 98855,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c7e7321b7f9b17c837f44e916d00f06116a5095b"
+    },
+    {
+      "path": "public/services",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "38899920a781fdb14bf46dafce4820c98c0002db",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/38899920a781fdb14bf46dafce4820c98c0002db"
+    },
+    {
+      "path": "public/services/Field",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4dfdd4eb718837524e81985c4b1f051635354035",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/4dfdd4eb718837524e81985c4b1f051635354035"
+    },
+    {
+      "path": "public/services/Field/benefit1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2dfcbf8aa185d1963c12649bfe91fe8ac0e6bcf2",
+      "size": 1573,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2dfcbf8aa185d1963c12649bfe91fe8ac0e6bcf2"
+    },
+    {
+      "path": "public/services/Field/benefit2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "118aa0f85cc47339dc0b47befa320fcdd5c63a54",
+      "size": 1841,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/118aa0f85cc47339dc0b47befa320fcdd5c63a54"
+    },
+    {
+      "path": "public/services/Field/benefit3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1af811c2fc4cd30fdb418bf1e319bf7263c7b12b",
+      "size": 1674,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1af811c2fc4cd30fdb418bf1e319bf7263c7b12b"
+    },
+    {
+      "path": "public/services/Field/benefit4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5615917cfa15ece8725b86e43026ca52cb340670",
+      "size": 1615,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5615917cfa15ece8725b86e43026ca52cb340670"
+    },
+    {
+      "path": "public/services/Field/efficiency1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d86baacccb8afef4ca796718cf528194bbb43edb",
+      "size": 79621,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d86baacccb8afef4ca796718cf528194bbb43edb"
+    },
+    {
+      "path": "public/services/Field/efficiency2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b096a983e2c72cdfc84b88c4d6d0b0c108f291a3",
+      "size": 70849,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b096a983e2c72cdfc84b88c4d6d0b0c108f291a3"
+    },
+    {
+      "path": "public/services/Field/efficiency3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f879e9921f6ade68a4e1bee87e163dc06bb839fa",
+      "size": 89676,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f879e9921f6ade68a4e1bee87e163dc06bb839fa"
+    },
+    {
+      "path": "public/services/Field/efficiency4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55c951ab1cb5c0a6cc3e0fc808a445c0f8ec19d8",
+      "size": 43408,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/55c951ab1cb5c0a6cc3e0fc808a445c0f8ec19d8"
+    },
+    {
+      "path": "public/services/Field/fieldMobile.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0adaf8a341d341bbb930bb2a9f8c76fcb3640418",
+      "size": 16486,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0adaf8a341d341bbb930bb2a9f8c76fcb3640418"
+    },
+    {
+      "path": "public/services/Field/heroField.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4279b49531e430c6bceb395db96b16d6b73b2b4e",
+      "size": 150191,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4279b49531e430c6bceb395db96b16d6b73b2b4e"
+    },
+    {
+      "path": "public/services/Field/newsFooter1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f57e95eb36408311a951f12891fa4c12fab859ed",
+      "size": 6085,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f57e95eb36408311a951f12891fa4c12fab859ed"
+    },
+    {
+      "path": "public/services/Field/newsFooter2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3bf11b06411448fe18e890bf6d5a36079209aae",
+      "size": 6208,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e3bf11b06411448fe18e890bf6d5a36079209aae"
+    },
+    {
+      "path": "public/services/Nsoc",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a69c6491115d79bba301fb5caef6e766ee2ae405",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/a69c6491115d79bba301fb5caef6e766ee2ae405"
+    },
+    {
+      "path": "public/services/Nsoc/fault1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "989528733c9d9821d2f4dc468e04862dcf80284b",
+      "size": 295629,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/989528733c9d9821d2f4dc468e04862dcf80284b"
+    },
+    {
+      "path": "public/services/Nsoc/faultNsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f76b9935c616ad018e0525885572c45fe6346168",
+      "size": 32043,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f76b9935c616ad018e0525885572c45fe6346168"
+    },
+    {
+      "path": "public/services/Nsoc/inventory1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d1ccfc72e16f59f1c623ec1a36c06de45bce208",
+      "size": 101669,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0d1ccfc72e16f59f1c623ec1a36c06de45bce208"
+    },
+    {
+      "path": "public/services/Nsoc/inventoryNsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8cb7409477b2d2ea4d8812f9ba291c72fb57606",
+      "size": 47638,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e8cb7409477b2d2ea4d8812f9ba291c72fb57606"
+    },
+    {
+      "path": "public/services/Nsoc/monitoring1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b69e5fa78083245cc00e8fd07be3a7b0c2a3ec58",
+      "size": 63078,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b69e5fa78083245cc00e8fd07be3a7b0c2a3ec58"
+    },
+    {
+      "path": "public/services/Nsoc/monitoringNsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0230205c77e343bcfc62e84fa2046c949a221fff",
+      "size": 35491,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0230205c77e343bcfc62e84fa2046c949a221fff"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f96c089a282dde489d9d54975765ee6b3da99239",
+      "size": 32126,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f96c089a282dde489d9d54975765ee6b3da99239"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c2b9cf90f569b48f3f5c930be6ed0edd8892614",
+      "size": 38518,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1c2b9cf90f569b48f3f5c930be6ed0edd8892614"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c168e524057e54699924f1a1b7e4ba044f18e4fd",
+      "size": 24086,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c168e524057e54699924f1a1b7e4ba044f18e4fd"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7468f2c396bec034f1a81896f6ab000ad4868985",
+      "size": 25312,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7468f2c396bec034f1a81896f6ab000ad4868985"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99dd2c51bd20569529181bbbad2ff16da60246d1",
+      "size": 30390,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/99dd2c51bd20569529181bbbad2ff16da60246d1"
+    },
+    {
+      "path": "public/services/Nsoc/nsoc6.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "739e7b9463735f8bd7bf5c142b30a132a9ba60f8",
+      "size": 18679,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/739e7b9463735f8bd7bf5c142b30a132a9ba60f8"
+    },
+    {
+      "path": "public/services/Nsoc/nsocHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b150f2a502d0e9f1796fdf9a6b4f6bac89c875cd",
+      "size": 427523,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b150f2a502d0e9f1796fdf9a6b4f6bac89c875cd"
+    },
+    {
+      "path": "public/services/Nsoc/nsocHero1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c87ac0a24745d026177ef20476ce399e9aa60b6",
+      "size": 42498,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2c87ac0a24745d026177ef20476ce399e9aa60b6"
+    },
+    {
+      "path": "public/services/Nsoc/performance1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4895ffc62f740b5ac907f8952b01d66764f482a5",
+      "size": 75259,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4895ffc62f740b5ac907f8952b01d66764f482a5"
+    },
+    {
+      "path": "public/services/Nsoc/performanceNsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94472da6b28e968141f6fc66881fdde578686474",
+      "size": 30392,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/94472da6b28e968141f6fc66881fdde578686474"
+    },
+    {
+      "path": "public/services/Renew",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "75889fc30a804728b9eb47b69cf6dc8cc9ed2ef8",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/75889fc30a804728b9eb47b69cf6dc8cc9ed2ef8"
+    },
+    {
+      "path": "public/services/Renew/renew1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "236b4e92df4b1e28b95db1f39fc94f3afd015976",
+      "size": 59998,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/236b4e92df4b1e28b95db1f39fc94f3afd015976"
+    },
+    {
+      "path": "public/services/Renew/renew2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "796ff6e868cc6f381adab18f58a9ecafefbb7f4e",
+      "size": 54627,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/796ff6e868cc6f381adab18f58a9ecafefbb7f4e"
+    },
+    {
+      "path": "public/services/Renew/renew3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51b4c79bc6a6b21e2f73f3fc01578bc4098a48b3",
+      "size": 59982,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/51b4c79bc6a6b21e2f73f3fc01578bc4098a48b3"
+    },
+    {
+      "path": "public/services/Renew/renew4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7a48a8430a570249bcfc3cd98c2493ca04b66d4",
+      "size": 57348,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f7a48a8430a570249bcfc3cd98c2493ca04b66d4"
+    },
+    {
+      "path": "public/services/Renew/renew5.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5eac677e2afc68c84e03c44a6de1f8e48cf62c4",
+      "size": 79163,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b5eac677e2afc68c84e03c44a6de1f8e48cf62c4"
+    },
+    {
+      "path": "public/services/Renew/renewHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "770d0b94132649a8d02dc645898fbf8cc58d23fa",
+      "size": 57529,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/770d0b94132649a8d02dc645898fbf8cc58d23fa"
+    },
+    {
+      "path": "public/services/cybersecurity",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d86dce33334a06f05345e8ef6f0e723a1979f6eb",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/d86dce33334a06f05345e8ef6f0e723a1979f6eb"
+    },
+    {
+      "path": "public/services/cybersecurity/one.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad6b2675cc3cf6826921493be63df25645d02c78",
+      "size": 32737,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ad6b2675cc3cf6826921493be63df25645d02c78"
+    },
+    {
+      "path": "public/services/cybersecurity/three.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a986d76beda4c85872602c579a917c446fcc2d16",
+      "size": 42678,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a986d76beda4c85872602c579a917c446fcc2d16"
+    },
+    {
+      "path": "public/services/cybersecurity/two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d32d092920b08601b0e055b9ebc025bc39f91f9",
+      "size": 22725,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3d32d092920b08601b0e055b9ebc025bc39f91f9"
+    },
+    {
+      "path": "public/services/fortrex",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4c80cc7f6bbe302829abe1a3c7aedd53e53c4c79",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/4c80cc7f6bbe302829abe1a3c7aedd53e53c4c79"
+    },
+    {
+      "path": "public/services/fortrex/fortrex_1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "299aa736fe4ac257447f2a7179c764126f70eb64",
+      "size": 20399,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/299aa736fe4ac257447f2a7179c764126f70eb64"
+    },
+    {
+      "path": "public/services/fortrex/fortrex_2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3d56f4750c9da371073af3108da53973412ef9d",
+      "size": 104024,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c3d56f4750c9da371073af3108da53973412ef9d"
+    },
+    {
+      "path": "public/services/fortrex/fortrex_3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28ee6b5a05dc8c83d62db42bf9c4382816463446",
+      "size": 63712,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/28ee6b5a05dc8c83d62db42bf9c4382816463446"
+    },
+    {
+      "path": "public/services/fortrex/fortrex_4.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84503a075f430ea91ba53a7fc48a6e6c6ccc52b9",
+      "size": 27989,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/84503a075f430ea91ba53a7fc48a6e6c6ccc52b9"
+    },
+    {
+      "path": "public/services/fortrex/fotrex_hero.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c3c6e2f390a25da7ad9989322d0e114331b67bd",
+      "size": 64805,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6c3c6e2f390a25da7ad9989322d0e114331b67bd"
+    },
+    {
+      "path": "public/services/fortrex/thirdParty_1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee8fdf6dce159d6533c015689f7bc45fcf508d4c",
+      "size": 1109513,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ee8fdf6dce159d6533c015689f7bc45fcf508d4c"
+    },
+    {
+      "path": "public/services/fortrex/thirdParty_2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2da630c1a458506b3357968099aac01c38b8ce3",
+      "size": 85906,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b2da630c1a458506b3357968099aac01c38b8ce3"
+    },
+    {
+      "path": "public/services/fortrex/thirdParty_3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7bd79bb26fd1e5a095eb9704adb654104861a457",
+      "size": 61004,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7bd79bb26fd1e5a095eb9704adb654104861a457"
+    },
+    {
+      "path": "public/services/fortrex_white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6feb05111119010ba108b4e485ae53d72cbf477",
+      "size": 2776,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d6feb05111119010ba108b4e485ae53d72cbf477"
+    },
+    {
+      "path": "public/services/infrastructure",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "49d1c1f44bb9a72dc4986ac1617feede27158643",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/49d1c1f44bb9a72dc4986ac1617feede27158643"
+    },
+    {
+      "path": "public/services/infrastructure/four.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34c02a532261f96a1e1f0928fe3b7df71811c26",
+      "size": 36720,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c34c02a532261f96a1e1f0928fe3b7df71811c26"
+    },
+    {
+      "path": "public/services/infrastructure/one.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03859e6122d596e42c69a5d8a6f9dcd68114433c",
+      "size": 34442,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/03859e6122d596e42c69a5d8a6f9dcd68114433c"
+    },
+    {
+      "path": "public/services/infrastructure/three.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de7e95142a67a477da4ddfa596118d0416411936",
+      "size": 17663,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/de7e95142a67a477da4ddfa596118d0416411936"
+    },
+    {
+      "path": "public/services/infrastructure/two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d96f237f705c9e1f38e66daf62263e72421224b",
+      "size": 26469,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3d96f237f705c9e1f38e66daf62263e72421224b"
+    },
+    {
+      "path": "public/services/miro",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "363efb68e1c015716a595d73029a261475ad0769",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/363efb68e1c015716a595d73029a261475ad0769"
+    },
+    {
+      "path": "public/services/miro/Frame 1597883123 (5).png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "892df6c2684345b80b74aed848d53024c4bce55a",
+      "size": 44613,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/892df6c2684345b80b74aed848d53024c4bce55a"
+    },
+    {
+      "path": "public/services/miro/billingSystem.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0fb460aa46d60338524e7b1559a6f23c7e92ad7",
+      "size": 27670,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f0fb460aa46d60338524e7b1559a6f23c7e92ad7"
+    },
+    {
+      "path": "public/services/miro/billingSystem2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fdc9aa52081e2c8202d688a44824ab73caf9326",
+      "size": 157791,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2fdc9aa52081e2c8202d688a44824ab73caf9326"
+    },
+    {
+      "path": "public/services/miro/billingSystem3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fdc9aa52081e2c8202d688a44824ab73caf9326",
+      "size": 157791,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2fdc9aa52081e2c8202d688a44824ab73caf9326"
+    },
+    {
+      "path": "public/services/miro/billing_system.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "450278bc1f26f688fcd34fb7a0e38f24564c2db1",
+      "size": 26305,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/450278bc1f26f688fcd34fb7a0e38f24564c2db1"
+    },
+    {
+      "path": "public/services/miro/billing_system_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a0391704075e041cf21a16ae10ffd07f58f680b",
+      "size": 909699,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6a0391704075e041cf21a16ae10ffd07f58f680b"
+    },
+    {
+      "path": "public/services/miro/billing_system_hero1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4759180600463688d57dd0d7cb3881d326de97e5",
+      "size": 300105,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4759180600463688d57dd0d7cb3881d326de97e5"
+    },
+    {
+      "path": "public/services/miro/features",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e1cb41eaeb333abae3545f0b11c2fde62784cc56",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/e1cb41eaeb333abae3545f0b11c2fde62784cc56"
+    },
+    {
+      "path": "public/services/miro/features/ai.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ef651779414935250334803af61d5f3f1df266b",
+      "size": 1939,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9ef651779414935250334803af61d5f3f1df266b"
+    },
+    {
+      "path": "public/services/miro/features/ait.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c269da5e0819bb2e7a5bd544f8aa4af491ede6a0",
+      "size": 2000,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c269da5e0819bb2e7a5bd544f8aa4af491ede6a0"
+    },
+    {
+      "path": "public/services/miro/features/ar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9606d0c5fdf5e00686158f7afddac606a3156d8c",
+      "size": 7443,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9606d0c5fdf5e00686158f7afddac606a3156d8c"
+    },
+    {
+      "path": "public/services/miro/features/automate.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3557d3960fb1bb57651d4f68d3f9f52c101ebe5",
+      "size": 1823,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e3557d3960fb1bb57651d4f68d3f9f52c101ebe5"
+    },
+    {
+      "path": "public/services/miro/features/cpp.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2226a1ed9ca9531f0f2ec66b3f6dd768c60469f2",
+      "size": 1974,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2226a1ed9ca9531f0f2ec66b3f6dd768c60469f2"
+    },
+    {
+      "path": "public/services/miro/features/custom.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d364d99ff44a3d70232d0c3c0d5170cd7a9da00",
+      "size": 2011,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1d364d99ff44a3d70232d0c3c0d5170cd7a9da00"
+    },
+    {
+      "path": "public/services/miro/features/default.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c12c65e0a3121a45b3fe5bf26ddaee219c96636",
+      "size": 2253,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5c12c65e0a3121a45b3fe5bf26ddaee219c96636"
+    },
+    {
+      "path": "public/services/miro/features/double-check.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9662d69b060ff222f99c357ec0876e59774e9f9",
+      "size": 413,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e9662d69b060ff222f99c357ec0876e59774e9f9"
+    },
+    {
+      "path": "public/services/miro/features/effective.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6034266960b7342b8b324de2ffe7c7c0f08a572",
+      "size": 1776,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f6034266960b7342b8b324de2ffe7c7c0f08a572"
+    },
+    {
+      "path": "public/services/miro/features/ian.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3558f33f73f63086970b1023853cb9a48536950",
+      "size": 1959,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d3558f33f73f63086970b1023853cb9a48536950"
+    },
+    {
+      "path": "public/services/miro/features/in.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5fed8254531f9ef090bcc5b2f80399684b939b1b",
+      "size": 2450,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5fed8254531f9ef090bcc5b2f80399684b939b1b"
+    },
+    {
+      "path": "public/services/miro/features/instant.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a09a3996ff6cd0a612a05d131d3bfdaf2b18b615",
+      "size": 2458,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a09a3996ff6cd0a612a05d131d3bfdaf2b18b615"
+    },
+    {
+      "path": "public/services/miro/features/pa.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ece994d45ac65f41ecf633d580f621404a57e434",
+      "size": 8404,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ece994d45ac65f41ecf633d580f621404a57e434"
+    },
+    {
+      "path": "public/services/miro/features/payment.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "426a66a4b2a6e8cc6b610234284751a5b4c3462a",
+      "size": 1867,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/426a66a4b2a6e8cc6b610234284751a5b4c3462a"
+    },
+    {
+      "path": "public/services/miro/features/progress.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce68504781b9e2a73bc5fb9bd5075317b2c94f06",
+      "size": 2567,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ce68504781b9e2a73bc5fb9bd5075317b2c94f06"
+    },
+    {
+      "path": "public/services/miro/features/raa.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b013fa34044ad75cf086bf71ba02d0ac307a1630",
+      "size": 1861,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b013fa34044ad75cf086bf71ba02d0ac307a1630"
+    },
+    {
+      "path": "public/services/miro/features/rb.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16206140dc77c3ae301cf38d1e177a608c3b51bb",
+      "size": 2318,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/16206140dc77c3ae301cf38d1e177a608c3b51bb"
+    },
+    {
+      "path": "public/services/miro/features/recurr.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2443862345917d94e8e3712d87489e1ea6f75846",
+      "size": 2363,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2443862345917d94e8e3712d87489e1ea6f75846"
+    },
+    {
+      "path": "public/services/miro/features/rpl.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a7026c5a93ec8d6cc5c0d436ce743cdf93d0d53",
+      "size": 1900,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1a7026c5a93ec8d6cc5c0d436ce743cdf93d0d53"
+    },
+    {
+      "path": "public/services/miro/features/rpt.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c12c65e0a3121a45b3fe5bf26ddaee219c96636",
+      "size": 2253,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5c12c65e0a3121a45b3fe5bf26ddaee219c96636"
+    },
+    {
+      "path": "public/services/miro/features/rthm.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c4821f4814db43e6106cd33390de6a38a02370c",
+      "size": 5537,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8c4821f4814db43e6106cd33390de6a38a02370c"
+    },
+    {
+      "path": "public/services/miro/features/sc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2251ef7d58ee3485bd533e7f92a474477c7f6abe",
+      "size": 1885,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2251ef7d58ee3485bd533e7f92a474477c7f6abe"
+    },
+    {
+      "path": "public/services/miro/features/slam.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d12c748c40be30c3a2a214f5b03842027c88fac",
+      "size": 1793,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0d12c748c40be30c3a2a214f5b03842027c88fac"
+    },
+    {
+      "path": "public/services/miro/features/smart.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77f28b531319f799cbb878950baa3d04154cdcf8",
+      "size": 1820,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/77f28b531319f799cbb878950baa3d04154cdcf8"
+    },
+    {
+      "path": "public/services/miro/features/sra.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5dc9bdf66de8f114123f35e7abe78ad8b90a9c8",
+      "size": 2006,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c5dc9bdf66de8f114123f35e7abe78ad8b90a9c8"
+    },
+    {
+      "path": "public/services/miro/features/srca.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7631a1b2bf7523aed1a3f20f43d0fb0986986ff0",
+      "size": 8371,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7631a1b2bf7523aed1a3f20f43d0fb0986986ff0"
+    },
+    {
+      "path": "public/services/miro/fttx.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37f1bbbb4e249a522969f57736af4b1d7601c48d",
+      "size": 50088,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/37f1bbbb4e249a522969f57736af4b1d7601c48d"
+    },
+    {
+      "path": "public/services/miro/fttx1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b07153f73821098bf3be908a1fbe66b78bae1452",
+      "size": 51544,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b07153f73821098bf3be908a1fbe66b78bae1452"
+    },
+    {
+      "path": "public/services/miro/incidentManagement.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "712b2f1693d830f34ab0a81234c0012cb38d6edb",
+      "size": 272983,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/712b2f1693d830f34ab0a81234c0012cb38d6edb"
+    },
+    {
+      "path": "public/services/miro/incidentManagement1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82b71474c40016c519effacf834944443e5c1c5b",
+      "size": 63420,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/82b71474c40016c519effacf834944443e5c1c5b"
+    },
+    {
+      "path": "public/services/miro/incidentManagement2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "952e2811f96a5ec831c4db1969a06f9cfde1399f",
+      "size": 145931,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/952e2811f96a5ec831c4db1969a06f9cfde1399f"
+    },
+    {
+      "path": "public/services/miro/incident_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "561aba0db2d72ae8fc12f42e0b6b477c244b2d45",
+      "size": 73355,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/561aba0db2d72ae8fc12f42e0b6b477c244b2d45"
+    },
+    {
+      "path": "public/services/miro/incident_management_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce79a20a7b8a09b1f34ded1fa44f3a62e6e4cee7",
+      "size": 844599,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ce79a20a7b8a09b1f34ded1fa44f3a62e6e4cee7"
+    },
+    {
+      "path": "public/services/miro/integratedManagementLogo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9040e0e11d5b8f67b2f1c96aed4891c7678f264",
+      "size": 166560,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f9040e0e11d5b8f67b2f1c96aed4891c7678f264"
+    },
+    {
+      "path": "public/services/miro/inventorySystem.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e53e379e7d56baecb6120d2ab5b87b4ba9a1cb62",
+      "size": 256670,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e53e379e7d56baecb6120d2ab5b87b4ba9a1cb62"
+    },
+    {
+      "path": "public/services/miro/inventorySystem1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ca61dab1c457e804588a3cb2e18895724c10bd3",
+      "size": 54405,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0ca61dab1c457e804588a3cb2e18895724c10bd3"
+    },
+    {
+      "path": "public/services/miro/inventorySystem2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be56c4849c3a371ce683e2c5ea9e1c43181e80e5",
+      "size": 135852,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/be56c4849c3a371ce683e2c5ea9e1c43181e80e5"
+    },
+    {
+      "path": "public/services/miro/inventory_system.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a27378be7eb2cfd7bdde3105ce8b256c872c5d1",
+      "size": 51496,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9a27378be7eb2cfd7bdde3105ce8b256c872c5d1"
+    },
+    {
+      "path": "public/services/miro/inventory_system_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d20d4c4c651673b4a53ef91cf72a87b0e12a29ea",
+      "size": 137428,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d20d4c4c651673b4a53ef91cf72a87b0e12a29ea"
+    },
+    {
+      "path": "public/services/miro/miroObservabilityHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53108b2953186d358f5a040e868522b891fdb724",
+      "size": 79480,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/53108b2953186d358f5a040e868522b891fdb724"
+    },
+    {
+      "path": "public/services/miro/miro_observability_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa54e1c466d8c8ac5f659879f40152737952a5eb",
+      "size": 487036,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/aa54e1c466d8c8ac5f659879f40152737952a5eb"
+    },
+    {
+      "path": "public/services/miro/networkMonitoring.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e53e379e7d56baecb6120d2ab5b87b4ba9a1cb62",
+      "size": 256670,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e53e379e7d56baecb6120d2ab5b87b4ba9a1cb62"
+    },
+    {
+      "path": "public/services/miro/network_monitoring.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "112d1dcaec62c889702bbdcc5e0d4b34cd28483a",
+      "size": 166062,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/112d1dcaec62c889702bbdcc5e0d4b34cd28483a"
+    },
+    {
+      "path": "public/services/miro/network_monitoring_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4770960f4ad4470ea3e0f2f6509af7907b0ea0c4",
+      "size": 800349,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4770960f4ad4470ea3e0f2f6509af7907b0ea0c4"
+    },
+    {
+      "path": "public/services/miro/operationManagement.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "930a32aaa6f84b4779aa9ef2823c95163f75303a",
+      "size": 274171,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/930a32aaa6f84b4779aa9ef2823c95163f75303a"
+    },
+    {
+      "path": "public/services/miro/operationManagement2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b07153f73821098bf3be908a1fbe66b78bae1452",
+      "size": 51544,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b07153f73821098bf3be908a1fbe66b78bae1452"
+    },
+    {
+      "path": "public/services/miro/operationManagement3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a45f92b77aefef24599ed4f8153955903af285de",
+      "size": 148011,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a45f92b77aefef24599ed4f8153955903af285de"
+    },
+    {
+      "path": "public/services/miro/operations_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdb9e57f641f5d03eb668cf63b9954d857464a5f",
+      "size": 48454,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fdb9e57f641f5d03eb668cf63b9954d857464a5f"
+    },
+    {
+      "path": "public/services/miro/posSystem.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e80297f1caf034c40644024cf7e6c4a9409c7396",
+      "size": 286659,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e80297f1caf034c40644024cf7e6c4a9409c7396"
+    },
+    {
+      "path": "public/services/miro/posSystem1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef539a7808611dfb49069aa026b6ba95340cf604",
+      "size": 264069,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ef539a7808611dfb49069aa026b6ba95340cf604"
+    },
+    {
+      "path": "public/services/miro/pos_system.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6882f70991bd39269cdc5a3e564dc05d8a50bd6b",
+      "size": 245826,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6882f70991bd39269cdc5a3e564dc05d8a50bd6b"
+    },
+    {
+      "path": "public/services/miro/pos_system_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b302bd718623f4aea7c12494d9342e5f8b63afc2",
+      "size": 894780,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b302bd718623f4aea7c12494d9342e5f8b63afc2"
+    },
+    {
+      "path": "public/services/miro/projectManagement.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9952b68401bfd81125816bc9d60fffe25c33c28d",
+      "size": 310643,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9952b68401bfd81125816bc9d60fffe25c33c28d"
+    },
+    {
+      "path": "public/services/miro/projectManagement1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "346c2acb70c452e75fde1907b6ec5bb10844cb0d",
+      "size": 49746,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/346c2acb70c452e75fde1907b6ec5bb10844cb0d"
+    },
+    {
+      "path": "public/services/miro/projectManagement2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f98a700905877016277aa9b22cfd210a518cf870",
+      "size": 166591,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f98a700905877016277aa9b22cfd210a518cf870"
+    },
+    {
+      "path": "public/services/miro/project_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1d9d05a0c62b6b9637ce4543daca431b85075c6",
+      "size": 46286,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b1d9d05a0c62b6b9637ce4543daca431b85075c6"
+    },
+    {
+      "path": "public/services/miro/project_management_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26aa7e1ea686e032b6464754282ea36689bc64db",
+      "size": 166830,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/26aa7e1ea686e032b6464754282ea36689bc64db"
+    },
+    {
+      "path": "public/services/miro/report.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b6c9edec305831ddb54e4c168ffe97867927f1d",
+      "size": 2344,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2b6c9edec305831ddb54e4c168ffe97867927f1d"
+    },
+    {
+      "path": "public/services/miro/serviceManagement.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e50415460e9b23fb3baa514b5b2f751583ddf26",
+      "size": 92615,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5e50415460e9b23fb3baa514b5b2f751583ddf26"
+    },
+    {
+      "path": "public/services/miro/serviceManagement1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f5ae1c8b21bfdd20de03ff676a601d95f437bab",
+      "size": 75534,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9f5ae1c8b21bfdd20de03ff676a601d95f437bab"
+    },
+    {
+      "path": "public/services/miro/service_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4eff47903096722e144e787282c7a87e6c4592be",
+      "size": 99273,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4eff47903096722e144e787282c7a87e6c4592be"
+    },
+    {
+      "path": "public/services/miro_white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1699a6659112ba302b4e2c193cc88aa9e5ec02ee",
+      "size": 1692,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1699a6659112ba302b4e2c193cc88aa9e5ec02ee"
+    },
+    {
+      "path": "public/services/observability",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9491db2bedfa2278d6e0272c78fb8d07a09ce8e0",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/9491db2bedfa2278d6e0272c78fb8d07a09ce8e0"
+    },
+    {
+      "path": "public/services/observability/one.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08f8dbad35915d5bba05ac54cc26193bca92a16d",
+      "size": 48315,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/08f8dbad35915d5bba05ac54cc26193bca92a16d"
+    },
+    {
+      "path": "public/services/observability/three.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd91319ab88ae06362ca15e966d2f50089fde994",
+      "size": 95516,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bd91319ab88ae06362ca15e966d2f50089fde994"
+    },
+    {
+      "path": "public/services/observability/two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7c3c91bb0b63672ab70b164e628c4a6a6dc9942",
+      "size": 34839,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f7c3c91bb0b63672ab70b164e628c4a6a6dc9942"
+    },
+    {
+      "path": "public/services/services_decor_one.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2882964bffcf00034f69a45a86c3b1c9688934bb",
+      "size": 22607,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2882964bffcf00034f69a45a86c3b1c9688934bb"
+    },
+    {
+      "path": "public/services/services_decor_two.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad9449134e68bf2970c26e1f819b2564c2ec0319",
+      "size": 13914,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ad9449134e68bf2970c26e1f819b2564c2ec0319"
+    },
+    {
+      "path": "public/services/services_hero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "236c5d5ee5540ffcbdebddb840eed051b3b6f680",
+      "size": 38450,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/236c5d5ee5540ffcbdebddb840eed051b3b6f680"
+    },
+    {
+      "path": "public/services/talentX",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0bbc1a65a59c9173dc0b0601d307c79832d5786c",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/0bbc1a65a59c9173dc0b0601d307c79832d5786c"
+    },
+    {
+      "path": "public/services/talentX/heroTalentX.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eeb61bad765d6630b5a7bef3ae1d0326a2e6325e",
+      "size": 216354,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/eeb61bad765d6630b5a7bef3ae1d0326a2e6325e"
+    },
+    {
+      "path": "public/services/talentX/img_1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9598126eb2b868441d0378a1dfd00d188032a552",
+      "size": 82566,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9598126eb2b868441d0378a1dfd00d188032a552"
+    },
+    {
+      "path": "public/services/talentX/img_2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4368e0e041cf6d6a69aa3bd51d4d50298464500f",
+      "size": 43287,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4368e0e041cf6d6a69aa3bd51d4d50298464500f"
+    },
+    {
+      "path": "public/services/talentX/img_3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1fb7ebbdfccdcc5f062b8d632d068e1d4b554e9",
+      "size": 62969,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a1fb7ebbdfccdcc5f062b8d632d068e1d4b554e9"
+    },
+    {
+      "path": "public/services/talentX/img_4.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "234f226ea26468a1b7a93338d02ac2a2f6941421",
+      "size": 50174,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/234f226ea26468a1b7a93338d02ac2a2f6941421"
+    },
+    {
+      "path": "public/services/talentX/talent1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59302657db1403d95facc458709a53c511a75d02",
+      "size": 45324,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/59302657db1403d95facc458709a53c511a75d02"
+    },
+    {
+      "path": "public/services/talentX/talent2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd01963ebe8cae0158e53a998c6646d3e01975aa",
+      "size": 384965,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/cd01963ebe8cae0158e53a998c6646d3e01975aa"
+    },
+    {
+      "path": "public/services/talentX/talent3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28fbc9d6a527d0d689b92d319cd027447a691384",
+      "size": 74791,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/28fbc9d6a527d0d689b92d319cd027447a691384"
+    },
+    {
+      "path": "public/services/talentX/talentLogo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed4ba4984e9cfb137d2407d03f6111128eae1bcc",
+      "size": 2810,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ed4ba4984e9cfb137d2407d03f6111128eae1bcc"
+    },
+    {
+      "path": "public/services/talent_white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "420b33ce244002fed99d3c66d25cd270ab132089",
+      "size": 1245,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/420b33ce244002fed99d3c66d25cd270ab132089"
+    },
+    {
+      "path": "public/services/zmart",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1651ce12f9b70a3d3286d1a952527e111d1864aa",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/1651ce12f9b70a3d3286d1a952527e111d1864aa"
+    },
+    {
+      "path": "public/services/zmart/solution_1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "725b7e4dc70e10c5c87c8f74ed70581f23bb27ec",
+      "size": 38765,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/725b7e4dc70e10c5c87c8f74ed70581f23bb27ec"
+    },
+    {
+      "path": "public/services/zmart/solution_2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "870a6d88a042fa4f2c321d56b9a7ecafba94de83",
+      "size": 172905,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/870a6d88a042fa4f2c321d56b9a7ecafba94de83"
+    },
+    {
+      "path": "public/services/zmart/solution_3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2619f283d0aa2c59195d48684f01721b819a81f8",
+      "size": 152725,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2619f283d0aa2c59195d48684f01721b819a81f8"
+    },
+    {
+      "path": "public/services/zmart/solution_4.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "753ca9463d41ff6fa5c23e611b833ae8e80ec2f8",
+      "size": 53206,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/753ca9463d41ff6fa5c23e611b833ae8e80ec2f8"
+    },
+    {
+      "path": "public/services/zmart/solution_5.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e63c0d90dadf56ad40bbbe4594952bceb7300bb",
+      "size": 152636,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8e63c0d90dadf56ad40bbbe4594952bceb7300bb"
+    },
+    {
+      "path": "public/services/zmart/zmartHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65d965bfb72dd455725eb5591b3c0ada0349b356",
+      "size": 166273,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/65d965bfb72dd455725eb5591b3c0ada0349b356"
+    },
+    {
+      "path": "public/services/zmart/zmart_hero.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc1edda44fc0beae662ad050aac4d8ff8e2dad09",
+      "size": 527620,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/dc1edda44fc0beae662ad050aac4d8ff8e2dad09"
+    },
+    {
+      "path": "public/services/zmart_white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f3d57c175a913ca7951b3391afe78b6bed2369a",
+      "size": 3097,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2f3d57c175a913ca7951b3391afe78b6bed2369a"
+    },
+    {
+      "path": "public/servicex1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e95392bb4bdbafe1260595e37bf9a91efcaaf27d",
+      "size": 1100,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e95392bb4bdbafe1260595e37bf9a91efcaaf27d"
+    },
+    {
+      "path": "public/spaceX.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d197c52e62648bea409c9208dfe612a0a332877",
+      "size": 1668,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2d197c52e62648bea409c9208dfe612a0a332877"
+    },
+    {
+      "path": "public/tag",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4921ff8a75a5c03461331a04a3c08d9d1d8deede",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/4921ff8a75a5c03461331a04a3c08d9d1d8deede"
+    },
+    {
+      "path": "public/tag/Group 1000001740.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a90a54f44a7db44f76d3801766de2a247927081c",
+      "size": 6956,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a90a54f44a7db44f76d3801766de2a247927081c"
+    },
+    {
+      "path": "public/tag/about_us.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8521aea878cb595113befb7f65ea53ae0b84cb65",
+      "size": 1240,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8521aea878cb595113befb7f65ea53ae0b84cb65"
+    },
+    {
+      "path": "public/tag/benefitField.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af4181ffee84ef97532ec0cbcaa598e993c2c2c9",
+      "size": 488,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/af4181ffee84ef97532ec0cbcaa598e993c2c2c9"
+    },
+    {
+      "path": "public/tag/billing_system.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96c5bcbed1bb72234e7064b518a728e0ba504fc1",
+      "size": 298,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/96c5bcbed1bb72234e7064b518a728e0ba504fc1"
+    },
+    {
+      "path": "public/tag/billing_system1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b4b67ffcf5badeb9ba2dc0d7f1a8bee8f710f99",
+      "size": 293,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3b4b67ffcf5badeb9ba2dc0d7f1a8bee8f710f99"
+    },
+    {
+      "path": "public/tag/blog.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "732355e996e7cd120468159eb181d9d7bc308002",
+      "size": 333,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/732355e996e7cd120468159eb181d9d7bc308002"
+    },
+    {
+      "path": "public/tag/blogs.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa2713263cbb5c088abbdf69b90a05a0567fcb79",
+      "size": 355,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/aa2713263cbb5c088abbdf69b90a05a0567fcb79"
+    },
+    {
+      "path": "public/tag/career.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec844ee76c0e68da0811367ceffe1b535a38d40b",
+      "size": 356,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ec844ee76c0e68da0811367ceffe1b535a38d40b"
+    },
+    {
+      "path": "public/tag/contactUs.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "deef1cf12631959c702a5e84ea994cba29e64c6c",
+      "size": 639,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/deef1cf12631959c702a5e84ea994cba29e64c6c"
+    },
+    {
+      "path": "public/tag/cybersecurity.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01058a7b0b93eccdb22ee825f8ec5676aceb3997",
+      "size": 398,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/01058a7b0b93eccdb22ee825f8ec5676aceb3997"
+    },
+    {
+      "path": "public/tag/facebookLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b93e39ab21e8511097dd98ebd6af0a6da118a832",
+      "size": 509,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b93e39ab21e8511097dd98ebd6af0a6da118a832"
+    },
+    {
+      "path": "public/tag/featured.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6cf7662c8f1221b6aa605a6fe1f9f0a4a6db24b",
+      "size": 264,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b6cf7662c8f1221b6aa605a6fe1f9f0a4a6db24b"
+    },
+    {
+      "path": "public/tag/featuredRenew.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8783ef062309451223a9f2c9b0096edea38b8de0",
+      "size": 260,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8783ef062309451223a9f2c9b0096edea38b8de0"
+    },
+    {
+      "path": "public/tag/features.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aca0a6036c5f547a9e762d9a5d67cd3c8abec782",
+      "size": 241,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/aca0a6036c5f547a9e762d9a5d67cd3c8abec782"
+    },
+    {
+      "path": "public/tag/features1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53d6b29bca5e6ebf6e53e7181248d5d9051202a9",
+      "size": 10766,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/53d6b29bca5e6ebf6e53e7181248d5d9051202a9"
+    },
+    {
+      "path": "public/tag/features2.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6be0aff8551fbe8aca53584c5486509cd19d0f35",
+      "size": 3404,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6be0aff8551fbe8aca53584c5486509cd19d0f35"
+    },
+    {
+      "path": "public/tag/features3.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d457f00a61a641a5c3edf599065275e783a05826",
+      "size": 10422,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d457f00a61a641a5c3edf599065275e783a05826"
+    },
+    {
+      "path": "public/tag/features4.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49152219865ed249ddb8eca04645cca4d2fa369a",
+      "size": 4107,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/49152219865ed249ddb8eca04645cca4d2fa369a"
+    },
+    {
+      "path": "public/tag/features5.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f8b19a273d9c09b8ecf1238fc1c95e42372067a",
+      "size": 4169,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1f8b19a273d9c09b8ecf1238fc1c95e42372067a"
+    },
+    {
+      "path": "public/tag/features6.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "106e202184f8289890e87d8fd32262e64f622f87",
+      "size": 6483,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/106e202184f8289890e87d8fd32262e64f622f87"
+    },
+    {
+      "path": "public/tag/fieldEfficiency.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7843fe65546e62da36bc7f6b635412146a5d97f3",
+      "size": 560,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7843fe65546e62da36bc7f6b635412146a5d97f3"
+    },
+    {
+      "path": "public/tag/fieldLogo1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e81283bf86d88fa8f0570f68a056e9e19a137c22",
+      "size": 3382,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e81283bf86d88fa8f0570f68a056e9e19a137c22"
+    },
+    {
+      "path": "public/tag/fieldm.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0adaf8a341d341bbb930bb2a9f8c76fcb3640418",
+      "size": 16486,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0adaf8a341d341bbb930bb2a9f8c76fcb3640418"
+    },
+    {
+      "path": "public/tag/fieldmp.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8a71de0965e8318ec404be04a96256fd0d97a70",
+      "size": 635,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a8a71de0965e8318ec404be04a96256fd0d97a70"
+    },
+    {
+      "path": "public/tag/fortrex.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4836f2a121e92ccc4c5621ba4d7027b0d5a5244c",
+      "size": 3159,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4836f2a121e92ccc4c5621ba4d7027b0d5a5244c"
+    },
+    {
+      "path": "public/tag/fortrex1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f7cfd8dddbd4c2bdf138a9ee48668a2b3706835",
+      "size": 58673,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7f7cfd8dddbd4c2bdf138a9ee48668a2b3706835"
+    },
+    {
+      "path": "public/tag/free_demo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff70673121ff33e5947d9f1e02f62b410143c0fb",
+      "size": 421,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ff70673121ff33e5947d9f1e02f62b410143c0fb"
+    },
+    {
+      "path": "public/tag/fttx.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88e6a8d4fc374eae60d2eae84a8d84e87bfdd2f7",
+      "size": 329,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/88e6a8d4fc374eae60d2eae84a8d84e87bfdd2f7"
+    },
+    {
+      "path": "public/tag/fttx1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b92ef6145673bed8cdec7d122542338b9a90143",
+      "size": 330,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8b92ef6145673bed8cdec7d122542338b9a90143"
+    },
+    {
+      "path": "public/tag/houseLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "927e480abd4e7cd9745da593e74486e44328e1fa",
+      "size": 3083,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/927e480abd4e7cd9745da593e74486e44328e1fa"
+    },
+    {
+      "path": "public/tag/houseLogo1.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee3790630db59d4cca216056268a56a2c1922647",
+      "size": 2998,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ee3790630db59d4cca216056268a56a2c1922647"
+    },
+    {
+      "path": "public/tag/inLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b23d29d15343c96d4e35f7d05b10d7d60782db00",
+      "size": 1119,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b23d29d15343c96d4e35f7d05b10d7d60782db00"
+    },
+    {
+      "path": "public/tag/incident_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffb246acb956b1e0a9765273bb8f65ba9aad89e8",
+      "size": 412,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ffb246acb956b1e0a9765273bb8f65ba9aad89e8"
+    },
+    {
+      "path": "public/tag/incident_management2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef1834b19b013a068dedfbb70e30e302d9cd1d5f",
+      "size": 357,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ef1834b19b013a068dedfbb70e30e302d9cd1d5f"
+    },
+    {
+      "path": "public/tag/infrastructure.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eea7c1318ef7ace7a65784da33e8dfb1f3d42301",
+      "size": 478,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/eea7c1318ef7ace7a65784da33e8dfb1f3d42301"
+    },
+    {
+      "path": "public/tag/inventory_system.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1ada50712d9f78ef3c56931d07c087395af1f55",
+      "size": 317,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f1ada50712d9f78ef3c56931d07c087395af1f55"
+    },
+    {
+      "path": "public/tag/inventory_system1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b93a6fd6a9fbf54be3ca50f6fe210eda60d11cdb",
+      "size": 303,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b93a6fd6a9fbf54be3ca50f6fe210eda60d11cdb"
+    },
+    {
+      "path": "public/tag/landingPageFeature.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8783ef062309451223a9f2c9b0096edea38b8de0",
+      "size": 260,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8783ef062309451223a9f2c9b0096edea38b8de0"
+    },
+    {
+      "path": "public/tag/locationLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4704d3298e40e7eef02f57f801dfae088ed0f1b0",
+      "size": 2612,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4704d3298e40e7eef02f57f801dfae088ed0f1b0"
+    },
+    {
+      "path": "public/tag/mailLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54d9a333553f37ffdd986271e8d9e5074ea7d856",
+      "size": 810,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/54d9a333553f37ffdd986271e8d9e5074ea7d856"
+    },
+    {
+      "path": "public/tag/meet_us.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05765304d40424cf2bfa5ba07d071937fb254ef5",
+      "size": 1669,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/05765304d40424cf2bfa5ba07d071937fb254ef5"
+    },
+    {
+      "path": "public/tag/miroHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6141e8a5309f7f25390fd22e4ab6989a5122224",
+      "size": 2539,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b6141e8a5309f7f25390fd22e4ab6989a5122224"
+    },
+    {
+      "path": "public/tag/miroObservability.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86a117e9816005afe4a8776cadddbc5ad7590016",
+      "size": 5613,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/86a117e9816005afe4a8776cadddbc5ad7590016"
+    },
+    {
+      "path": "public/tag/miroServiceLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55fd60c6648442a5a6761e17a34343a856f1114a",
+      "size": 71455,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/55fd60c6648442a5a6761e17a34343a856f1114a"
+    },
+    {
+      "path": "public/tag/mission_and_vision.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f74efb03c30bdb34c101dd023b7b2cea5b715b3b",
+      "size": 613,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f74efb03c30bdb34c101dd023b7b2cea5b715b3b"
+    },
+    {
+      "path": "public/tag/nsoc.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e62f4b409051b8a265ecbf7ef86f088630c5e47",
+      "size": 10165,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5e62f4b409051b8a265ecbf7ef86f088630c5e47"
+    },
+    {
+      "path": "public/tag/nsoc.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03f62b2d154999a6d1caeed9ad725dd8d764e2f4",
+      "size": 3155,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/03f62b2d154999a6d1caeed9ad725dd8d764e2f4"
+    },
+    {
+      "path": "public/tag/nsocLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e49bbe190bf1def8371bf4e7b5a83345bb644114",
+      "size": 106337,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e49bbe190bf1def8371bf4e7b5a83345bb644114"
+    },
+    {
+      "path": "public/tag/nsocMobile.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8660fee7e3f3dcc74eeb0f5c23130d01cb3439be",
+      "size": 3209,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8660fee7e3f3dcc74eeb0f5c23130d01cb3439be"
+    },
+    {
+      "path": "public/tag/observability.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34e62ea6ebf25c6fac25beff78a5a89a301db020",
+      "size": 494,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/34e62ea6ebf25c6fac25beff78a5a89a301db020"
+    },
+    {
+      "path": "public/tag/operationsManagement.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa370a6d4309eff0efeafbda0025cb088c2ad91f",
+      "size": 670,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fa370a6d4309eff0efeafbda0025cb088c2ad91f"
+    },
+    {
+      "path": "public/tag/operations_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "618cc3cbe1ccc51275527e764387ab0732413b30",
+      "size": 505,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/618cc3cbe1ccc51275527e764387ab0732413b30"
+    },
+    {
+      "path": "public/tag/phoneLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e85649ee26af2cb39232552f9bbcfb81e76a66ab",
+      "size": 1599,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e85649ee26af2cb39232552f9bbcfb81e76a66ab"
+    },
+    {
+      "path": "public/tag/pointsTag.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0157380d8550218ca4b78d9b48b0dcc194bb2482",
+      "size": 688,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0157380d8550218ca4b78d9b48b0dcc194bb2482"
+    },
+    {
+      "path": "public/tag/posSystem.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a15d4e955b372c383e422c3d0ca734bde62c2feb",
+      "size": 469,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a15d4e955b372c383e422c3d0ca734bde62c2feb"
+    },
+    {
+      "path": "public/tag/priceTag.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "795f3346f5acf56b8edd5e71c7a8b8883dfc2a84",
+      "size": 1306,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/795f3346f5acf56b8edd5e71c7a8b8883dfc2a84"
+    },
+    {
+      "path": "public/tag/pricing.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2a9187715b3b14e122a36a025eb89b52005fa2c",
+      "size": 293,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a2a9187715b3b14e122a36a025eb89b52005fa2c"
+    },
+    {
+      "path": "public/tag/products.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c42b0b434fc6ce82e8dca1a0f3188e67efb91b0b",
+      "size": 413,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c42b0b434fc6ce82e8dca1a0f3188e67efb91b0b"
+    },
+    {
+      "path": "public/tag/project_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43bf4f329f05d6e3d3c285efc96db330323b1669",
+      "size": 406,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/43bf4f329f05d6e3d3c285efc96db330323b1669"
+    },
+    {
+      "path": "public/tag/project_management1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b798b2188ec47e49688208740b4800c505e06873",
+      "size": 360,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b798b2188ec47e49688208740b4800c505e06873"
+    },
+    {
+      "path": "public/tag/renew.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac93f497af13967510a7948c59a0fb72a0fbb374",
+      "size": 4542,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ac93f497af13967510a7948c59a0fb72a0fbb374"
+    },
+    {
+      "path": "public/tag/renew2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f5ef6356df4b7781c3cdd6b7501bb3a6e219afa",
+      "size": 990209,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1f5ef6356df4b7781c3cdd6b7501bb3a6e219afa"
+    },
+    {
+      "path": "public/tag/renew@2x.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3781a167d4fbe29df502f60d009c64815274806c",
+      "size": 35289,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3781a167d4fbe29df502f60d009c64815274806c"
+    },
+    {
+      "path": "public/tag/resource.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2313a99016e0909ee530d447a48b5a0a03f1414a",
+      "size": 295,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2313a99016e0909ee530d447a48b5a0a03f1414a"
+    },
+    {
+      "path": "public/tag/rightD.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdeaceb87646c2af58065982cf8e2eea92290dae",
+      "size": 488,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fdeaceb87646c2af58065982cf8e2eea92290dae"
+    },
+    {
+      "path": "public/tag/service_management.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c846c3b5d75c747a4b8c43e6f2cf6494296bc01e",
+      "size": 566,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c846c3b5d75c747a4b8c43e6f2cf6494296bc01e"
+    },
+    {
+      "path": "public/tag/services.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5172d3fe6845b9fa15183020d0790e97a1a0f66f",
+      "size": 452,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5172d3fe6845b9fa15183020d0790e97a1a0f66f"
+    },
+    {
+      "path": "public/tag/xLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2d535d2344d59c73ecf957de0d5e3f1cb4dbb5",
+      "size": 635,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ca2d535d2344d59c73ecf957de0d5e3f1cb4dbb5"
+    },
+    {
+      "path": "public/tag/zmart.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11ef8521c52c183371368c92a854ad7afc4bd920",
+      "size": 534,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/11ef8521c52c183371368c92a854ad7afc4bd920"
+    },
+    {
+      "path": "public/tag/zmartContact.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a443d7c0f4750b156c9d79b95ce39900fd50baf",
+      "size": 522,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3a443d7c0f4750b156c9d79b95ce39900fd50baf"
+    },
+    {
+      "path": "public/tag/zmartHero.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbca8f9df55776bb410a4d99ca9076a58855ab4e",
+      "size": 772,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fbca8f9df55776bb410a4d99ca9076a58855ab4e"
+    },
+    {
+      "path": "public/tag/zmartLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62d80cfd36bb4b8d744b709540c728047a34be48",
+      "size": 108285,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/62d80cfd36bb4b8d744b709540c728047a34be48"
+    },
+    {
+      "path": "public/talentX.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed4ba4984e9cfb137d2407d03f6111128eae1bcc",
+      "size": 2810,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ed4ba4984e9cfb137d2407d03f6111128eae1bcc"
+    },
+    {
+      "path": "public/talents.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebc8e47727b5f2bd2a49666e5188a159b2112424",
+      "size": 583,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ebc8e47727b5f2bd2a49666e5188a159b2112424"
+    },
+    {
+      "path": "public/teldat.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d35d8779b0e64efeba413a512c93bf4626bc0820",
+      "size": 46497,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d35d8779b0e64efeba413a512c93bf4626bc0820"
+    },
+    {
+      "path": "public/threatLevel.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c2da50f9a79d3ca5df937c4099b9f3b8c952ed3",
+      "size": 31599,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6c2da50f9a79d3ca5df937c4099b9f3b8c952ed3"
+    },
+    {
+      "path": "public/threat_level.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "adeb8ebc114ba6d3da037a9d4c0ef0e171bc7161",
+      "size": 84722,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/adeb8ebc114ba6d3da037a9d4c0ef0e171bc7161"
+    },
+    {
+      "path": "public/threeCardsFortrex.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a02060278e8e2da2d68ea7994c3b016332fe6fdb",
+      "size": 35977,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a02060278e8e2da2d68ea7994c3b016332fe6fdb"
+    },
+    {
+      "path": "public/threeCardsPurple.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80815e8cfb3ba535c27ef61c5362a9e003c3866f",
+      "size": 36047,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/80815e8cfb3ba535c27ef61c5362a9e003c3866f"
+    },
+    {
+      "path": "public/threeCardsZmart.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2e9972142eafa121680158bf7a86d993d3079dd",
+      "size": 35977,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c2e9972142eafa121680158bf7a86d993d3079dd"
+    },
+    {
+      "path": "public/total_delivery.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b93d6c5a36cf4839d471d0a14ab52c215330ba5c",
+      "size": 97713,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b93d6c5a36cf4839d471d0a14ab52c215330ba5c"
+    },
+    {
+      "path": "public/truck.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6df4b936468d250f19e3fd4747694509f684f494",
+      "size": 12402,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6df4b936468d250f19e3fd4747694509f684f494"
+    },
+    {
+      "path": "public/x.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa97e64f838a0140e709bae364b8fffa77d901ca",
+      "size": 801,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fa97e64f838a0140e709bae364b8fffa77d901ca"
+    },
+    {
+      "path": "public/xLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4026bea0012784c667bd8d1eab149ba13e10adbc",
+      "size": 580,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4026bea0012784c667bd8d1eab149ba13e10adbc"
+    },
+    {
+      "path": "public/xTalent1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28b42d1b3990bb5cfe2a6aa1fdcd505720413fbf",
+      "size": 106329,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/28b42d1b3990bb5cfe2a6aa1fdcd505720413fbf"
+    },
+    {
+      "path": "public/xTalent11.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3971fd147b833ac19e4d9d039e7616c40924130",
+      "size": 123663,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b3971fd147b833ac19e4d9d039e7616c40924130"
+    },
+    {
+      "path": "public/xTalent2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c2a7e3fa391ee4dfddf1c11b5527615254e2674",
+      "size": 69226,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3c2a7e3fa391ee4dfddf1c11b5527615254e2674"
+    },
+    {
+      "path": "public/xTalent22.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "596d921212ccb53ad1256b710aa57aa2ebea1ea2",
+      "size": 83570,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/596d921212ccb53ad1256b710aa57aa2ebea1ea2"
+    },
+    {
+      "path": "public/xi.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "093ba179374e4e7b92470d04181e326aba3fce5a",
+      "size": 819,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/093ba179374e4e7b92470d04181e326aba3fce5a"
+    },
+    {
+      "path": "public/zmart.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd03b9cf61758ba973a119ec377fd5f6ce9dfde8",
+      "size": 606,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/dd03b9cf61758ba973a119ec377fd5f6ce9dfde8"
+    },
+    {
+      "path": "public/zmartLogo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ca5236bafac498642e3eb4f7d24741b96e61c09",
+      "size": 67191,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3ca5236bafac498642e3eb4f7d24741b96e61c09"
+    },
+    {
+      "path": "public/zoracomSmall.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "422c2825e30838fb9d6588e0584c6a81ca64b5dc",
+      "size": 38078,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/422c2825e30838fb9d6588e0584c6a81ca64b5dc"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "573264e02218ebce4ae3452e4c45a170a66f2cb3",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/573264e02218ebce4ae3452e4c45a170a66f2cb3"
+    },
+    {
+      "path": "src/App.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/App.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efc08811c43144a72344320d8ae88c8f1629b210",
+      "size": 793,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/efc08811c43144a72344320d8ae88c8f1629b210"
+    },
+    {
+      "path": "src/Raleway",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7f637b500ddde8ce951eb0c4686f8c4cb992547f",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/7f637b500ddde8ce951eb0c4686f8c4cb992547f"
+    },
+    {
+      "path": "src/Raleway/OFL.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2478ae502611f063f9b7ebaeaaa6a1e09c578d99",
+      "size": 4405,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2478ae502611f063f9b7ebaeaaa6a1e09c578d99"
+    },
+    {
+      "path": "src/Raleway/README.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91c5afab1ee30e47842e0d964445a3798869eb74",
+      "size": 2610,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/91c5afab1ee30e47842e0d964445a3798869eb74"
+    },
+    {
+      "path": "src/Raleway/Raleway-Italic-VariableFont_wght.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59d63b27648717d76a277082fbd653e511c85ad8",
+      "size": 306028,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/59d63b27648717d76a277082fbd653e511c85ad8"
+    },
+    {
+      "path": "src/Raleway/Raleway-VariableFont_wght.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "33969e8558009027421748910fb952d447cc4650",
+      "size": 311856,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/33969e8558009027421748910fb952d447cc4650"
+    },
+    {
+      "path": "src/Raleway/static",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "092c2b81cc20a2d7fd71f5b19a10beb8da385523",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/092c2b81cc20a2d7fd71f5b19a10beb8da385523"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Black.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bd9a3f2f827bfdd75609e0d3328250eb146c390",
+      "size": 163684,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1bd9a3f2f827bfdd75609e0d3328250eb146c390"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-BlackItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "546887688a40437b516287e3bce84bea2e7cb03c",
+      "size": 162072,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/546887688a40437b516287e3bce84bea2e7cb03c"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Bold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e1e54952977922e7f53adb5ac1dddc257e380a3",
+      "size": 164044,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4e1e54952977922e7f53adb5ac1dddc257e380a3"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-BoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab9ef56a959b72482683711ce45fc7e62a8300f2",
+      "size": 162420,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ab9ef56a959b72482683711ce45fc7e62a8300f2"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-ExtraBold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9299c558fa8adb2bb548ce04a9e1ce4e3f36a4cc",
+      "size": 164152,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9299c558fa8adb2bb548ce04a9e1ce4e3f36a4cc"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-ExtraBoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d550cf8bc206390f0a968fa09a5bf5ad8672d63",
+      "size": 162668,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8d550cf8bc206390f0a968fa09a5bf5ad8672d63"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-ExtraLight.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e335ce29ef86e08287370b50223f9c8cdd44e1c4",
+      "size": 164188,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e335ce29ef86e08287370b50223f9c8cdd44e1c4"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-ExtraLightItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5761cb57ad0f6165054cccd0a4ef52eb02b67be",
+      "size": 162368,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f5761cb57ad0f6165054cccd0a4ef52eb02b67be"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Italic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c76012490bdcfec66cb359505a106b7e2a7439b",
+      "size": 162208,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5c76012490bdcfec66cb359505a106b7e2a7439b"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Light.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36f9efa8c25c8845246b1c905bc450ca9e6b12aa",
+      "size": 164112,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/36f9efa8c25c8845246b1c905bc450ca9e6b12aa"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-LightItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f6ecc30a3966a4a0a14138d3db9d49acfe397a1",
+      "size": 162424,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2f6ecc30a3966a4a0a14138d3db9d49acfe397a1"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Medium.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6fa5335220df924a1293a4b37078b448f12cf5b",
+      "size": 164128,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c6fa5335220df924a1293a4b37078b448f12cf5b"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-MediumItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34ff6a5e12a35ff9555daa472baffc26889a16a",
+      "size": 162328,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c34ff6a5e12a35ff9555daa472baffc26889a16a"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Regular.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "774b38210ae7a20f96a778556a68856bd88aafa0",
+      "size": 164116,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/774b38210ae7a20f96a778556a68856bd88aafa0"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-SemiBold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "359f89bf8ecc49e6c83a8d6bd6d9a5f37edd806d",
+      "size": 164132,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/359f89bf8ecc49e6c83a8d6bd6d9a5f37edd806d"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-SemiBoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e076a4ad12f8849e54acab0474ad4ca71ab9adf",
+      "size": 162540,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1e076a4ad12f8849e54acab0474ad4ca71ab9adf"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-Thin.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62ac22ae8b1aa9508c51ed6d5e039a0b9ab3b8e9",
+      "size": 163896,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/62ac22ae8b1aa9508c51ed6d5e039a0b9ab3b8e9"
+    },
+    {
+      "path": "src/Raleway/static/Raleway-ThinItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f9f51dbb589302259ac4dd69fe304d42950859f",
+      "size": 162052,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6f9f51dbb589302259ac4dd69fe304d42950859f"
+    },
+    {
+      "path": "src/components",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "190d1c9e371cdd4b98eb11ba05108f8d1ba9e432",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/190d1c9e371cdd4b98eb11ba05108f8d1ba9e432"
+    },
+    {
+      "path": "src/components/About.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9661f12a4e093a09ebef9582db55bf7d4a96d0dc",
+      "size": 687,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9661f12a4e093a09ebef9582db55bf7d4a96d0dc"
+    },
+    {
+      "path": "src/components/BatteryGroup.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7123708ee133f6ec3ec822077ed9164c0ea5bd2",
+      "size": 297,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c7123708ee133f6ec3ec822077ed9164c0ea5bd2"
+    },
+    {
+      "path": "src/components/BatterySwitch.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "578c8b88e10b66cc1caff90ade431be9e54d84de",
+      "size": 1508,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/578c8b88e10b66cc1caff90ade431be9e54d84de"
+    },
+    {
+      "path": "src/components/BlogCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2170bd19b4e10031ad4c775278060127e9a2f655",
+      "size": 2752,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2170bd19b4e10031ad4c775278060127e9a2f655"
+    },
+    {
+      "path": "src/components/BlogContent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4a32984d2c7db60f9145eb9f2b86ce310a72390",
+      "size": 573,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d4a32984d2c7db60f9145eb9f2b86ce310a72390"
+    },
+    {
+      "path": "src/components/BlogPosts.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3c7ea1fec7c1ff13968650381967a609325cb92",
+      "size": 4876,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a3c7ea1fec7c1ff13968650381967a609325cb92"
+    },
+    {
+      "path": "src/components/BookDemoModal.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eeea57af5b4c2394b1c93cc79fc1f8f5f899b241",
+      "size": 7371,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/eeea57af5b4c2394b1c93cc79fc1f8f5f899b241"
+    },
+    {
+      "path": "src/components/CalendlyWrapper.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1fd1b0523f1379f02592cdb285fd8b5907d6928a",
+      "size": 1355,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1fd1b0523f1379f02592cdb285fd8b5907d6928a"
+    },
+    {
+      "path": "src/components/ChatWidget.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8116442d1aa5a6b54b0ca5311fd1e9ecd990e8e7",
+      "size": 2423,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8116442d1aa5a6b54b0ca5311fd1e9ecd990e8e7"
+    },
+    {
+      "path": "src/components/ContactForm.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5268464752d2ad4c7b4a9d292cbb5f93f53964ed",
+      "size": 8015,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5268464752d2ad4c7b4a9d292cbb5f93f53964ed"
+    },
+    {
+      "path": "src/components/CookiesConsent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9174fabf10933261ca8c4b7222ba8903df8dab20",
+      "size": 6582,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9174fabf10933261ca8c4b7222ba8903df8dab20"
+    },
+    {
+      "path": "src/components/FAQField.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c93c9393f96e1f82f2687cee9ac178a8128f27f",
+      "size": 2338,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4c93c9393f96e1f82f2687cee9ac178a8128f27f"
+    },
+    {
+      "path": "src/components/FAQRenew.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51d0b0d49f2edd15bdc41cd08407d6814bae3e38",
+      "size": 2876,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/51d0b0d49f2edd15bdc41cd08407d6814bae3e38"
+    },
+    {
+      "path": "src/components/FAQSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d5ad45eed4fdc325e6b7eb6d6d23ddcbd65fc11",
+      "size": 2074,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1d5ad45eed4fdc325e6b7eb6d6d23ddcbd65fc11"
+    },
+    {
+      "path": "src/components/FeatureCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d125320d516e3be6dc733847eb74c9c3e5f5237e",
+      "size": 1995,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d125320d516e3be6dc733847eb74c9c3e5f5237e"
+    },
+    {
+      "path": "src/components/FeatureCard2.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebe1dbbad569fefb89efc400280bc05c60dcb89e",
+      "size": 1930,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ebe1dbbad569fefb89efc400280bc05c60dcb89e"
+    },
+    {
+      "path": "src/components/Features.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce05d914a8de269b99a72e145167f79db817fa5d",
+      "size": 2264,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ce05d914a8de269b99a72e145167f79db817fa5d"
+    },
+    {
+      "path": "src/components/FeaturesComponent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc2afc91355df9ed8ab013d15e19228f15cd6bc8",
+      "size": 1481,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bc2afc91355df9ed8ab013d15e19228f15cd6bc8"
+    },
+    {
+      "path": "src/components/FieldCustomTemplate.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ba877759299bd07a307f4e3c9114c0534f57da6",
+      "size": 1746,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1ba877759299bd07a307f4e3c9114c0534f57da6"
+    },
+    {
+      "path": "src/components/FieldHeroSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f449ad2fcfbbd9ca91e854d024b115858a9e439b",
+      "size": 5002,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f449ad2fcfbbd9ca91e854d024b115858a9e439b"
+    },
+    {
+      "path": "src/components/FieldTemplate.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf45a7da0ed60f4ca29934c2e47a84e4ee7a729a",
+      "size": 2060,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bf45a7da0ed60f4ca29934c2e47a84e4ee7a729a"
+    },
+    {
+      "path": "src/components/Hero.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "263444f10f09b609dcbe4fd40dd34e018fbd8279",
+      "size": 5511,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/263444f10f09b609dcbe4fd40dd34e018fbd8279"
+    },
+    {
+      "path": "src/components/HeroSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ecf60d1ae9c31226b08e3a065f7ea2305fca6bcf",
+      "size": 6466,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ecf60d1ae9c31226b08e3a065f7ea2305fca6bcf"
+    },
+    {
+      "path": "src/components/InfiniteScroll.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad59dbe14fb45db7490a4d2c9c135acaa3af8cec",
+      "size": 1159,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ad59dbe14fb45db7490a4d2c9c135acaa3af8cec"
+    },
+    {
+      "path": "src/components/JobCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88cbc402be71588042603e677595d8497af62734",
+      "size": 1632,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/88cbc402be71588042603e677595d8497af62734"
+    },
+    {
+      "path": "src/components/JobTag.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "129b9ebeeab44d5baee8621fe7f9e786c2fdba9b",
+      "size": 352,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/129b9ebeeab44d5baee8621fe7f9e786c2fdba9b"
+    },
+    {
+      "path": "src/components/LanguageSwitcher.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1ca844268a73a044da539172f47a294b22877f0",
+      "size": 737,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e1ca844268a73a044da539172f47a294b22877f0"
+    },
+    {
+      "path": "src/components/Loading.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ace3ef7097c27c9c2c6194a4310c41da7dac87e",
+      "size": 487,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4ace3ef7097c27c9c2c6194a4310c41da7dac87e"
+    },
+    {
+      "path": "src/components/MenuItemCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cd31b7e504e893bbc2d17281c7d9c9ff267ca36",
+      "size": 1332,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2cd31b7e504e893bbc2d17281c7d9c9ff267ca36"
+    },
+    {
+      "path": "src/components/MiddleSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3412114a29b5bbbf048671aa3ce205a20b243e1",
+      "size": 2694,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f3412114a29b5bbbf048671aa3ce205a20b243e1"
+    },
+    {
+      "path": "src/components/MiroFAQ.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0ba0bb3605839c5275d7a29153374fa689085fe",
+      "size": 2093,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c0ba0bb3605839c5275d7a29153374fa689085fe"
+    },
+    {
+      "path": "src/components/MiroObservabilityFAQ.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cecf9167d4095c3919194b8c13e391f4d619c11",
+      "size": 2038,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0cecf9167d4095c3919194b8c13e391f4d619c11"
+    },
+    {
+      "path": "src/components/MiroSectionComponent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e61ea48cdbaa6d5eec5dff74dcef5c921f380d6",
+      "size": 2365,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7e61ea48cdbaa6d5eec5dff74dcef5c921f380d6"
+    },
+    {
+      "path": "src/components/MissionAndVision.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5611222c6abb785359bae276ff8bf78e341ada39",
+      "size": 2719,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5611222c6abb785359bae276ff8bf78e341ada39"
+    },
+    {
+      "path": "src/components/Newletterfield.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4717e888594ffefaa97f58ff315da992d37d2082",
+      "size": 1719,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4717e888594ffefaa97f58ff315da992d37d2082"
+    },
+    {
+      "path": "src/components/NewsLetter.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1ff924177504efe188f84cdd5cead1cffe34ba6",
+      "size": 3167,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a1ff924177504efe188f84cdd5cead1cffe34ba6"
+    },
+    {
+      "path": "src/components/NewspaperSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62c53835f6f345f79f0f3553f8848ac71a819152",
+      "size": 2322,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/62c53835f6f345f79f0f3553f8848ac71a819152"
+    },
+    {
+      "path": "src/components/PageError.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b4876d7d6d18426f9dc4b0e2371dd7153ef30042",
+      "size": 1041,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/b4876d7d6d18426f9dc4b0e2371dd7153ef30042"
+    },
+    {
+      "path": "src/components/PartnerSlides.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfc92bb55574249acc172a4707449d1670b913ac",
+      "size": 2268,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/dfc92bb55574249acc172a4707449d1670b913ac"
+    },
+    {
+      "path": "src/components/PricingCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2733c2320ef7b95400d6423bee4939b835cde007",
+      "size": 2091,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2733c2320ef7b95400d6423bee4939b835cde007"
+    },
+    {
+      "path": "src/components/PricingComponent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f4da3ee606cbf4322b566505f7833b5193dfd11",
+      "size": 592,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3f4da3ee606cbf4322b566505f7833b5193dfd11"
+    },
+    {
+      "path": "src/components/PricingItem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6989b0dfad2ab0fa14a4374ffba1e5225b6259a9",
+      "size": 1533,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6989b0dfad2ab0fa14a4374ffba1e5225b6259a9"
+    },
+    {
+      "path": "src/components/PrivacyPoints.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "369cd73dbfd5bc5f92705bbce27f77a71df979ae",
+      "size": 8004,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/369cd73dbfd5bc5f92705bbce27f77a71df979ae"
+    },
+    {
+      "path": "src/components/Products.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "269018a9e81b44889d4142eaa9d29bb4390713c8",
+      "size": 7895,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/269018a9e81b44889d4142eaa9d29bb4390713c8"
+    },
+    {
+      "path": "src/components/RecentBlogs.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b1d12602c7bc60bf715a2b25ec3412e93eafb07",
+      "size": 863,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7b1d12602c7bc60bf715a2b25ec3412e93eafb07"
+    },
+    {
+      "path": "src/components/ScrollToTop.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5df1678a33467d96a634d24a2f7b81ad8e68a0e7",
+      "size": 266,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5df1678a33467d96a634d24a2f7b81ad8e68a0e7"
+    },
+    {
+      "path": "src/components/SectionHeading.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba625ae8dbe68941ee1bbd0ae228a69622d69303",
+      "size": 2771,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ba625ae8dbe68941ee1bbd0ae228a69622d69303"
+    },
+    {
+      "path": "src/components/SignalStrength.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12af76c8ec8128208e5b8cf94e84f03c22da4ea6",
+      "size": 2149,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/12af76c8ec8128208e5b8cf94e84f03c22da4ea6"
+    },
+    {
+      "path": "src/components/SingleComponent.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e11301e1ae0d5b981294d5743d07174a7b508e8",
+      "size": 1172,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3e11301e1ae0d5b981294d5743d07174a7b508e8"
+    },
+    {
+      "path": "src/components/SubscribeInput.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35de21ee3fdfe04e0fc46d847f31561aab86bda0",
+      "size": 795,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/35de21ee3fdfe04e0fc46d847f31561aab86bda0"
+    },
+    {
+      "path": "src/components/Tab.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdcdedbb4e3d5fa233ebf4915c13b23364bdf826",
+      "size": 1080,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fdcdedbb4e3d5fa233ebf4915c13b23364bdf826"
+    },
+    {
+      "path": "src/components/Tag.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0aa84c814d23e2217b236ea50e58d28e042facd2",
+      "size": 8000,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0aa84c814d23e2217b236ea50e58d28e042facd2"
+    },
+    {
+      "path": "src/components/Testimonials.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "951cf39d41f4c8fb7e36bb88ffafac6538352964",
+      "size": 5557,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/951cf39d41f4c8fb7e36bb88ffafac6538352964"
+    },
+    {
+      "path": "src/components/ThermoSlides.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3650fb8aba96bbe97e1777f8ce5b48c1e450f61e",
+      "size": 1086,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3650fb8aba96bbe97e1777f8ce5b48c1e450f61e"
+    },
+    {
+      "path": "src/components/layouts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1624debdb3b7b04b80855e64215bce10f308cdd2",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/1624debdb3b7b04b80855e64215bce10f308cdd2"
+    },
+    {
+      "path": "src/components/layouts/MiroHomePageTemplate.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c1d15119a564a57f7006c2ca328dc650c81990e",
+      "size": 2757,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3c1d15119a564a57f7006c2ca328dc650c81990e"
+    },
+    {
+      "path": "src/components/layouts/MiroProductsCustomPage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5afdde87a854df94d2d768eb8ad3ef4805efcaee",
+      "size": 3262,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5afdde87a854df94d2d768eb8ad3ef4805efcaee"
+    },
+    {
+      "path": "src/components/priceHero.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7805f341ba4ee335974034cdab31fb6dcc5ddcf",
+      "size": 2183,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d7805f341ba4ee335974034cdab31fb6dcc5ddcf"
+    },
+    {
+      "path": "src/components/reusableComponents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c82fd022e10e5451e291652a3e5d9bb16c1f9fb4",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/c82fd022e10e5451e291652a3e5d9bb16c1f9fb4"
+    },
+    {
+      "path": "src/components/reusableComponents/ReusableButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd9a8d7c1d7d2384355def2ec097275207b777c4",
+      "size": 933,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fd9a8d7c1d7d2384355def2ec097275207b777c4"
+    },
+    {
+      "path": "src/components/reusableComponents/ReusableSubHeader.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a69140b1dc51e1f4037cd3d8d69e0e4cb8772b1",
+      "size": 2627,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2a69140b1dc51e1f4037cd3d8d69e0e4cb8772b1"
+    },
+    {
+      "path": "src/components/useTitle.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd5b12d30aed4db54ad8da3629345f33fdde386d",
+      "size": 167,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/cd5b12d30aed4db54ad8da3629345f33fdde386d"
+    },
+    {
+      "path": "src/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6047adabddc0c63e6da4ee8e06ff613487818200",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/6047adabddc0c63e6da4ee8e06ff613487818200"
+    },
+    {
+      "path": "src/data/jobs.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0fa83141c20114fd95a2a528ef712fc22dbf309",
+      "size": 6694,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c0fa83141c20114fd95a2a528ef712fc22dbf309"
+    },
+    {
+      "path": "src/data/menuList.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5bf73724483614c51003a8c9a1d900d092d2597",
+      "size": 5154,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d5bf73724483614c51003a8c9a1d900d092d2597"
+    },
+    {
+      "path": "src/data/useMenuList.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4bba07d056614e003cecaeff8b161768d55a1c3",
+      "size": 3674,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/d4bba07d056614e003cecaeff8b161768d55a1c3"
+    },
+    {
+      "path": "src/fonts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d1bc3fb1e6cd88278dd481fc241142fda0b8c2cc",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/d1bc3fb1e6cd88278dd481fc241142fda0b8c2cc"
+    },
+    {
+      "path": "src/fonts/Raleway",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7f637b500ddde8ce951eb0c4686f8c4cb992547f",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/7f637b500ddde8ce951eb0c4686f8c4cb992547f"
+    },
+    {
+      "path": "src/fonts/Raleway/OFL.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2478ae502611f063f9b7ebaeaaa6a1e09c578d99",
+      "size": 4405,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2478ae502611f063f9b7ebaeaaa6a1e09c578d99"
+    },
+    {
+      "path": "src/fonts/Raleway/README.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91c5afab1ee30e47842e0d964445a3798869eb74",
+      "size": 2610,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/91c5afab1ee30e47842e0d964445a3798869eb74"
+    },
+    {
+      "path": "src/fonts/Raleway/Raleway-Italic-VariableFont_wght.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59d63b27648717d76a277082fbd653e511c85ad8",
+      "size": 306028,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/59d63b27648717d76a277082fbd653e511c85ad8"
+    },
+    {
+      "path": "src/fonts/Raleway/Raleway-VariableFont_wght.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "33969e8558009027421748910fb952d447cc4650",
+      "size": 311856,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/33969e8558009027421748910fb952d447cc4650"
+    },
+    {
+      "path": "src/fonts/Raleway/static",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "092c2b81cc20a2d7fd71f5b19a10beb8da385523",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/092c2b81cc20a2d7fd71f5b19a10beb8da385523"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Black.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bd9a3f2f827bfdd75609e0d3328250eb146c390",
+      "size": 163684,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1bd9a3f2f827bfdd75609e0d3328250eb146c390"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-BlackItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "546887688a40437b516287e3bce84bea2e7cb03c",
+      "size": 162072,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/546887688a40437b516287e3bce84bea2e7cb03c"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Bold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e1e54952977922e7f53adb5ac1dddc257e380a3",
+      "size": 164044,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4e1e54952977922e7f53adb5ac1dddc257e380a3"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-BoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab9ef56a959b72482683711ce45fc7e62a8300f2",
+      "size": 162420,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ab9ef56a959b72482683711ce45fc7e62a8300f2"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-ExtraBold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9299c558fa8adb2bb548ce04a9e1ce4e3f36a4cc",
+      "size": 164152,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9299c558fa8adb2bb548ce04a9e1ce4e3f36a4cc"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-ExtraBoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d550cf8bc206390f0a968fa09a5bf5ad8672d63",
+      "size": 162668,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8d550cf8bc206390f0a968fa09a5bf5ad8672d63"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-ExtraLight.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e335ce29ef86e08287370b50223f9c8cdd44e1c4",
+      "size": 164188,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e335ce29ef86e08287370b50223f9c8cdd44e1c4"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-ExtraLightItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5761cb57ad0f6165054cccd0a4ef52eb02b67be",
+      "size": 162368,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f5761cb57ad0f6165054cccd0a4ef52eb02b67be"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Italic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c76012490bdcfec66cb359505a106b7e2a7439b",
+      "size": 162208,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5c76012490bdcfec66cb359505a106b7e2a7439b"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Light.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36f9efa8c25c8845246b1c905bc450ca9e6b12aa",
+      "size": 164112,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/36f9efa8c25c8845246b1c905bc450ca9e6b12aa"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-LightItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f6ecc30a3966a4a0a14138d3db9d49acfe397a1",
+      "size": 162424,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2f6ecc30a3966a4a0a14138d3db9d49acfe397a1"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Medium.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6fa5335220df924a1293a4b37078b448f12cf5b",
+      "size": 164128,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c6fa5335220df924a1293a4b37078b448f12cf5b"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-MediumItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34ff6a5e12a35ff9555daa472baffc26889a16a",
+      "size": 162328,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c34ff6a5e12a35ff9555daa472baffc26889a16a"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Regular.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "774b38210ae7a20f96a778556a68856bd88aafa0",
+      "size": 164116,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/774b38210ae7a20f96a778556a68856bd88aafa0"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-SemiBold.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "359f89bf8ecc49e6c83a8d6bd6d9a5f37edd806d",
+      "size": 164132,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/359f89bf8ecc49e6c83a8d6bd6d9a5f37edd806d"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-SemiBoldItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e076a4ad12f8849e54acab0474ad4ca71ab9adf",
+      "size": 162540,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1e076a4ad12f8849e54acab0474ad4ca71ab9adf"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-Thin.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62ac22ae8b1aa9508c51ed6d5e039a0b9ab3b8e9",
+      "size": 163896,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/62ac22ae8b1aa9508c51ed6d5e039a0b9ab3b8e9"
+    },
+    {
+      "path": "src/fonts/Raleway/static/Raleway-ThinItalic.ttf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f9f51dbb589302259ac4dd69fe304d42950859f",
+      "size": 162052,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/6f9f51dbb589302259ac4dd69fe304d42950859f"
+    },
+    {
+      "path": "src/hooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d4aab4aac9eb71e45d4d244c8e5c9deba470d3ad",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/d4aab4aac9eb71e45d4d244c8e5c9deba470d3ad"
+    },
+    {
+      "path": "src/hooks/useGetBlogPosts.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49cbcb4ec420704e29419307a631adb72e361868",
+      "size": 942,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/49cbcb4ec420704e29419307a631adb72e361868"
+    },
+    {
+      "path": "src/hooks/usePageTracking.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1a5847836bdaec53dd1759888370daa1022c2fb",
+      "size": 748,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/a1a5847836bdaec53dd1759888370daa1022c2fb"
+    },
+    {
+      "path": "src/i18n.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89729e9dad57199be82728d15dca0ad051adf6df",
+      "size": 470,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/89729e9dad57199be82728d15dca0ad051adf6df"
+    },
+    {
+      "path": "src/index.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e81d91f7eb4182a8ea46b2d9eecc76924350460",
+      "size": 2865,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3e81d91f7eb4182a8ea46b2d9eecc76924350460"
+    },
+    {
+      "path": "src/layout",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cc4683f09b9c4f5a2043c33a46f281b317076ea1",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/cc4683f09b9c4f5a2043c33a46f281b317076ea1"
+    },
+    {
+      "path": "src/layout/Footer.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc39b68bab6f4bd12a7131cf013a82a03e423f85",
+      "size": 8719,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fc39b68bab6f4bd12a7131cf013a82a03e423f85"
+    },
+    {
+      "path": "src/layout/Header.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf004f9fa220c15ee6b29703df873e4b5a1d3b84",
+      "size": 4720,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bf004f9fa220c15ee6b29703df873e4b5a1d3b84"
+    },
+    {
+      "path": "src/layout/Layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb898943daf416abcb3cfcd39cccf879f19c244e",
+      "size": 595,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/bb898943daf416abcb3cfcd39cccf879f19c244e"
+    },
+    {
+      "path": "src/layout/MobileNav.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e2064052d989ddc8dd8d84333350f343acb0723",
+      "size": 3654,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9e2064052d989ddc8dd8d84333350f343acb0723"
+    },
+    {
+      "path": "src/layout/Navigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57577d7d7a88e991a9aa3178ffac6bb20f755a07",
+      "size": 5791,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/57577d7d7a88e991a9aa3178ffac6bb20f755a07"
+    },
+    {
+      "path": "src/locales",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a36d3fed4f28f329c55112b89d052aa8b86f4a65",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/a36d3fed4f28f329c55112b89d052aa8b86f4a65"
+    },
+    {
+      "path": "src/locales/en.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1305c53f23071967f8ad73e644f6dda92a383759",
+      "size": 68190,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1305c53f23071967f8ad73e644f6dda92a383759"
+    },
+    {
+      "path": "src/locales/fr.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e63293389bd9ae6adfe5fc4d30addef1abec4ee",
+      "size": 85778,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7e63293389bd9ae6adfe5fc4d30addef1abec4ee"
+    },
+    {
+      "path": "src/main.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb307ef2e68a6d009a199ee60b5e861dfd6da5bf",
+      "size": 289,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/fb307ef2e68a6d009a199ee60b5e861dfd6da5bf"
+    },
+    {
+      "path": "src/routes",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "afa6a3d1a5561a82de18ed98fe66db4b6c7b4bf9",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/afa6a3d1a5561a82de18ed98fe66db4b6c7b4bf9"
+    },
+    {
+      "path": "src/routes/AppRoutes.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c2a9fd634f795c2f08d0da7176eee8c892b87fe",
+      "size": 473,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0c2a9fd634f795c2f08d0da7176eee8c892b87fe"
+    },
+    {
+      "path": "src/routes/UserPages.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e815e9b6b4d90c784046bf5c147b0b748f06e388",
+      "size": 4108,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e815e9b6b4d90c784046bf5c147b0b748f06e388"
+    },
+    {
+      "path": "src/types.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7919e436690d98cc2cb5fea35fe80e0deb6a1cf1",
+      "size": 585,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/7919e436690d98cc2cb5fea35fe80e0deb6a1cf1"
+    },
+    {
+      "path": "src/types",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f04b8c1dda3bd621fb9d2ffb2fe19566b98e2ca8",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/f04b8c1dda3bd621fb9d2ffb2fe19566b98e2ca8"
+    },
+    {
+      "path": "src/types/product.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3fbba4b288f7956e0ecae39aa64bd44f952337a",
+      "size": 9798,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f3fbba4b288f7956e0ecae39aa64bd44f952337a"
+    },
+    {
+      "path": "src/utils",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "54ccdd90bccdbdf6a4393ae9d5cd650d73a0b3f9",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/54ccdd90bccdbdf6a4393ae9d5cd650d73a0b3f9"
+    },
+    {
+      "path": "src/utils/ConfigProvider.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2f2b043241d869e2fd134e2aed0bf74452606be",
+      "size": 516,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e2f2b043241d869e2fd134e2aed0bf74452606be"
+    },
+    {
+      "path": "src/utils/analytics.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16b4112f72dd70e4e89538f6e19773e2a8e881c3",
+      "size": 1296,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/16b4112f72dd70e4e89538f6e19773e2a8e881c3"
+    },
+    {
+      "path": "src/views",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7b4d97cb926b5385de27719b80a3d8d3d349a95e",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/7b4d97cb926b5385de27719b80a3d8d3d349a95e"
+    },
+    {
+      "path": "src/views/ConsumerCodeOfPractice.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76a2136f3c33799a3e5c8312128f094e97b658fe",
+      "size": 19660,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/76a2136f3c33799a3e5c8312128f094e97b658fe"
+    },
+    {
+      "path": "src/views/ContactPage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19f4d10ef3aafed7910d307d7c866ca71da9bc71",
+      "size": 3885,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/19f4d10ef3aafed7910d307d7c866ca71da9bc71"
+    },
+    {
+      "path": "src/views/PrivacyPolicy.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b67a7f13f708d6b63041823d39c52a70c55a802",
+      "size": 3092,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8b67a7f13f708d6b63041823d39c52a70c55a802"
+    },
+    {
+      "path": "src/views/company",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f7e0c4f89809468e49a27ffa41e0e6732ec36b38",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/f7e0c4f89809468e49a27ffa41e0e6732ec36b38"
+    },
+    {
+      "path": "src/views/company/AboutUs.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e04773f8a300cceba40087f4223cd88123666834",
+      "size": 2345,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e04773f8a300cceba40087f4223cd88123666834"
+    },
+    {
+      "path": "src/views/company/Blog.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c313d16643763f5ab35b17cf0ece262bcd5f0b0",
+      "size": 2756,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/2c313d16643763f5ab35b17cf0ece262bcd5f0b0"
+    },
+    {
+      "path": "src/views/company/Career.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a591c8a15a5edb4e2cd5f85ab096d81c16e4c28",
+      "size": 2710,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/8a591c8a15a5edb4e2cd5f85ab096d81c16e4c28"
+    },
+    {
+      "path": "src/views/company/JobDetails.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "375cb1cf060d5aca261827123d5fdad57da3769f",
+      "size": 4537,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/375cb1cf060d5aca261827123d5fdad57da3769f"
+    },
+    {
+      "path": "src/views/company/Resource.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e23078aacc547af5be3598f885c6425bdb8e61c5",
+      "size": 5414,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e23078aacc547af5be3598f885c6425bdb8e61c5"
+    },
+    {
+      "path": "src/views/home",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c9cf8775d24a7ccc9a6f93ae9756c20bbb786d59",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/c9cf8775d24a7ccc9a6f93ae9756c20bbb786d59"
+    },
+    {
+      "path": "src/views/home/Home.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff932e30562b7f41122bfee81b97a8bdc6a193c7",
+      "size": 1203,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/ff932e30562b7f41122bfee81b97a8bdc6a193c7"
+    },
+    {
+      "path": "src/views/products",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "20d35c8a339b159fb2b00f655ca53c9ebb20976e",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/20d35c8a339b159fb2b00f655ca53c9ebb20976e"
+    },
+    {
+      "path": "src/views/products/observability",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8f0618d0638d565d925055b45e2d07d23488c933",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/8f0618d0638d565d925055b45e2d07d23488c933"
+    },
+    {
+      "path": "src/views/products/observability/MiroObservability.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c29bece92f3ede041218119bdc37e6e941a6c3c7",
+      "size": 3165,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/c29bece92f3ede041218119bdc37e6e941a6c3c7"
+    },
+    {
+      "path": "src/views/products/observability/NetworkMonitoring.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c4f42f1712231de0bf52f6193864ae710f73717",
+      "size": 1356,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0c4f42f1712231de0bf52f6193864ae710f73717"
+    },
+    {
+      "path": "src/views/products/observability/PosSystem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1065c2608ff50da4e20bb08801bccb7353b4a67c",
+      "size": 1307,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1065c2608ff50da4e20bb08801bccb7353b4a67c"
+    },
+    {
+      "path": "src/views/services",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7aa20bf4478687a146676089291956fddd3f4763",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/7aa20bf4478687a146676089291956fddd3f4763"
+    },
+    {
+      "path": "src/views/services/Field.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67d6747bd72204a5ff68e568e5778f1862fbd62d",
+      "size": 3961,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/67d6747bd72204a5ff68e568e5778f1862fbd62d"
+    },
+    {
+      "path": "src/views/services/Fortrex.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ebe2ad80166e04977f7b847a3bc22b932a051e3",
+      "size": 3292,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/4ebe2ad80166e04977f7b847a3bc22b932a051e3"
+    },
+    {
+      "path": "src/views/services/NSOC.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f2f35666d0733b9f55b2c662114f640c7fc0e32",
+      "size": 3214,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0f2f35666d0733b9f55b2c662114f640c7fc0e32"
+    },
+    {
+      "path": "src/views/services/Renew.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12292b5854ae633a1fb8ebe668aec1914949b518",
+      "size": 3000,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/12292b5854ae633a1fb8ebe668aec1914949b518"
+    },
+    {
+      "path": "src/views/services/Services.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97c6b920bbb55578831778b498079567f1701d1b",
+      "size": 7030,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/97c6b920bbb55578831778b498079567f1701d1b"
+    },
+    {
+      "path": "src/views/services/Zmart.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5345da037d484a5c0df997d90d4871ffed966002",
+      "size": 4406,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5345da037d484a5c0df997d90d4871ffed966002"
+    },
+    {
+      "path": "src/views/services/miro",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0047561dfe6a1d53a2a0960447d6e5affbd29ffb",
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/trees/0047561dfe6a1d53a2a0960447d6e5affbd29ffb"
+    },
+    {
+      "path": "src/views/services/miro/BillingSystem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d0e4dce3239474325c6bbc243aee83bd872f1f6",
+      "size": 1198,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/0d0e4dce3239474325c6bbc243aee83bd872f1f6"
+    },
+    {
+      "path": "src/views/services/miro/IncidentManagement.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "967b50a571f56fc293a6a35ba5ed483c2637e174",
+      "size": 1456,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/967b50a571f56fc293a6a35ba5ed483c2637e174"
+    },
+    {
+      "path": "src/views/services/miro/InventorySytem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83abf76d5cc545ac4ecd6c2e04da578188a77f3e",
+      "size": 1077,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/83abf76d5cc545ac4ecd6c2e04da578188a77f3e"
+    },
+    {
+      "path": "src/views/services/miro/Miro.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20ec188c21900d394fabde89aa5d4b87955b3c04",
+      "size": 5099,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/20ec188c21900d394fabde89aa5d4b87955b3c04"
+    },
+    {
+      "path": "src/views/services/miro/OperationsManagement.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e898b9595983aa33c8057134b1675d13ef380f5b",
+      "size": 1421,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e898b9595983aa33c8057134b1675d13ef380f5b"
+    },
+    {
+      "path": "src/views/services/miro/PricingPage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e75a473653e291ebd7e4bd61ce66c33577577491",
+      "size": 2208,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e75a473653e291ebd7e4bd61ce66c33577577491"
+    },
+    {
+      "path": "src/views/services/miro/PricingSystem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9403a79c6eef214ccf929a9ea6b70182da7f6f12",
+      "size": 1551,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/9403a79c6eef214ccf929a9ea6b70182da7f6f12"
+    },
+    {
+      "path": "src/views/services/miro/ProjectManagement.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1628b35bc84aa5a54b71169217cbf5132ca8ec77",
+      "size": 1247,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/1628b35bc84aa5a54b71169217cbf5132ca8ec77"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e9741505904fd788063799989dc9f334f6c5b01",
+      "size": 164,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3e9741505904fd788063799989dc9f334f6c5b01"
+    },
+    {
+      "path": "tailwind.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e867a0b1a1b30d309f0b1e0b751b8ca7c312e52f",
+      "size": 733,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/e867a0b1a1b30d309f0b1e0b751b8ca7c312e52f"
+    },
+    {
+      "path": "tsconfig.app.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ad732279cdbed0662c6aafdb159df2950a25181",
+      "size": 747,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/5ad732279cdbed0662c6aafdb159df2950a25181"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88e30b41c9539a0a243565796100106f08ce8401",
+      "size": 236,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/88e30b41c9539a0a243565796100106f08ce8401"
+    },
+    {
+      "path": "tsconfig.node.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3afdd6e38438be7612befbd4b656af7bed27a31a",
+      "size": 325,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/3afdd6e38438be7612befbd4b656af7bed27a31a"
+    },
+    {
+      "path": "vite.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f50ca6c51e9dfd9cafab6f98f2917b4f1c7fb1da",
+      "size": 274,
+      "url": "https://api.github.com/repos/Bendo243/legendary-waddle/git/blobs/f50ca6c51e9dfd9cafab6f98f2917b4f1c7fb1da"
+    }
+  ],
+  "truncated": false
+}

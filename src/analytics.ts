@@ -3,8 +3,12 @@
 // relied on — pageviews are fired manually from the router. See trackPageview.
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function gtag(...args: any[]): void;
   interface Window {
     dataLayer: unknown[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    gtag(...args: any[]): void;
   }
 }
 
@@ -12,31 +16,35 @@ const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-X8C9LWJZC
 
 let isInitialized = false;
 
-const gtag = (...args: unknown[]) => {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
-};
-
 export function initAnalytics() {
-  if (isInitialized || !import.meta.env.PROD || !GA_MEASUREMENT_ID) return;
+  if (isInitialized || !GA_MEASUREMENT_ID) return;
+
+  // GA4 requires window.gtag to be a real function (not an arrow function)
+  // because the loaded gtag/js script looks for window.gtag and relies on
+  // `arguments` being available. Arrow functions do not expose `arguments`.
+  window.dataLayer = window.dataLayer || [];
+  // eslint-disable-next-line prefer-rest-params
+  window.gtag = function gtag() { window.dataLayer.push(arguments); };
+
+  // Queue config BEFORE injecting the script so commands are processed
+  // in the correct order once gtag/js finishes loading.
+  window.gtag('js', new Date());
+  // send_page_view is disabled here because we fire page_view ourselves on
+  // every route change via trackPageview — gtag's default only fires once,
+  // on script load, which would undercount every SPA navigation.
+  window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
 
   const script = document.createElement('script');
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
   document.head.appendChild(script);
 
-  gtag('js', new Date());
-  // send_page_view is disabled here because we fire page_view ourselves on
-  // every route change via trackPageview — gtag's default only fires once,
-  // on script load, which would undercount every SPA navigation.
-  gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
-
   isInitialized = true;
 }
 
 export function trackPageview(path: string, title?: string) {
   if (!isInitialized) return;
-  gtag('event', 'page_view', {
+  window.gtag('event', 'page_view', {
     page_path: path,
     page_title: title,
     page_location: window.location.href,
@@ -45,5 +53,5 @@ export function trackPageview(path: string, title?: string) {
 
 export function trackEvent(name: string, params?: Record<string, unknown>) {
   if (!isInitialized) return;
-  gtag('event', name, params);
+  window.gtag('event', name, params);
 }
