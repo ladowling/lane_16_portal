@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message } from 'antd';
+import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message, Modal, Checkbox } from 'antd';
 import { Upload as UploadIcon } from 'lucide-react';
 import { submitVehicleListing, uploadVehicleFile } from '../api';
 import { trackEvent } from '../analytics';
@@ -10,8 +10,24 @@ const { Dragger } = Upload;
 export default function SubmitVehicle() {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [pendingValues, setPendingValues] = useState<Record<string, unknown> | null>(null);
 
-  const handleSubmit = async (values: Record<string, unknown>) => {
+  const openConfirmModal = (values: Record<string, unknown>) => {
+    setPendingValues(values);
+    setIsConfirmOpen(true);
+  };
+
+  const closeConfirmModal = () => {
+    if (isSubmitting) return;
+    setIsConfirmOpen(false);
+    setAgreedToTerms(false);
+  };
+
+  const handleConfirmedSubmit = async () => {
+    if (!pendingValues) return;
+    const values = pendingValues;
     setIsSubmitting(true);
 
     try {
@@ -74,6 +90,9 @@ export default function SubmitVehicle() {
       trackEvent('generate_lead', { lead_type: 'vehicle_submission' });
       message.success('Vehicle submitted successfully. It will appear in the admin vehicle table after review.');
       form.resetFields();
+      setIsConfirmOpen(false);
+      setAgreedToTerms(false);
+      setPendingValues(null);
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Vehicle submission failed.');
     } finally {
@@ -89,7 +108,7 @@ export default function SubmitVehicle() {
 
       <div className="max-w-4xl mx-auto px-6">
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#22c55e', colorBgContainer: '#111' } }}>
-          <Form form={form} layout="vertical" size="large" className="space-y-12" onFinish={handleSubmit}>
+          <Form form={form} layout="vertical" size="large" className="space-y-12" onFinish={openConfirmModal}>
             
             {/* Section 1: Vehicle Information */}
             <section>
@@ -279,21 +298,69 @@ export default function SubmitVehicle() {
               </Form.Item>
 
               <Form.Item className="text-right mb-2">
-                <Button htmlType="submit" type="primary" size="large" loading={isSubmitting} className="bg-green-600 border-green-600 hover:bg-green-500">
+                <Button htmlType="submit" type="primary" size="large" className="bg-green-600 border-green-600 hover:bg-green-500">
                   Submit
                 </Button>
               </Form.Item>
-              <div className="text-right text-xs text-gray-400 mt-2">
-                By submitting your information, you agree to Lane16's{' '}
-                <a href="/#/terms" target="_blank" rel="noopener noreferrer" className="text-lane-green hover:underline">Terms of Use</a>
-                {' '}and acknowledge the{' '}
-                <a href="/#/privacy" target="_blank" rel="noopener noreferrer" className="text-lane-green hover:underline">Privacy Policy</a>.
-              </div>
             </section>
 
           </Form>
         </ConfigProvider>
       </div>
+
+      <Modal
+        centered
+        open={isConfirmOpen}
+        footer={null}
+        closable={!isSubmitting}
+        maskClosable={!isSubmitting}
+        onCancel={closeConfirmModal}
+        width={480}
+        className="[&_.ant-modal-content]:!bg-[#111] [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:border [&_.ant-modal-content]:!border-gray-700 [&_.ant-modal-content]:p-8 [&_.ant-modal-close]:!text-white"
+      >
+        <h3 className="mb-4 text-lg font-bold text-white">Confirm Submission</h3>
+        <p className="mb-6 text-sm leading-relaxed text-black">
+          By submitting your information, you agree to Lane16&rsquo;s{' '}
+          <a href="/#/terms" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline">Terms of Use</a>
+          {' '}and acknowledge the{' '}
+          <a href="/#/privacy" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline">Privacy Policy</a>.
+        </p>
+        <style>{`
+          .consent-checkbox .ant-checkbox {
+            --ant-control-interactive-size: 22px !important;
+            border-width: 2px !important;
+            border-color: #9ca3af !important;
+          }
+          .consent-checkbox .ant-checkbox-checked {
+            background-color: #22c55e !important;
+            border-color: #9ca3af !important;
+          }
+          .consent-checkbox span {
+            color: #000;
+          }
+        `}</style>
+        <Checkbox
+          checked={agreedToTerms}
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+          className="consent-checkbox mb-6"
+        >
+          I agree to the Terms of Use and acknowledge the Privacy Policy.
+        </Checkbox>
+        <div className="flex justify-end gap-3">
+          <Button onClick={closeConfirmModal} disabled={isSubmitting}>
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            disabled={!agreedToTerms}
+            loading={isSubmitting}
+            onClick={handleConfirmedSubmit}
+            className="bg-green-600 border-green-600 hover:bg-green-500"
+          >
+            Submit
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
