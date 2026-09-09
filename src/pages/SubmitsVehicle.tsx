@@ -308,7 +308,7 @@ export default function SubmitVehicle() {
                 I agree to the Terms of Use and acknowledge the Privacy Policy.
               </Checkbox>
 
-              <Form.Item className="text-right mb-2">
+              <Form.Item className="text-left mb-2">
                 <Button
                   htmlType="submit"
                   type="primary"
