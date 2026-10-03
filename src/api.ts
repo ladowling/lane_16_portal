@@ -94,6 +94,19 @@ export const uploadVehicleFile = (id: string, file: File, order: number) => {
   });
 };
 
+// GET /sellers/vehicles/{id} — fetch a single vehicle listing
+export const fetchVehicle = (token: string, id: string) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}`, { method: 'GET', token });
+
+// PATCH /sellers/vehicles/{id} — Staff only. Replaces the vehicle's photo list with these upload IDs.
+// The server ignores an empty list, so a vehicle's last photo can't be removed this way.
+export const setVehicleUploads = (token: string, id: string, uploadIds: string[]) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify({ uploads: uploadIds }),
+  });
+
 export const fetchVehicles = (token: string) =>
   apiRequest<unknown[]>('/sellers/vehicles', { method: 'GET', token });
 

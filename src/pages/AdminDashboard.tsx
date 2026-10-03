@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { Button, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, message } from 'antd';
-import { DownOutlined, ReloadOutlined, RightOutlined } from '@ant-design/icons';
-import type { TableColumnsType } from 'antd';
+import { Button, ConfigProvider, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, Upload, message, theme } from 'antd';
+import { DownOutlined, ReloadOutlined, RightOutlined, UploadOutlined } from '@ant-design/icons';
+import type { TableColumnsType, UploadFile } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
 import { StatusTag } from '../components/StatusTag';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicles, fetchVehicleBids, getUploadUrl, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships, updateDealership, deleteDealership } from '../api';
+import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicle, fetchVehicles, fetchVehicleBids, getUploadUrl, setVehicleUploads, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, uploadVehicleFile, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships, updateDealership, deleteDealership } from '../api';
 import { formatTitleStatus } from '../types';
 
 const { Paragraph, Text, Title } = Typography;
@@ -531,6 +531,25 @@ const mapVehicleUpload = (upload: unknown, index: number): VehicleUpload | null 
   };
 };
 
+// Client-side limits — POST /upload/{id} doesn't enforce any
+const MAX_VEHICLE_PHOTOS_PER_UPLOAD = 10;
+const MAX_VEHICLE_PHOTO_SIZE_MB = 10;
+
+const validateVehiclePhoto = (file: File) => {
+  if (!file.type.startsWith('image/')) {
+    message.error(`${file.name} is not an image.`);
+    return Upload.LIST_IGNORE;
+  }
+
+  if (file.size > MAX_VEHICLE_PHOTO_SIZE_MB * 1024 * 1024) {
+    message.error(`${file.name} is larger than ${MAX_VEHICLE_PHOTO_SIZE_MB} MB.`);
+    return Upload.LIST_IGNORE;
+  }
+
+  // Hold the file locally until the Upload button is clicked
+  return false;
+};
+
 const mapStaffRecord = (item: unknown): StaffRecord => {
   const record = (item ?? {}) as Record<string, unknown>;
   const isAdmin = Boolean(getRecordValue(record, ['isAdmin']));
@@ -807,6 +826,9 @@ export function AdminDashboard() {
   const [vehicleApprovalForm] = Form.useForm<VehicleApprovalForm>();
   const [vehicleValuationForm] = Form.useForm();
   const [isVehicleValuationSaving, setIsVehicleValuationSaving] = useState(false);
+  const [vehiclePhotoFiles, setVehiclePhotoFiles] = useState<UploadFile[]>([]);
+  const [isVehiclePhotosUploading, setIsVehiclePhotosUploading] = useState(false);
+  const [removingUploadId, setRemovingUploadId] = useState<string | null>(null);
   const [selectedVehicleForBidIncrement, setSelectedVehicleForBidIncrement] = useState<VehicleRecord | null>(null);
   const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
@@ -1007,6 +1029,11 @@ export function AdminDashboard() {
   useEffect(() => {
     void loadBids();
   }, [token, vehicles, dealers]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Discard photos picked for a previous vehicle when the detail modal switches or closes
+  useEffect(() => {
+    setVehiclePhotoFiles([]);
+  }, [selectedVehicle?.id]);
 
   // Vehicle & dealer bid history are derived from allBids (no extra API calls needed)
 
@@ -1267,6 +1294,73 @@ export function AdminDashboard() {
       message.error(error instanceof Error ? error.message : 'Unable to update vehicle valuation.');
     } finally {
       setIsVehicleValuationSaving(false);
+    }
+  };
+
+  // setVehicleUploads replaces the whole photo list, so build it from the server's current list
+  // rather than the open modal's copy, which may miss photos another staff member just added
+  const fetchCurrentUploadIds = async (authToken: string, vehicleId: string) =>
+    mapVehicleRecord(await fetchVehicle(authToken, vehicleId)).uploadItems.map((upload) => upload.id);
+
+  const removeVehiclePhoto = async (uploadId: string) => {
+    if (!token || !selectedVehicle?.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    setRemovingUploadId(uploadId);
+    try {
+      const currentUploadIds = await fetchCurrentUploadIds(token, selectedVehicle.id);
+      const remainingUploadIds = currentUploadIds.filter((id) => id !== uploadId);
+      if (!remainingUploadIds.length) {
+        message.warning("The last photo can't be removed. Upload a replacement first.");
+        return;
+      }
+
+      // Skip the update if the photo was already removed elsewhere
+      if (remainingUploadIds.length < currentUploadIds.length) {
+        await setVehicleUploads(token, selectedVehicle.id, remainingUploadIds);
+      }
+      message.success('Photo removed successfully.');
+      await loadVehicles();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to remove photo.');
+    } finally {
+      setRemovingUploadId(null);
+    }
+  };
+
+  const uploadSelectedVehiclePhotos = async () => {
+    if (!token || !selectedVehicle?.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    const files = vehiclePhotoFiles.flatMap((file) => (file.originFileObj ? [file.originFileObj] : []));
+    if (!files.length) {
+      message.warning('Select at least one photo to upload.');
+      return;
+    }
+
+    setIsVehiclePhotosUploading(true);
+    try {
+      const currentUploadIds = await fetchCurrentUploadIds(token, selectedVehicle.id);
+      const newUploadIds: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const uploadId = crypto.randomUUID();
+        // Continue the 1-based order used by the seller submission form
+        await uploadVehicleFile(uploadId, files[i], currentUploadIds.length + i + 1);
+        newUploadIds.push(uploadId);
+      }
+      await setVehicleUploads(token, selectedVehicle.id, [...currentUploadIds, ...newUploadIds]);
+      message.success(`${files.length} photo${files.length === 1 ? '' : 's'} uploaded successfully.`);
+      setVehiclePhotoFiles([]);
+      // loadVehicles() will sync selectedVehicle from the fresh list automatically
+      await loadVehicles();
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to upload photos.');
+    } finally {
+      setIsVehiclePhotosUploading(false);
     }
   };
 
@@ -2366,24 +2460,85 @@ export function AdminDashboard() {
               {
                 key: 'vehicle-uploads',
                 label: 'Uploads',
-                children: selectedVehicle.uploadItems.length ? (
-                  <Image.PreviewGroup>
-                    <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
-                      {selectedVehicle.uploadItems.map((upload) => (
-                        <figure className="rounded-lg border border-[#575757] bg-[#111111] p-3" key={upload.id}>
-                          <Image
-                            alt={upload.name}
-                            className="!h-44 !w-full rounded-md object-cover"
-                            src={upload.url}
-                          />
-                          <figcaption className="mt-3 truncate text-sm text-[#c8c8c8]">{upload.name}</figcaption>
-                        </figure>
-                      ))}
-                    </div>
-                  </Image.PreviewGroup>
-                ) : (
-                  <div className="rounded-lg border border-[#575757] bg-[#111111] p-6 text-center text-[#c8c8c8]">
-                    No uploads available for this vehicle.
+                children: (
+                  <div className="space-y-6">
+                    <section className="rounded-lg border border-[#575757] bg-[#111111] p-4">
+                      <Title className="!mb-1 !mt-0 !text-xl !text-[#24d725]" level={3}>
+                        Add Photos
+                      </Title>
+                      <Paragraph className="!mb-4 !text-[#c8c8c8]">
+                        Up to {MAX_VEHICLE_PHOTOS_PER_UPLOAD} images at a time, {MAX_VEHICLE_PHOTO_SIZE_MB} MB each.
+                      </Paragraph>
+                      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#24d725', colorBgContainer: '#111111' } }}>
+                        <Upload.Dragger
+                          accept="image/*"
+                          beforeUpload={validateVehiclePhoto}
+                          disabled={isVehiclePhotosUploading}
+                          fileList={vehiclePhotoFiles}
+                          listType="picture"
+                          maxCount={MAX_VEHICLE_PHOTOS_PER_UPLOAD}
+                          multiple
+                          onChange={({ fileList }) => setVehiclePhotoFiles(fileList)}
+                        >
+                          <p className="ant-upload-drag-icon">
+                            <UploadOutlined />
+                          </p>
+                          <p className="ant-upload-text">Click or drag photos here</p>
+                        </Upload.Dragger>
+                      </ConfigProvider>
+                      <Button
+                        className="mt-4"
+                        disabled={!vehiclePhotoFiles.length}
+                        loading={isVehiclePhotosUploading}
+                        onClick={() => void uploadSelectedVehiclePhotos()}
+                        type="primary"
+                      >
+                        {vehiclePhotoFiles.length
+                          ? `Upload ${vehiclePhotoFiles.length} Photo${vehiclePhotoFiles.length === 1 ? '' : 's'}`
+                          : 'Upload Photos'}
+                      </Button>
+                    </section>
+                    {selectedVehicle.uploadItems.length ? (
+                      <Image.PreviewGroup>
+                        <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
+                          {selectedVehicle.uploadItems.map((upload) => (
+                            <figure className="rounded-lg border border-[#575757] bg-[#111111] p-3" key={upload.id}>
+                              <Image
+                                alt={upload.name}
+                                className="!h-44 !w-full rounded-md object-cover"
+                                src={upload.url}
+                              />
+                              <figcaption className="mt-3 flex items-center justify-between gap-2">
+                                <span className="truncate text-sm text-[#c8c8c8]">{upload.name}</span>
+                                {selectedVehicle.uploadItems.length > 1 ? (
+                                  <Popconfirm
+                                    cancelText="Cancel"
+                                    okButtonProps={{ danger: true }}
+                                    okText="Remove"
+                                    onConfirm={() => removeVehiclePhoto(upload.id)}
+                                    title="Remove this photo from the vehicle?"
+                                  >
+                                    <Button danger disabled={Boolean(removingUploadId)} loading={removingUploadId === upload.id} size="small" type="text">
+                                      Remove
+                                    </Button>
+                                  </Popconfirm>
+                                ) : (
+                                  <Tooltip title="The last photo can't be removed. Upload a replacement first.">
+                                    <Button danger disabled size="small" type="text">
+                                      Remove
+                                    </Button>
+                                  </Tooltip>
+                                )}
+                              </figcaption>
+                            </figure>
+                          ))}
+                        </div>
+                      </Image.PreviewGroup>
+                    ) : (
+                      <div className="rounded-lg border border-[#575757] bg-[#111111] p-6 text-center text-[#c8c8c8]">
+                        No uploads available for this vehicle.
+                      </div>
+                    )}
                   </div>
                 ),
               },
