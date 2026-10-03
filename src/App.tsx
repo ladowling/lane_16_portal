@@ -1,6 +1,5 @@
-import { ConfigProvider } from 'antd';
+import { Button, ConfigProvider, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { vehicles as staticVehicles } from './data/vehicles';
 import { SiteHeader } from './components/SiteHeader';
 import { InventoryPage } from './pages/InventoryPage';
 import { CarDetailsPage } from './pages/CarDetailsPage';
@@ -17,7 +16,7 @@ import TermsPage from './pages/TermsPage';
 import { ProtectedRoute } from './Protectedroute';
 import { AuthProvider, useAuth } from './Authontext';
 import { fetchVehicles, getUploadUrl } from './api';
-import type { Vehicle } from './types';
+import { formatVehicleOption, type Vehicle } from './types';
 import { SiteFooter } from './components/SiteFooter';
 import { trackPageview } from './analytics';
 
@@ -85,14 +84,13 @@ const getRouteState = (pathname: string) => {
   const [, firstSegment, secondSegment, thirdSegment] = normalizeRoutePath(pathname).split('/');
 
   if (!firstSegment) {
-    return { page: 'home' as Page, vehicleId: staticVehicles[0].id, shouldReplace: true };
+    return { page: 'home' as Page, vehicleId: '', shouldReplace: true };
   }
 
   if (firstSegment === 'vehicle' && secondSegment) {
-    const vehicleId = secondSegment || staticVehicles[0].id;
     return {
       page: thirdSegment === 'report' ? ('report' as Page) : ('details' as Page),
-      vehicleId,
+      vehicleId: secondSegment,
     };
   }
 
@@ -102,7 +100,7 @@ const getRouteState = (pathname: string) => {
 
   return {
     page: pathPage,
-    vehicleId: staticVehicles[0].id,
+    vehicleId: '',
     shouldReplace: !Object.values(pagePaths).includes(`/${firstSegment}`),
   };
 };
@@ -212,6 +210,23 @@ const getDealerVehicleStatusLabel = (status: string, startTime: string, endTime:
   return status.replace(/_/g, ' ');
 };
 
+// The seller form saves warning lights and interior odor only inside `condition`, as
+// "exterior | mechanical | tires | warning lights | odor". Read them back only when the first
+// three parts match the dedicated fields, so a differently formatted summary isn't misread.
+const parseSellerConditionSummary = (condition: string, exterior: string, mechanical: string, tires: string) => {
+  const parts = condition.split(' | ');
+  const isSellerFormSummary =
+    parts.length === 5 && parts[0] === exterior && parts[1] === mechanical && parts[2] === tires;
+  return isSellerFormSummary ? { warningLights: parts[3], interiorOdor: parts[4] } : {};
+};
+
+const getInteriorOdorLabel = (summaryOdor: string | undefined, smokerVehicle: boolean | undefined) => {
+  if (summaryOdor) return formatVehicleOption(summaryOdor);
+  if (smokerVehicle === true) return 'Smoker';
+  if (smokerVehicle === false) return 'Not a smoker vehicle';
+  return '';
+};
+
 // Neutral placeholder shown when a vehicle has no uploaded photos
 const NO_IMAGE_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22260%22 viewBox=%220 0 400 260%22%3E%3Crect width=%22400%22 height=%22260%22 fill=%22%23111%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22 font-family=%22Arial%22 fill=%22%23444%22%3ENo Photo%3C/text%3E%3C/svg%3E';
 
@@ -245,8 +260,18 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
   const auctionStartTime = getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt']);
   const auctionEndTime = getStringValue(record, ['auctionEndTime', 'auctionEndAt']);
   const highestBid = formatCurrency(record.highestBid);
-  const minimumBid = formatCurrency(record.minimumAcceptablePrice);
+  const bidIncrement = Number(record.bidIncrementNo) || 0;
   const imageSrc = uploadUrls[0] || NO_IMAGE_PLACEHOLDER;
+  const exteriorCondition = getStringValue(record, ['exteriorCondition']);
+  const mechanicalCondition = getStringValue(record, ['mechanicalCondition']);
+  const tireCondition = getStringValue(record, ['tireCondition']);
+  const conditionSummary = parseSellerConditionSummary(
+    getStringValue(record, ['condition']),
+    exteriorCondition,
+    mechanicalCondition,
+    tireCondition,
+  );
+  const smokerVehicle = typeof record.smokerVehicle === 'boolean' ? record.smokerVehicle : undefined;
 
   return {
     id: getStringValue(record, ['id', '_id']),
@@ -256,16 +281,13 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
     status: (trim || status.replace(/_/g, ' ')) as Vehicle['status'],
     highestBid,
     currentHighBid: highestBid,
-    nextMinimumBid: formatCurrency(record.bidIncrementNo) || minimumBid,
+    nextMinimumBid: formatCurrency((Number(record.highestBid) || 0) + bidIncrement),
     endsIn: getDealerVehicleStatusLabel(status, auctionStartTime, auctionEndTime),
     biddingStatusLabel: getDealerVehicleStatusLabel(status, auctionStartTime, auctionEndTime),
     canBid: status === 'BIDDING_ACTIVE',
     bidCount: typeof record.bidCount === 'number' ? record.bidCount : Number(record.bidCount) || 0,
     imageSrc,
     galleryImageSrcs: uploadUrls.length ? uploadUrls : [NO_IMAGE_PLACEHOLDER],
-    // These are required by the type but not meaningful without static data — use safe defaults
-    heroVariant: 'road',
-    galleryVariants: [],
     detailsTitle: [year, make, model, trim].filter(Boolean).join(' ') || title,
     specs: [
       formatMileage(record.mileage),
@@ -278,18 +300,45 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
     // Auction timing fields
     auctionStartTime: auctionStartTime || undefined,
     auctionEndTime: auctionEndTime || undefined,
-    bidIncrementAmount: typeof record.bidIncrementNo === 'number' ? record.bidIncrementNo : Number(record.bidIncrementNo) || undefined,
+    bidIncrementAmount: bidIncrement || undefined,
     reserveMet: Boolean(record.reserveMet),
     engine: getStringValue(record, ['engine']),
-    leatherOrCloth: getStringValue(record, ['leatherOrCloth', 'leatherCloth']),
-    roof: getStringValue(record, ['roof']),
-    drivetrain: getStringValue(record, ['drivetrain']),
-    transmission: getStringValue(record, ['transmission']),
+    leatherOrCloth: formatVehicleOption(getStringValue(record, ['leatherOrCloth', 'leatherCloth'])),
+    roof: formatVehicleOption(getStringValue(record, ['roof'])),
+    drivetrain: formatVehicleOption(getStringValue(record, ['drivetrain'])),
+    transmission: formatVehicleOption(getStringValue(record, ['transmission'])),
     accidentHistory: getStringValue(record, ['accidentHistory']),
     additionalDisclosures: getStringValue(record, ['additionalDisclosures', 'notes']),
     titleStatus: (getStringValue(record, ['titleStatus']) || undefined) as Vehicle['titleStatus'],
+    vin: getStringValue(record, ['vin']),
+    year,
+    make,
+    model,
+    trim,
+    location: getStringValue(record, ['location']),
+    exteriorColor: getStringValue(record, ['exteriorColor']),
+    interiorColor: getStringValue(record, ['interiorColor']),
+    exteriorCondition,
+    interiorCondition: getStringValue(record, ['interiorCondition']),
+    mechanicalCondition,
+    tireCondition,
+    warningLights: conditionSummary.warningLights,
+    interiorOdor: getInteriorOdorLabel(conditionSummary.interiorOdor, smokerVehicle),
+    smokerVehicle,
   };
 };
+function VehicleUnavailable({ onBackToInventory }: { onBackToInventory: () => void }) {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24 text-center">
+      <p className="text-2xl font-semibold text-white">This vehicle isn't available</p>
+      <p className="text-[#c8c8c8]">It may have been removed, or its auction may no longer be open.</p>
+      <Button type="primary" size="large" onClick={onBackToInventory}>
+        Back to Inventory
+      </Button>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Inner component - needs to be inside AuthProvider to call useAuth()
 // ---------------------------------------------------------------------------
@@ -300,45 +349,42 @@ function AppInner() {
   const initialRoute = getRouteState(initialPath);
   const [page, setPage] = useState<Page>(initialRoute.page);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialRoute.vehicleId);
-  const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>(staticVehicles);
-  const [isLoadingInventory, setIsLoadingInventory] = useState(false);
+  const [inventoryVehicles, setInventoryVehicles] = useState<Vehicle[]>([]);
+  // Dealers start out loading so nothing is shown before the server responds
+  const [isLoadingInventory, setIsLoadingInventory] = useState(user?.role === 'dealer' && Boolean(token));
 
+  // Only ever show the requested vehicle — never fall back to a different one
   const selectedVehicle = useMemo(
-    () => inventoryVehicles.find((v) => v.id === selectedVehicleId) ?? inventoryVehicles[0],
+    () => inventoryVehicles.find((v) => v.id === selectedVehicleId),
     [inventoryVehicles, selectedVehicleId],
   );
 
-  // Expose loadDealerInventory as a stable callback so CarDetailsPage can call it after a bid
-  const loadDealerInventory = useCallback(async () => { // eslint-disable-line react-hooks/exhaustive-deps
+  const loadDealerInventory = useCallback(async () => {
     if (user?.role !== 'dealer' || !token) return;
     setIsLoadingInventory(true);
-    // Clear out static placeholder data if it exists
-    if (inventoryVehicles === staticVehicles) {
-      setInventoryVehicles([]);
-    }
     try {
       const response = await fetchVehicles(token);
       const approvedVehicles = getArrayPayload(response)
         .map(mapDealerVehicle)
         .filter((vehicle): vehicle is Vehicle => Boolean(vehicle));
       setInventoryVehicles(approvedVehicles);
-      if (approvedVehicles.length && !approvedVehicles.some((vehicle) => vehicle.id === selectedVehicleId)) {
-        setSelectedVehicleId(approvedVehicles[0].id);
-      }
-    } catch {
-      setInventoryVehicles([]);
+    } catch (error) {
+      // Keep whatever was already loaded rather than blanking the page on a failed refresh
+      message.error(error instanceof Error ? error.message : 'Unable to load vehicles.');
     } finally {
       setIsLoadingInventory(false);
     }
-  }, [token, user?.role, selectedVehicleId]);
+  }, [token, user?.role]);
 
+  // Also refetches when a different vehicle is opened, so its bid details are current
   useEffect(() => {
     if (user?.role !== 'dealer' || !token) {
-      setInventoryVehicles(staticVehicles);
+      setInventoryVehicles([]);
+      setIsLoadingInventory(false);
       return;
     }
     void loadDealerInventory();
-  }, [loadDealerInventory, token, user?.role]);
+  }, [loadDealerInventory, token, user?.role, selectedVehicleId]);
   useEffect(() => {
     const routePath = initialRoute.shouldReplace
       ? getPagePath(initialRoute.page, initialRoute.vehicleId)
@@ -435,16 +481,23 @@ function AppInner() {
       )}
       {page === 'details' && (
         <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
-          <CarDetailsPage
-            vehicle={selectedVehicle}
-            onViewReport={() => navigateTo('report', selectedVehicle.id)}
-          />
-
+          {!selectedVehicle && !isLoadingInventory ? (
+            <VehicleUnavailable onBackToInventory={() => navigateTo('inventory')} />
+          ) : (
+            <CarDetailsPage
+              vehicle={selectedVehicle}
+              onViewReport={() => navigateTo('report', selectedVehicleId)}
+            />
+          )}
         </ProtectedRoute>
       )}
       {page === 'report' && (
         <ProtectedRoute allowedRole="dealer" onRedirectToLogin={() => navigateTo('login')}>
-          <ConditionReportPage vehicle={selectedVehicle} />
+          {!selectedVehicle && !isLoadingInventory ? (
+            <VehicleUnavailable onBackToInventory={() => navigateTo('inventory')} />
+          ) : (
+            <ConditionReportPage vehicle={selectedVehicle} />
+          )}
         </ProtectedRoute>
       )}
 

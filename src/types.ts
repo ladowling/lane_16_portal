@@ -12,6 +12,27 @@ export const TITLE_STATUS_LABELS: Record<VehicleTitleStatus, string> = {
 export const formatTitleStatus = (status?: string | null): string =>
   (status && TITLE_STATUS_LABELS[status as VehicleTitleStatus]) || '-';
 
+// Labels for the option values the public seller form submits (leather/cloth, roof, drivetrain, transmission, odor)
+const VEHICLE_OPTION_LABELS: Record<string, string> = {
+  leather: 'Leather',
+  cloth: 'Cloth',
+  mixed: 'Mixed',
+  other: 'Other',
+  sunroof: 'Sunroof',
+  hardtop: 'Hardtop',
+  softtop: 'Softtop',
+  none: 'None',
+  awd: 'AWD',
+  rwd: 'RWD',
+  fwd: 'FWD',
+  automatic: 'Automatic',
+  manual: 'Manual',
+  smoker: 'Smoker',
+};
+
+export const formatVehicleOption = (value?: string | null): string =>
+  value ? VEHICLE_OPTION_LABELS[value.trim().toLowerCase()] ?? value : '';
+
 export type Vehicle = {
   id: string;
   title: string;
@@ -25,8 +46,6 @@ export type Vehicle = {
   bidCount: number;
   imageSrc: string;
   galleryImageSrcs: string[];
-  heroVariant: VehiclePhotoVariant;
-  galleryVariants: VehiclePhotoVariant[];
   detailsTitle: string;
   specs: string[];
   description: string;
@@ -51,5 +70,21 @@ export type Vehicle = {
   vin?: string;
   fuelType?: string;
   bodyStyle?: string;
+  year?: string;
+  make?: string;
+  model?: string;
+  trim?: string;
+  location?: string;
+  exteriorColor?: string;
+  interiorColor?: string;
+  exteriorCondition?: string;
+  interiorCondition?: string;
+  mechanicalCondition?: string;
+  tireCondition?: string;
+  /** Read back from the seller's condition summary — the backend has no dedicated field */
+  warningLights?: string;
+  /** Interior odor from the seller's condition summary, else derived from smokerVehicle */
+  interiorOdor?: string;
+  smokerVehicle?: boolean;
 };
 

@@ -31,39 +31,7 @@ type SpecField = {
 export function VehicleSummary({ vehicle }: VehicleSummaryProps) {
   const [isReportOpen, setIsReportOpen] = useState(false);
 
-  const colorSpec = vehicle.specs.find((s) => s.includes('/')) || '';
-  const [exteriorColor = '-', interiorColor = '-'] = colorSpec ? colorSpec.split('/') : ['-', '-'];
-
-  const findSpec = (keyword: string) =>
-    vehicle.specs.find((s) => s.toLowerCase().includes(keyword)) || '-';
-
-  const transmission =
-    vehicle.transmission ||
-    (findSpec('automatic') !== '-'
-      ? findSpec('automatic')
-      : findSpec('manual') !== '-'
-        ? findSpec('manual')
-        : '-');
-
-  const engine = vehicle.engine || (findSpec('l ') !== '-' ? findSpec('l ') : '-');
-
-  const leatherCloth =
-    vehicle.leatherOrCloth ||
-    (/leather/i.test(vehicle.specs.join(' '))
-      ? 'Leather'
-      : /cloth/i.test(vehicle.specs.join(' '))
-        ? 'Cloth'
-        : '-');
-
-  const drivetrain =
-    vehicle.drivetrain ||
-    (findSpec('awd') !== '-' ? findSpec('awd') : findSpec('fwd') !== '-' ? findSpec('fwd') : findSpec('rwd') !== '-' ? findSpec('rwd') : '-');
-
-  const roof =
-    vehicle.roof ||
-    (findSpec('sunroof') !== '-' ? 'Sunroof' : findSpec('hardtop') !== '-' ? 'Hardtop' : findSpec('softtop') !== '-' ? 'Softtop' : '-');
-
-  const vin = vehicle.vin || vehicle.subtitle || '-';
+  const vin = vehicle.vin || '-';
   const titleStatusLabel = formatTitleStatus(vehicle.titleStatus);
   const titleStatusClass =
     vehicle.titleStatus === 'IN_HAND'
@@ -74,13 +42,13 @@ export function VehicleSummary({ vehicle }: VehicleSummaryProps) {
 
   const specFields: SpecField[] = [
     { label: 'Mileage', value: vehicle.mileage || '-', icon: Gauge },
-    { label: 'Exterior Color', value: exteriorColor, icon: PaintBucket },
-    { label: 'Interior Color', value: interiorColor, icon: Sofa },
-    { label: 'Leather / Cloth', value: leatherCloth, icon: Armchair },
-    { label: 'Engine', value: engine, icon: Cog },
-    { label: 'Transmission', value: transmission, icon: Settings2 },
-    { label: 'Drivetrain', value: drivetrain, icon: Compass },
-    { label: 'Roof', value: roof, icon: PanelTop },
+    { label: 'Exterior Color', value: vehicle.exteriorColor || '-', icon: PaintBucket },
+    { label: 'Interior Color', value: vehicle.interiorColor || '-', icon: Sofa },
+    { label: 'Leather / Cloth', value: vehicle.leatherOrCloth || '-', icon: Armchair },
+    { label: 'Engine', value: vehicle.engine || '-', icon: Cog },
+    { label: 'Transmission', value: vehicle.transmission || '-', icon: Settings2 },
+    { label: 'Drivetrain', value: vehicle.drivetrain || '-', icon: Compass },
+    { label: 'Roof', value: vehicle.roof || '-', icon: PanelTop },
   ];
 
   return (

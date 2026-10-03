@@ -19,32 +19,6 @@ export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
       </div>
     );
   }
-  const parseTitle = (title: string) => {
-    const parts = title.split(/\s+/);
-    const year = parts[0] && /^\d{4}$/.test(parts[0]) ? parts[0] : '';
-    const make = parts[1] ?? '';
-    const model = parts.slice(2).join(' ') ?? '';
-    return { year, make, model };
-  };
-
-  const parseDetailsTitle = (detailsTitle: string) => {
-    // detailsTitle often contains trim at the end, e.g. "2021 Ford F-150 XLT"
-    const parts = detailsTitle.split(/\s+/);
-    if (parts.length >= 3) {
-      const trim = parts.slice(3).join(' ') || '';
-      return { trim };
-    }
-    return { trim: '' };
-  };
-
-  const { year, make, model } = parseTitle(vehicle.title);
-  const { trim } = parseDetailsTitle(vehicle.detailsTitle || '');
-
-  
-  const colorSpec = vehicle.specs.find((s) => s.includes('/')) || '';
-  const [exteriorColor = '-', interiorColor = '-'] = colorSpec ? colorSpec.split('/') : ['-', '-'];
-
-
   return (
     <main className="mx-auto w-[min(1280px,calc(100%-112px))] px-0 pb-[170px] pt-[52px] max-[980px]:w-[min(calc(100%-32px),760px)] max-[980px]:pt-10 max-[620px]:w-[min(calc(100%-24px),420px)] max-[620px]:pb-20">
       <Title className="!mb-16 !mt-0 !text-center !text-[58px] !font-medium !leading-none !text-white max-[980px]:!mb-[38px] max-[980px]:!text-[44px] max-[620px]:!text-[38px]">Car Details</Title>

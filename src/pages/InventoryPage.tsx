@@ -7,23 +7,11 @@ import { CopyOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
 
-const getTitleParts = (title: string) => {
-  const titleWithoutYear = title.replace(/^\d{4}\s+/, '').trim();
-  const [make = '', ...modelParts] = titleWithoutYear.split(/\s+/);
-
-  return {
-    make,
-    model: modelParts.join(' '),
-  };
-};
-
 const getVehicleSearchText = (vehicle: Vehicle) => {
-  const { make, model } = getTitleParts(vehicle.title);
-
   return [
     vehicle.title,
-    make,
-    model,
+    vehicle.make,
+    vehicle.model,
     vehicle.subtitle,
     vehicle.mileage,
     vehicle.status,
@@ -61,7 +49,7 @@ export function InventoryPage({ vehicles, isLoading, onVehicleSelect }: Inventor
  
 
   const vehicleFilters = useMemo(
-    () => vehicles.map((vehicle) => ({ vehicle, ...getTitleParts(vehicle.title) })),
+    () => vehicles.map((vehicle) => ({ vehicle, make: vehicle.make ?? '', model: vehicle.model ?? '' })),
     [vehicles]
   );
 
