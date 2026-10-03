@@ -1952,6 +1952,16 @@ export function AdminDashboard() {
       selectedVehicle
         ? [
             {
+              heading: 'Seller Info',
+              fields: [
+                { label: 'Seller Name', value: selectedVehicle.sellerName },
+                { label: 'Seller Phone', value: selectedVehicle.sellerPhoneNo },
+                { label: 'Seller Email', value: selectedVehicle.sellerEmail },
+                // The seller form only collects city and state, stored as the vehicle's location
+                { label: 'Address (City, State)', value: selectedVehicle.location },
+              ],
+            },
+            {
               heading: 'Vehicle Info',
               fields: [
                 { label: 'VIN', value: selectedVehicle.vin },
@@ -1961,7 +1971,6 @@ export function AdminDashboard() {
                 { label: 'Trim', value: selectedVehicle.trim },
                 { label: 'Title Status', value: formatTitleStatus(selectedVehicle.titleStatus) },
                 { label: 'Mileage', value: selectedVehicle.mileage },
-                { label: 'Location', value: selectedVehicle.location },
                 { label: 'Exterior Color', value: selectedVehicle.exteriorColor },
                 { label: 'Interior Color', value: selectedVehicle.interiorColor },
                 { label: 'Leather / Cloth', value: selectedVehicle.leatherOrCloth },
