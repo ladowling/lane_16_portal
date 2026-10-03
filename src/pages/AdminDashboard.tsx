@@ -5,6 +5,8 @@ import type { TableColumnsType, UploadFile } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
 import { DetailModal } from './adminDashboard/components/DetailModal';
 import { StatusTag } from '../components/StatusTag';
+import { WebFriendlyAntImage } from '../components/WebFriendlyImage';
+import { isHeicFile, toWebFriendlyImage } from '../heic';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
@@ -426,21 +428,25 @@ const formatDateLabel = (dateValue: string) => {
   });
 };
 
-const getTimeRemaining = (endTimeIso: string) => {
-  const total = Math.max(0, new Date(endTimeIso).getTime() - Date.now());
-  if (total <= 0) return 'Ended';
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((total / (1000 * 60)) % 60);
-  const seconds = Math.floor((total / 1000) % 60);
-  
+const formatDuration = (ms: number) => {
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((ms / (1000 * 60)) % 60);
+  const seconds = Math.floor((ms / 1000) % 60);
+  const unit = (count: number, name: string) => `${count} ${name}${count === 1 ? '' : 's'}`;
+
   const parts = [];
-  if (days > 0) parts.push(`${days} days`);
-  if (hours > 0) parts.push(`${hours} hours`);
-  if (minutes > 0 && days === 0) parts.push(`${minutes} mins`);
-  if (seconds > 0 && days === 0 && hours === 0) parts.push(`${seconds} secs`);
-  
+  if (days > 0) parts.push(unit(days, 'day'));
+  if (hours > 0) parts.push(unit(hours, 'hour'));
+  if (minutes > 0 && days === 0) parts.push(unit(minutes, 'min'));
+  if (seconds > 0 && days === 0 && hours === 0) parts.push(unit(seconds, 'sec'));
+
   return parts.join(' ');
+};
+
+const getTimeRemaining = (endTimeIso: string) => {
+  const total = new Date(endTimeIso).getTime() - Date.now();
+  return total > 0 ? formatDuration(total) : 'Ended';
 };
 
 const LiveCountdown = ({ endTimeIso }: { endTimeIso: string }) => {
@@ -454,6 +460,42 @@ const LiveCountdown = ({ endTimeIso }: { endTimeIso: string }) => {
   }, [endTimeIso]);
 
   return <>{timeLeft}</>;
+};
+
+// Auction start/end time as a readable local date and time, plus a live "starts in" / "ended ago" pill
+const AuctionTimeValue = ({ iso, kind }: { iso: string; kind: 'start' | 'end' }) => {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const date = new Date(iso);
+  if (!iso || Number.isNaN(date.getTime())) {
+    return <span className="text-[#c8c8c8]">Not scheduled</span>;
+  }
+
+  const msUntil = date.getTime() - now;
+  const isUpcoming = msUntil > 0;
+  const verb = kind === 'start' ? (isUpcoming ? 'Starts' : 'Started') : isUpcoming ? 'Ends' : 'Ended';
+  // formatDuration is empty under one second
+  const duration = formatDuration(Math.abs(msUntil));
+  const relative = !duration ? `${verb} now` : isUpcoming ? `${verb} in ${duration}` : `${verb} ${duration} ago`;
+
+  return (
+    <div>
+      <div className="font-semibold">
+        {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+      </div>
+      <div className="text-sm text-[#c8c8c8]">
+        {date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })}
+      </div>
+      <span className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${isUpcoming ? 'bg-[#123414] text-[#5be36a]' : 'bg-[#1c1c1c] text-[#c8c8c8]'}`}>
+        {relative}
+      </span>
+    </div>
+  );
 };
 
 const normalizeDateString = (dateString: string | string[] | null) =>
@@ -536,7 +578,7 @@ const MAX_VEHICLE_PHOTOS_PER_UPLOAD = 10;
 const MAX_VEHICLE_PHOTO_SIZE_MB = 10;
 
 const validateVehiclePhoto = (file: File) => {
-  if (!file.type.startsWith('image/')) {
+  if (!file.type.startsWith('image/') && !isHeicFile(file)) {
     message.error(`${file.name} is not an image.`);
     return Upload.LIST_IGNORE;
   }
@@ -604,7 +646,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     bids: getStringValue(record, ['bids'], '0'),
     highestBid: getStringValue(record, ['highestBid'], '0'),
     bidCount: getNumberValue(record, ['bidCount']),
-    auctionStartTime: getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt', 'createdAt']),
+    auctionStartTime: getStringValue(record, ['auctionStartTime', 'auctionStartAt', 'auctionStartedAt']),
     auctionEndTime: getStringValue(record, ['auctionEndTime']),
     winningBidderName: getStringValue(winningBuyerObj, ['name']) || getStringValue(highestBidBuyerObj, ['name']) || getStringValue(record, ['winningBidderName']),
     winningBidAmount: formatCurrency(getStringValue(record, ['winningBidAmount'])),
@@ -1349,7 +1391,7 @@ export function AdminDashboard() {
       for (let i = 0; i < files.length; i++) {
         const uploadId = crypto.randomUUID();
         // Continue the 1-based order used by the seller submission form
-        await uploadVehicleFile(uploadId, files[i], currentUploadIds.length + i + 1);
+        await uploadVehicleFile(uploadId, await toWebFriendlyImage(files[i]), currentUploadIds.length + i + 1);
         newUploadIds.push(uploadId);
       }
       await setVehicleUploads(token, selectedVehicle.id, [...currentUploadIds, ...newUploadIds]);
@@ -1658,7 +1700,7 @@ export function AdminDashboard() {
         return (
           <div className="flex min-w-[320px] items-center gap-4 text-left">
             {firstUpload ? (
-              <Image
+              <WebFriendlyAntImage
                 alt={firstUpload.name || vehicle.vehicleName}
                 className="!h-16 !w-24 rounded-md object-cover"
                 preview={{ mask: 'Preview' }}
@@ -1995,9 +2037,10 @@ export function AdminDashboard() {
               heading: 'Auction & Bid Info',
               fields: [
                 { label: 'Approval Status', value: <StatusTag status={selectedVehicle.status} /> },
-                { label: 'Auction Start Time', value: selectedVehicle.auctionStartTime },
-                { label: 'Auction End Time', value: selectedVehicle.auctionEndTime },
-                { label: 'Bid Count', value: selectedVehicle.bidCount },
+                { label: 'Auction Start Time', value: <AuctionTimeValue iso={selectedVehicle.auctionStartTime} kind="start" /> },
+                { label: 'Auction End Time', value: <AuctionTimeValue iso={selectedVehicle.auctionEndTime} kind="end" /> },
+                // String so that 0 bids shows "0" rather than the N/A fallback
+                { label: 'Bid Count', value: String(selectedVehicle.bidCount ?? 0) },
                 { label: 'Bids', value: selectedVehicle.bids },
                 { label: 'Highest Bid', value: selectedVehicle.highestBid },
                 { label: 'Winning Bidder Name', value: selectedVehicle.winningBidderName },
@@ -2480,7 +2523,7 @@ export function AdminDashboard() {
                       </Paragraph>
                       <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#24d725', colorBgContainer: '#111111' } }}>
                         <Upload.Dragger
-                          accept="image/*"
+                          accept="image/*,.heic,.heif"
                           beforeUpload={validateVehiclePhoto}
                           disabled={isVehiclePhotosUploading}
                           fileList={vehiclePhotoFiles}
@@ -2512,7 +2555,7 @@ export function AdminDashboard() {
                         <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1">
                           {selectedVehicle.uploadItems.map((upload) => (
                             <figure className="rounded-lg border border-[#575757] bg-[#111111] p-3" key={upload.id}>
-                              <Image
+                              <WebFriendlyAntImage
                                 alt={upload.name}
                                 className="!h-44 !w-full rounded-md object-cover"
                                 src={upload.url}

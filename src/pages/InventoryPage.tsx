@@ -3,6 +3,7 @@ import { Button, Col, Empty, Input, Row, Select, Segmented, Spin, Table, Typogra
 import type { TableColumnsType } from 'antd';
 import type { Vehicle } from '../types';
 import { VehicleCard } from '../components/VehicleCard';
+import { WebFriendlyImage } from '../components/WebFriendlyImage';
 import { CopyOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
@@ -98,7 +99,7 @@ export function InventoryPage({ vehicles, isLoading, onVehicleSelect }: Inventor
         width: 420,
         render: (_, vehicle) => (
           <div className="flex min-w-[380px] items-center gap-4">
-            <img className="h-16 w-24 rounded-md object-cover" src={vehicle.imageSrc} alt={vehicle.title} />
+            <WebFriendlyImage className="h-16 w-24 rounded-md object-cover" src={vehicle.imageSrc} alt={vehicle.title} />
             <div>
               <Text className="block !font-bold !text-white">{vehicle.title}</Text>
               <div className="mt-3 flex items-center max-[620px]:items-start max-[620px]:flex-col">

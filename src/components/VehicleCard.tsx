@@ -2,6 +2,7 @@ import { Button, Card, Space, Typography, message } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined, CopyOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import type { Vehicle } from '../types';
+import { WebFriendlyImage } from './WebFriendlyImage';
 
 const { Text, Title } = Typography;
 
@@ -27,7 +28,7 @@ export function VehicleCard({ vehicle, onSelect }: VehicleCardProps) {
   return (
     <Card
       className="overflow-hidden !rounded-xl !border-[#555555] !bg-[#0c0c0c] [&_.ant-card-body]:!px-[18px] [&_.ant-card-body]:!pb-5 [&_.ant-card-body]:!pt-[18px] [&_.ant-card-cover]:h-[214px] [&_.ant-card-cover]:overflow-hidden max-[620px]:[&_.ant-card-cover]:h-[190px]"
-      cover={<img className="h-full w-full object-cover" src={vehicle.imageSrc} alt={vehicle.title} />}
+      cover={<WebFriendlyImage className="h-full w-full object-cover" src={vehicle.imageSrc} alt={vehicle.title} />}
       bordered
       hoverable
       onClick={() => onSelect(vehicle.id)}

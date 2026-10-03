@@ -3,6 +3,7 @@ import { Form, Input, Select, Upload, ConfigProvider, theme, Button, message, Ch
 import { Upload as UploadIcon } from 'lucide-react';
 import { submitVehicleListing, uploadVehicleFile } from '../api';
 import { trackEvent } from '../analytics';
+import { toWebFriendlyImage } from '../heic';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -24,7 +25,8 @@ export default function SubmitVehicle() {
       const uploadIds: string[] = [];
       for (let i = 0; i < photoFiles.length; i++) {
         const uploadId = crypto.randomUUID();
-        await uploadVehicleFile(uploadId, photoFiles[i], i + 1);
+        // iPhone HEIC photos are converted to JPEG so every browser can display them
+        await uploadVehicleFile(uploadId, await toWebFriendlyImage(photoFiles[i]), i + 1);
         uploadIds.push(uploadId);
       }
       const year = Number(values.year);

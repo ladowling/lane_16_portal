@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Slider, Button } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import type { Vehicle } from '../types';
+import { WebFriendlyImage } from './WebFriendlyImage';
 
 type VehicleGalleryProps = {
   vehicle: Vehicle;
@@ -17,7 +18,7 @@ export function VehicleGallery({ vehicle }: VehicleGalleryProps) {
 
   return (
     <section className="overflow-hidden rounded-xl border border-[#575757] bg-[#0b0b0b]">
-      <img
+      <WebFriendlyImage
         className="h-[470px] w-full rounded-t-[10px] object-cover max-[980px]:h-[360px] max-[620px]:h-[260px]"
         src={mainSrc}
         alt={vehicle.title}
@@ -43,7 +44,7 @@ export function VehicleGallery({ vehicle }: VehicleGalleryProps) {
             const isSelected = globalIndex === selectedIndex;
 
             return (
-              <img
+              <WebFriendlyImage
                 key={`${imageSrc}-${globalIndex}`}
                 className={`h-32 w-full rounded-md object-cover cursor-pointer ${isSelected ? 'ring-2 ring-[#24d725]' : ''}`}
                 src={imageSrc}
