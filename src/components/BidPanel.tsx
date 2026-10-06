@@ -63,9 +63,11 @@ function CountdownTimer({ endTimeIso }: { endTimeIso: string }) {
 // ---------------------------------------------------------------------------
 type BidPanelProps = {
   vehicle: Vehicle;
+  /** Called after a bid succeeds so the vehicle's bid figures and reserve status can be reloaded */
+  onBidPlaced?: () => void;
 };
 
-export function BidPanel({ vehicle }: BidPanelProps) {
+export function BidPanel({ vehicle, onBidPlaced }: BidPanelProps) {
   const { token, user } = useAuth();
   const [bidAmount, setBidAmount] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -164,6 +166,7 @@ export function BidPanel({ vehicle }: BidPanelProps) {
       setBidAmount('');
       setSelectedDealershipId('');
       setBuyerHasBid(true);
+      onBidPlaced?.();
     } catch (err) {
       message.error(err instanceof Error ? err.message : 'Failed to place bid. Please try again.');
     } finally {
@@ -210,9 +213,13 @@ export function BidPanel({ vehicle }: BidPanelProps) {
               <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400">
                 <FireOutlined /> LIVE
               </span>
-              {vehicle.reserveMet && (
+              {vehicle.reserveMet ? (
                 <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400 animate-pulse">
                   Reserve Met
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-[18px] font-bold text-red-500 motion-safe:animate-blink">
+                  Reserve Not Met
                 </span>
               )}
             </>

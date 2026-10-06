@@ -9,9 +9,10 @@ const { Title } = Typography;
 type CarDetailsPageProps = {
   vehicle?: Vehicle;
   onViewReport: () => void;
+  onBidPlaced?: () => void;
 };
 
-export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
+export function CarDetailsPage({ vehicle, onViewReport, onBidPlaced }: CarDetailsPageProps) {
   if (!vehicle) {
     return (
       <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-black pt-20">
@@ -30,7 +31,7 @@ export function CarDetailsPage({ vehicle, onViewReport }: CarDetailsPageProps) {
           <VehicleSummary vehicle={vehicle} onViewReport={onViewReport} />
         </Col>
         <Col xs={24} lg={11}>
-          <BidPanel vehicle={vehicle} />
+          <BidPanel vehicle={vehicle} onBidPlaced={onBidPlaced} />
         </Col>
       </Row>
     </main>

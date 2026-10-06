@@ -487,6 +487,7 @@ function AppInner() {
             <CarDetailsPage
               vehicle={selectedVehicle}
               onViewReport={() => navigateTo('report', selectedVehicleId)}
+              onBidPlaced={() => void loadDealerInventory()}
             />
           )}
         </ProtectedRoute>
