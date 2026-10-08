@@ -13,11 +13,13 @@ declare global {
 }
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-X8C9LWJZCZ';
+// Set by `npm run dev:local` so local test traffic stays out of the production reports
+const isAnalyticsDisabled = import.meta.env.VITE_DISABLE_ANALYTICS === 'true';
 
 let isInitialized = false;
 
 export function initAnalytics() {
-  if (isInitialized || !GA_MEASUREMENT_ID) return;
+  if (isInitialized || isAnalyticsDisabled || !GA_MEASUREMENT_ID) return;
 
   // GA4 requires window.gtag to be a real function (not an arrow function)
   // because the loaded gtag/js script looks for window.gtag and relies on

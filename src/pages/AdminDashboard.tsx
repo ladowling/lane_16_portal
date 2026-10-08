@@ -498,6 +498,44 @@ const AuctionTimeValue = ({ iso, kind }: { iso: string; kind: 'start' | 'end' })
   );
 };
 
+// Bid time as a readable local date and time (to the second, so close bids can be told apart), plus a live "placed ago" pill
+const BidTimestampValue = ({ value }: { value: string }) => {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Bids without a timestamp fall back to the date-only dateCreated, which has no time of day to show
+  const hasTime = value.includes('T');
+  const date = new Date(hasTime ? value : `${value}T00:00:00`);
+  if (!value || Number.isNaN(date.getTime())) {
+    return <span className="text-[#c8c8c8]">N/A</span>;
+  }
+
+  // formatDuration is empty under one second
+  const duration = formatDuration(Math.max(0, now - date.getTime()));
+
+  return (
+    <div>
+      <div className="font-semibold">
+        {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+      </div>
+      {hasTime && (
+        <>
+          <div className="text-sm text-[#c8c8c8]">
+            {date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZoneName: 'short' })}
+          </div>
+          <span className="mt-2 inline-block rounded-full bg-[#1c1c1c] px-2.5 py-0.5 text-xs font-bold text-[#c8c8c8]">
+            {duration ? `Placed ${duration} ago` : 'Placed just now'}
+          </span>
+        </>
+      )}
+    </div>
+  );
+};
+
 const normalizeDateString = (dateString: string | string[] | null) =>
   Array.isArray(dateString) ? dateString[0] ?? '' : dateString ?? '';
 
@@ -2831,7 +2869,7 @@ export function AdminDashboard() {
                     { label: 'Bid Amount', value: selectedBid.bidAmount },
                     { label: 'Bid Status', value: <StatusTag status={selectedBid.bidStatus} /> },
                     { label: 'Note', value: selectedBid.note },
-                    { label: 'Bid Timestamp', value: selectedBid.bidTimestamp },
+                    { label: 'Bid Timestamp', value: <BidTimestampValue value={selectedBid.bidTimestamp} /> },
                   ],
                 },
               ]
