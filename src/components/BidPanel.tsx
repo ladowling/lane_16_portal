@@ -213,13 +213,9 @@ export function BidPanel({ vehicle, onBidPlaced }: BidPanelProps) {
               <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400">
                 <FireOutlined /> LIVE
               </span>
-              {vehicle.reserveMet ? (
+              {vehicle.reserveMet && (
                 <span className="flex items-center gap-1 text-[18px] font-bold text-amber-400 animate-pulse">
                   Reserve Met
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 text-[18px] font-bold text-red-500 motion-safe:animate-blink">
-                  Reserve Not Met
                 </span>
               )}
             </>
