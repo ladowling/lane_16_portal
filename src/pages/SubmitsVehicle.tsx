@@ -4,6 +4,7 @@ import { Upload as UploadIcon } from 'lucide-react';
 import { submitVehicleListing, uploadVehicleFile } from '../api';
 import { trackEvent } from '../analytics';
 import { toWebFriendlyImage } from '../heic';
+import { buildConditionSummary } from '../vehicleCondition';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -51,9 +52,13 @@ export default function SubmitVehicle() {
         model: values.model,
         mileage,
         location,
-        condition: [exteriorCondition, mechanicalCondition, tireCondition, warningLight, interiorOdor]
-          .filter(Boolean)
-          .join(' | '),
+        condition: buildConditionSummary({
+          exterior: exteriorCondition,
+          mechanical: mechanicalCondition,
+          tires: tireCondition,
+          warningLights: warningLight,
+          interiorOdor,
+        }),
         titleStatus: values.titleStatus,
         minimumAcceptablePrice,
         trim: values.trim,

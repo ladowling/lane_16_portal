@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { Button, ConfigProvider, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, Upload, message, theme } from 'antd';
+import { Alert, Button, ConfigProvider, DatePicker, Dropdown, Form, Image, Input, Modal, Popconfirm, Select, Space, Switch, Tabs, Tag, Tooltip, Typography, Upload, message, theme } from 'antd';
 import { DownOutlined, ReloadOutlined, RightOutlined, UploadOutlined } from '@ant-design/icons';
 import type { TableColumnsType, UploadFile } from 'antd';
 import { DataTable } from './adminDashboard/components/DataTable';
@@ -10,8 +10,11 @@ import { isHeicFile, toWebFriendlyImage } from '../heic';
 import { ChangePasswordModal } from '../components/ChangePasswordModal';
 import logo from '/lane16Logo.png';
 import { useAuth } from '../Authontext';
-import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicle, fetchVehicles, fetchVehicleBids, getUploadUrl, setVehicleUploads, updateBuyer, updateStaff, updateVehicleValuation, updateBidIncrement, uploadVehicleFile, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships, updateDealership, deleteDealership } from '../api';
+import { approveVehicle, archiveVehicle, createAdmin, createBuyer, createStaff, fetchArchivedVehicles, fetchBuyers, fetchContacts, fetchStaff, fetchVehicle, fetchVehicles, fetchVehicleBids, getUploadUrl, setVehicleUploads, updateBuyer, updateStaff, updateVehicleDetails, updateVehicleValuation, updateBidIncrement, uploadVehicleFile, resolveVehicle, deactivateStaff, activateStaff, createDealership, fetchDealerships, updateDealership, deleteDealership } from '../api';
+import type { VehicleDetailsUpdate } from '../api';
 import { formatTitleStatus } from '../types';
+import type { VehicleTitleStatus } from '../types';
+import { buildConditionSummary, parseConditionSummary } from '../vehicleCondition';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -47,6 +50,8 @@ type VehicleRecord = {
   location: string;
   condition: string;
   minimumAcceptablePrice: string;
+  /** Unformatted minimumAcceptablePrice, used to prefill the edit form */
+  minimumAcceptablePriceValue?: number;
   uploads: string;
   uploadItems: VehicleUpload[];
   status: string;
@@ -630,6 +635,155 @@ const validateVehiclePhoto = (file: File) => {
   return false;
 };
 
+// Seller-submitted details an admin can correct. The listing title, `condition` summary and smoker flag
+// aren't edited directly: they're derived exactly as the seller form derives them.
+type VehicleEditForm = {
+  year: string;
+  make: string;
+  model: string;
+  trim: string;
+  vin: string;
+  mileage: string;
+  location: string;
+  titleStatus?: VehicleTitleStatus;
+  minimumAcceptablePrice: string;
+  exteriorColor: string;
+  interiorColor: string;
+  engine: string;
+  leatherOrCloth?: string;
+  roof?: string;
+  drivetrain?: string;
+  transmission?: string;
+  sellerName: string;
+  sellerPhoneNo: string;
+  sellerEmail: string;
+  exteriorCondition: string;
+  interiorCondition: string;
+  mechanicalCondition: string;
+  tireCondition: string;
+  warningLights: string;
+  interiorOdor?: string;
+  accidentHistory: string;
+  additionalDisclosures: string;
+};
+
+// Same option values as the public seller submission form
+const titleStatusOptions = [
+  { label: 'In Hand', value: 'IN_HAND' },
+  { label: 'Lien', value: 'LIEN' },
+];
+const leatherOrClothOptions = [
+  { label: 'Leather', value: 'leather' },
+  { label: 'Cloth', value: 'cloth' },
+  { label: 'Mixed', value: 'mixed' },
+  { label: 'Other', value: 'other' },
+];
+const roofOptions = [
+  { label: 'Sunroof', value: 'sunroof' },
+  { label: 'Hardtop', value: 'hardtop' },
+  { label: 'Softtop', value: 'softtop' },
+  { label: 'None', value: 'none' },
+];
+const drivetrainOptions = [
+  { label: 'AWD', value: 'awd' },
+  { label: 'RWD', value: 'rwd' },
+  { label: 'FWD', value: 'fwd' },
+];
+const transmissionOptions = [
+  { label: 'Automatic', value: 'automatic' },
+  { label: 'Manual', value: 'manual' },
+];
+const interiorOdorOptions = [
+  { label: 'Smoker', value: 'smoker' },
+  { label: 'None', value: 'none' },
+  { label: 'Other', value: 'other' },
+];
+
+const getListingTitle = (year: string | number, make: string, model: string) => `${year || ''} ${make} ${model}`.trim();
+
+const getVehicleEditFormValues = (vehicle: VehicleRecord): VehicleEditForm => {
+  const summary = parseConditionSummary(vehicle.condition, vehicle.exteriorCondition, vehicle.mechanicalCondition, vehicle.tireCondition);
+
+  return {
+    year: vehicle.year ? String(vehicle.year) : '',
+    make: vehicle.make,
+    model: vehicle.model,
+    trim: vehicle.trim,
+    vin: vehicle.vin,
+    mileage: vehicle.mileage,
+    location: vehicle.location,
+    titleStatus: vehicle.titleStatus === 'IN_HAND' || vehicle.titleStatus === 'LIEN' ? vehicle.titleStatus : undefined,
+    minimumAcceptablePrice: vehicle.minimumAcceptablePriceValue ? String(vehicle.minimumAcceptablePriceValue) : '',
+    exteriorColor: vehicle.exteriorColor,
+    interiorColor: vehicle.interiorColor,
+    engine: vehicle.engine ?? '',
+    // Selects show their placeholder only for undefined, not ''
+    leatherOrCloth: vehicle.leatherOrCloth || undefined,
+    roof: vehicle.roof || undefined,
+    drivetrain: vehicle.drivetrain || undefined,
+    transmission: vehicle.transmission || undefined,
+    sellerName: vehicle.sellerName,
+    sellerPhoneNo: vehicle.sellerPhoneNo,
+    sellerEmail: vehicle.sellerEmail,
+    exteriorCondition: vehicle.exteriorCondition,
+    interiorCondition: vehicle.interiorCondition,
+    mechanicalCondition: vehicle.mechanicalCondition,
+    tireCondition: vehicle.tireCondition,
+    warningLights: summary.warningLights ?? '',
+    interiorOdor: summary.interiorOdor || (vehicle.smokerVehicle === 'Yes' ? 'smoker' : undefined),
+    accidentHistory: vehicle.accidentHistory ?? '',
+    additionalDisclosures: vehicle.additionalDisclosures ?? '',
+  };
+};
+
+const buildVehicleDetailsPayload = (values: VehicleEditForm): VehicleDetailsUpdate => {
+  const text = (value?: string) => (value ?? '').trim();
+  const year = Number(values.year);
+  const make = text(values.make);
+  const model = text(values.model);
+  const exteriorCondition = text(values.exteriorCondition);
+  const mechanicalCondition = text(values.mechanicalCondition);
+  const tireCondition = text(values.tireCondition);
+  const interiorOdor = values.interiorOdor;
+
+  return {
+    vehicleName: getListingTitle(year, make, model),
+    year,
+    make,
+    model,
+    trim: text(values.trim),
+    vin: text(values.vin),
+    mileage: Number(values.mileage),
+    location: text(values.location),
+    ...(values.titleStatus && { titleStatus: values.titleStatus }),
+    minimumAcceptablePrice: Number(values.minimumAcceptablePrice),
+    exteriorColor: text(values.exteriorColor),
+    interiorColor: text(values.interiorColor),
+    engine: text(values.engine),
+    leatherOrCloth: text(values.leatherOrCloth),
+    roof: text(values.roof),
+    drivetrain: text(values.drivetrain),
+    transmission: text(values.transmission),
+    sellerName: text(values.sellerName),
+    sellerPhoneNo: text(values.sellerPhoneNo),
+    sellerEmail: text(values.sellerEmail),
+    exteriorCondition,
+    interiorCondition: text(values.interiorCondition),
+    mechanicalCondition,
+    tireCondition,
+    condition: buildConditionSummary({
+      exterior: exteriorCondition,
+      mechanical: mechanicalCondition,
+      tires: tireCondition,
+      warningLights: text(values.warningLights),
+      interiorOdor,
+    }),
+    smokerVehicle: (interiorOdor ?? '').includes('smoker'),
+    accidentHistory: text(values.accidentHistory),
+    additionalDisclosures: text(values.additionalDisclosures),
+  };
+};
+
 const mapStaffRecord = (item: unknown): StaffRecord => {
   const record = (item ?? {}) as Record<string, unknown>;
   const isAdmin = Boolean(getRecordValue(record, ['isAdmin']));
@@ -677,6 +831,7 @@ const mapVehicleRecord = (item: unknown): VehicleRecord => {
     location: getStringValue(record, ['location']),
     condition: getStringValue(record, ['condition']),
     minimumAcceptablePrice: formatCurrency(getStringValue(record, ['minimumAcceptablePrice'])),
+    minimumAcceptablePriceValue: getNumberValue(record, ['minimumAcceptablePrice']),
     uploads: uploadItems.length ? `${uploadItems.length} upload(s)` : getStringValue(record, ['uploads'], 'None'),
     uploadItems,
     status: getStringValue(record, ['status'], 'PENDING'),
@@ -909,6 +1064,9 @@ export function AdminDashboard() {
   const [vehiclePhotoFiles, setVehiclePhotoFiles] = useState<UploadFile[]>([]);
   const [isVehiclePhotosUploading, setIsVehiclePhotosUploading] = useState(false);
   const [removingUploadId, setRemovingUploadId] = useState<string | null>(null);
+  const [editingVehicle, setEditingVehicle] = useState<VehicleRecord | null>(null);
+  const [vehicleEditForm] = Form.useForm<VehicleEditForm>();
+  const [isVehicleEditSaving, setIsVehicleEditSaving] = useState(false);
   const [selectedVehicleForBidIncrement, setSelectedVehicleForBidIncrement] = useState<VehicleRecord | null>(null);
   const [bidIncrementForm] = Form.useForm<{ bidIncrementNo: number }>();
   const [isBidIncrementSaving, setIsBidIncrementSaving] = useState(false);
@@ -922,6 +1080,7 @@ export function AdminDashboard() {
   const [isDealershipsLoading, setIsDealershipsLoading] = useState(false);
   const previousVehiclesRef = useRef<VehicleRecord[]>([]);
   const canArchiveVehicles = user?.role === 'admin' || user?.role === 'staff';
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     if (!previousVehiclesRef.current.length) {
@@ -1377,6 +1536,63 @@ export function AdminDashboard() {
     }
   };
 
+  const openVehicleEdit = (record: VehicleRecord) => {
+    setEditingVehicle(record);
+    vehicleEditForm.setFieldsValue(getVehicleEditFormValues(record));
+  };
+
+  const closeVehicleEdit = () => setEditingVehicle(null);
+
+  const saveVehicleEdit = async (values: VehicleEditForm) => {
+    if (!token || !editingVehicle?.id) {
+      message.error('Vehicle ID is missing. Please refresh and try again.');
+      return;
+    }
+
+    // Only send fields that actually changed
+    const next = buildVehicleDetailsPayload(values);
+    const previous = buildVehicleDetailsPayload(getVehicleEditFormValues(editingVehicle));
+    const changes = Object.fromEntries(
+      Object.entries(next).filter(([key, value]) => value !== previous[key as keyof VehicleDetailsUpdate])
+    ) as VehicleDetailsUpdate;
+
+    if (!Object.keys(changes).length) {
+      message.info('No changes to save.');
+      closeVehicleEdit();
+      return;
+    }
+
+    // VIN is unique; the server answers a duplicate with a generic error, so catch it here
+    if (changes.vin) {
+      const newVin = changes.vin.toLowerCase();
+      const duplicate = [...vehicles, ...archivedVehicles].find(
+        (vehicle) => vehicle.id !== editingVehicle.id && vehicle.vin.trim().toLowerCase() === newVin
+      );
+      if (duplicate) {
+        message.error(`VIN ${changes.vin} is already used by ${duplicate.vehicleName || 'another vehicle'}.`);
+        return;
+      }
+    }
+
+    // The server only recalculates "reserve met" when a bid comes in, so keep it in step with an edited reserve
+    if (changes.minimumAcceptablePrice !== undefined && editingVehicle.bidCount > 0) {
+      changes.reserveMet = (Number(editingVehicle.highestBid) || 0) >= changes.minimumAcceptablePrice;
+    }
+
+    setIsVehicleEditSaving(true);
+    try {
+      await updateVehicleDetails(token, editingVehicle.id, changes);
+      message.success('Vehicle details updated successfully.');
+      closeVehicleEdit();
+      // loadVehicles() will sync selectedVehicle from the fresh list automatically
+      await Promise.all([loadVehicles(), loadArchivedVehicles()]);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : 'Unable to update vehicle details.');
+    } finally {
+      setIsVehicleEditSaving(false);
+    }
+  };
+
   // setVehicleUploads replaces the whole photo list, so build it from the server's current list
   // rather than the open modal's copy, which may miss photos another staff member just added
   const fetchCurrentUploadIds = async (authToken: string, vehicleId: string) =>
@@ -1818,6 +2034,7 @@ export function AdminDashboard() {
 
         const items = [
           { key: 'view', label: 'View' },
+          ...(isAdmin && record.id ? [{ key: 'edit_details', label: 'Edit Details' }] : []),
           ...((isPending || isAvailable) && record.id
             ? [
                 { key: 'approve', label: 'Approve' },
@@ -1844,6 +2061,7 @@ export function AdminDashboard() {
 
         const handleAction = (key: string) => {
           if (key === 'view') setSelectedVehicle(record);
+          if (key === 'edit_details') openVehicleEdit(record);
           if (key === 'approve') openVehicleApproval(record, 'APPROVED');
           if (key === 'reject') openVehicleApproval(record, 'REJECTED');
           if (key === 'mark_sold') openVehicleApproval(record, 'SOLD');
@@ -2527,6 +2745,13 @@ export function AdminDashboard() {
                 label: 'Vehicle Details',
                 children: (
                   <div className="space-y-8">
+                    {isAdmin && selectedVehicle.id && (
+                      <div className="flex justify-end">
+                        <Button onClick={() => openVehicleEdit(selectedVehicle)} type="primary">
+                          Edit Details
+                        </Button>
+                      </div>
+                    )}
                     {vehicleSections.map((section) => (
                       <section key={section.heading}>
                         <Title className="!mb-4 !mt-0 !text-xl !text-[#24d725]" level={3}>
@@ -2766,6 +2991,146 @@ export function AdminDashboard() {
             rules={[{ required: true, message: 'Please enter a bid increment amount' }]}
           >
             <Input type="number" prefix="$" className="!bg-[#242424] !border-[#575757] !text-white" />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        afterClose={() => vehicleEditForm.resetFields()}
+        centered
+        confirmLoading={isVehicleEditSaving}
+        okText="Save Changes"
+        onCancel={closeVehicleEdit}
+        onOk={() => vehicleEditForm.submit()}
+        open={Boolean(editingVehicle)}
+        title={<span className="text-white m-3">Edit {editingVehicle?.vehicleName || 'Vehicle'}</span>}
+        width={860}
+        // Opened from inside the vehicle modal too, so it must always stack above it (antd keeps a modal's
+        // DOM after first use, so document order alone can leave this one underneath)
+        zIndex={1100}
+        className="[&_.ant-modal-close]:!text-green-300 [&_.ant-modal-close]:pr-4 [&_.ant-modal-close]:!mt-1 [&_.ant-modal-content]:rounded-xl [&_.ant-modal-content]:!bg-[#0b0b0b] [&_.ant-modal-content]:p-8 [&_.ant-modal-header]:!bg-[#0b0b0b] [&_.ant-modal-title]:!text-white"
+      >
+        {editingVehicle && (normalizeStatus(editingVehicle.status) === 'BIDDING_ACTIVE' || editingVehicle.bidCount > 0) && (
+          <Alert
+            className="!mb-4"
+            showIcon
+            type="warning"
+            message="This vehicle already has dealers looking at or bidding on it. Changes show up for them immediately."
+          />
+        )}
+        <Form
+          form={vehicleEditForm}
+          layout="vertical"
+          onFinish={saveVehicleEdit}
+          className="[&_.ant-form-item-label>label]:!text-black"
+        >
+          <Title className="!mb-1 !mt-2 !text-lg !text-[#24d725]" level={4}>
+            Vehicle Info
+          </Title>
+          <Form.Item noStyle shouldUpdate={(prev, next) => prev.year !== next.year || prev.make !== next.make || prev.model !== next.model}>
+            {({ getFieldValue }) => (
+              <Paragraph className="!mb-4 !text-[#555]">
+                Listing title: <strong>{getListingTitle(getFieldValue('year'), (getFieldValue('make') ?? '').trim(), (getFieldValue('model') ?? '').trim()) || '—'}</strong> (from year, make and model)
+              </Paragraph>
+            )}
+          </Form.Item>
+          <div className="grid grid-cols-2 gap-x-4 max-[720px]:grid-cols-1">
+            <Form.Item label="Year" name="year" rules={[{ required: true, message: 'Year is required' }, { pattern: /^\d{4}$/, message: 'Enter a 4-digit year' }]}>
+              <Input type="number" />
+            </Form.Item>
+            <Form.Item label="Make" name="make" rules={[{ required: true, whitespace: true, message: 'Make is required' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Model" name="model" rules={[{ required: true, whitespace: true, message: 'Model is required' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Trim" name="trim">
+              <Input />
+            </Form.Item>
+            <Form.Item label="VIN" name="vin" rules={[{ required: true, whitespace: true, message: 'VIN is required' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Mileage" name="mileage" rules={[{ required: true, message: 'Mileage is required' }, { pattern: /^\d+$/, message: 'Enter a whole number' }]}>
+              <Input type="number" />
+            </Form.Item>
+            <Form.Item label="Location" name="location" rules={[{ required: true, whitespace: true, message: 'Location is required' }]}>
+              <Input placeholder="City, State" />
+            </Form.Item>
+            <Form.Item label="Title Status" name="titleStatus">
+              <Select options={titleStatusOptions} placeholder="Select title status" />
+            </Form.Item>
+            <Form.Item
+              label="Minimum Acceptable Price / Reserve ($)"
+              name="minimumAcceptablePrice"
+              rules={[{ required: true, message: 'Minimum acceptable price is required' }, { pattern: /^\d+(\.\d{1,2})?$/, message: 'Enter a valid amount' }]}
+            >
+              <Input type="number" prefix="$" />
+            </Form.Item>
+            <Form.Item label="Engine" name="engine">
+              <Input placeholder="ex. 2.5L 4 cyl" />
+            </Form.Item>
+            <Form.Item label="Exterior Color" name="exteriorColor">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Interior Color" name="interiorColor">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Leather / Cloth" name="leatherOrCloth">
+              <Select options={leatherOrClothOptions} placeholder="Select interior material" />
+            </Form.Item>
+            <Form.Item label="Roof" name="roof">
+              <Select options={roofOptions} placeholder="Select roof" />
+            </Form.Item>
+            <Form.Item label="Drivetrain" name="drivetrain">
+              <Select options={drivetrainOptions} placeholder="Select drivetrain" />
+            </Form.Item>
+            <Form.Item label="Transmission" name="transmission">
+              <Select options={transmissionOptions} placeholder="Select transmission" />
+            </Form.Item>
+          </div>
+
+          <Title className="!mb-4 !mt-2 !text-lg !text-[#24d725]" level={4}>
+            Seller Info
+          </Title>
+          <div className="grid grid-cols-2 gap-x-4 max-[720px]:grid-cols-1">
+            <Form.Item label="Seller Name" name="sellerName" rules={[{ required: true, whitespace: true, message: 'Seller name is required' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Seller Phone" name="sellerPhoneNo" rules={[{ required: true, whitespace: true, message: 'Seller phone is required' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Seller Email" name="sellerEmail" rules={[{ required: true, message: 'Seller email is required' }, { type: 'email', message: 'Enter a valid email' }]}>
+              <Input />
+            </Form.Item>
+          </div>
+
+          <Title className="!mb-4 !mt-2 !text-lg !text-[#24d725]" level={4}>
+            Condition
+          </Title>
+          <div className="grid grid-cols-2 gap-x-4 max-[720px]:grid-cols-1">
+            <Form.Item label="Exterior Condition" name="exteriorCondition">
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="Interior Condition" name="interiorCondition">
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="Mechanical Condition" name="mechanicalCondition">
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="Tires" name="tireCondition">
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="Warning Lights / Dashboard Lights" name="warningLights">
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="Interior Odor" name="interiorOdor">
+              <Select options={interiorOdorOptions} placeholder="Select interior odor" />
+            </Form.Item>
+          </div>
+          <Form.Item label="Accident History" name="accidentHistory">
+            <Input.TextArea rows={3} />
+          </Form.Item>
+          <Form.Item label="Additional Disclosures / Notes" name="additionalDisclosures">
+            <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
       </Modal>

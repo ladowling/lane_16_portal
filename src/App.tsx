@@ -17,6 +17,7 @@ import { ProtectedRoute } from './Protectedroute';
 import { AuthProvider, useAuth } from './Authontext';
 import { fetchVehicles, getUploadUrl } from './api';
 import { formatVehicleOption, type Vehicle } from './types';
+import { parseConditionSummary } from './vehicleCondition';
 import { SiteFooter } from './components/SiteFooter';
 import { trackPageview } from './analytics';
 
@@ -210,16 +211,6 @@ const getDealerVehicleStatusLabel = (status: string, startTime: string, endTime:
   return status.replace(/_/g, ' ');
 };
 
-// The seller form saves warning lights and interior odor only inside `condition`, as
-// "exterior | mechanical | tires | warning lights | odor". Read them back only when the first
-// three parts match the dedicated fields, so a differently formatted summary isn't misread.
-const parseSellerConditionSummary = (condition: string, exterior: string, mechanical: string, tires: string) => {
-  const parts = condition.split(' | ');
-  const isSellerFormSummary =
-    parts.length === 5 && parts[0] === exterior && parts[1] === mechanical && parts[2] === tires;
-  return isSellerFormSummary ? { warningLights: parts[3], interiorOdor: parts[4] } : {};
-};
-
 const getInteriorOdorLabel = (summaryOdor: string | undefined, smokerVehicle: boolean | undefined) => {
   if (summaryOdor) return formatVehicleOption(summaryOdor);
   if (smokerVehicle === true) return 'Smoker';
@@ -265,7 +256,7 @@ const mapDealerVehicle = (item: unknown): Vehicle | null => {
   const exteriorCondition = getStringValue(record, ['exteriorCondition']);
   const mechanicalCondition = getStringValue(record, ['mechanicalCondition']);
   const tireCondition = getStringValue(record, ['tireCondition']);
-  const conditionSummary = parseSellerConditionSummary(
+  const conditionSummary = parseConditionSummary(
     getStringValue(record, ['condition']),
     exteriorCondition,
     mechanicalCondition,

@@ -1,4 +1,5 @@
 import type { AuthUser } from './Authontext';
+import type { VehicleTitleStatus } from './types';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://www.api.lane16.com';
 
@@ -105,6 +106,47 @@ export const setVehicleUploads = (token: string, id: string, uploadIds: string[]
     method: 'PATCH',
     token,
     body: JSON.stringify({ uploads: uploadIds }),
+  });
+
+// The details a seller submits, plus reserveMet so it can be kept in step with an edited reserve
+export type VehicleDetailsUpdate = {
+  vehicleName?: string;
+  sellerName?: string;
+  sellerPhoneNo?: string;
+  sellerEmail?: string;
+  vin?: string;
+  year?: number;
+  make?: string;
+  model?: string;
+  mileage?: number;
+  location?: string;
+  condition?: string;
+  minimumAcceptablePrice?: number;
+  trim?: string;
+  exteriorColor?: string;
+  interiorColor?: string;
+  smokerVehicle?: boolean;
+  engine?: string;
+  leatherOrCloth?: string;
+  roof?: string;
+  drivetrain?: string;
+  transmission?: string;
+  accidentHistory?: string;
+  additionalDisclosures?: string;
+  titleStatus?: VehicleTitleStatus;
+  tireCondition?: string;
+  mechanicalCondition?: string;
+  interiorCondition?: string;
+  exteriorCondition?: string;
+  reserveMet?: boolean;
+};
+
+// PATCH /sellers/vehicles/{id} — Staff/admin. Edits the details a seller submitted; send only changed fields.
+export const updateVehicleDetails = (token: string, id: string, payload: VehicleDetailsUpdate) =>
+  apiRequest<Record<string, unknown>>(`/sellers/vehicles/${id}`, {
+    method: 'PATCH',
+    token,
+    body: JSON.stringify(payload),
   });
 
 export const fetchVehicles = (token: string) =>
